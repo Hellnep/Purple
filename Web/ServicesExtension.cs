@@ -1,6 +1,6 @@
 namespace Purple.Web;
 
-internal static class ServiceCollectionExtension
+internal static class ServicesExtension
 {
     /// <summary>
     /// Расширенный метод инициализации сервисов с данной сборке.

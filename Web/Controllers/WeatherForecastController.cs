@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Purple.Web.Controllers;
 
 [ApiController]
-[Route("controller")]
+[Route("[controller]")]
 public class WeatherForecastController : ControllerBase 
 {
     private static readonly string[] summaries = new[]
@@ -12,7 +12,7 @@ public class WeatherForecastController : ControllerBase
     };
 
     [HttpGet]
-    public IEnumerable<WeatherForecast> Get()
+    public ActionResult<IEnumerable<WeatherForecast>> Get()
     {
         var forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
