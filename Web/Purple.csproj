@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Database\Context\Sqlite\Sqlite.csproj" />
+    <ProjectReference Include="..\Common\Database\Entity\Sqlite\Entities.csproj" />
   </ItemGroup>
 
 </Project>

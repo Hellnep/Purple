@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Entity\Sqlite\Sqlite.csproj" />
+    <ProjectReference Include="..\..\Entity\Sqlite\Entities.csproj" />
   </ItemGroup>
 
 </Project>
