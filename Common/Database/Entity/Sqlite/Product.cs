@@ -1,4 +1,6 @@
-﻿namespace Purple.Common.Database.Entity.Sqlite;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Purple.Common.Database.Entity.Sqlite;
 
 public class Product
 {
