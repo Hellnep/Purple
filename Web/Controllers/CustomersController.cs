@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 
 using Purple.Common.Database.Entity.Sql;
 using Purple.Common.Database.Context.Sqlite;
-using Microsoft.EntityFrameworkCore;
 
 namespace Purple.Web.Controllers;
 
@@ -31,7 +30,7 @@ public class CustomersController : ControllerBase
 
     [HttpPost]
     [Route("create")]
-    public ActionResult<Customer> Post([FromBody]Customer customer)
+    public async Task<ActionResult<Customer>> Post([FromBody]Customer customer)
     {
         if (customer is null)
             return BadRequest();
@@ -40,7 +39,7 @@ public class CustomersController : ControllerBase
         customer.Date = DateOnly.FromDateTime(DateTime.Now);
 
         _purpleOcean.Add(customer);
-        _purpleOcean.SaveChanges();
+        await _purpleOcean.SaveChangesAsync();
 
         return Ok(customer);
     }
