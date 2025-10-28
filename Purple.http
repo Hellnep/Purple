@@ -1,4 +1,18 @@
 @Purple_HostAddress = http://localhost:5147
 
-GET {{Purple_HostAddress}}/weatherforecast/
+GET {{Purple_HostAddress}}/customers
 Accept: application/json
+
+###
+
+GET {{Purple_HostAddress}}/customers/id=1
+Accept: application/json
+
+###
+
+POST {{Purple_HostAddress}}/customers/create
+Content-Type: application/json
+
+{
+    "Username": "Steven"
+}
