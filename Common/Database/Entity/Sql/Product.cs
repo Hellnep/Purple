@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Purple.Common.Database.Entity.Sqlite;
+namespace Purple.Common.Database.Entity.Sql;
 
 public class Product
 {

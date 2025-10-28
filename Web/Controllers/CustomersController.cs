@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-using Purple.Common.Database.Entity.Sqlite;
+using Purple.Common.Database.Entity.Sql;
 using Purple.Common.Database.Context.Sqlite;
 using Microsoft.EntityFrameworkCore;
 

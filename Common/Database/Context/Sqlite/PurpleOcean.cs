@@ -1,7 +1,6 @@
-﻿using Purple.Common.Database.Entity.Sqlite;
+﻿using Purple.Common.Database.Entity.Sql;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 
 namespace Purple.Common.Database.Context.Sqlite;
 
