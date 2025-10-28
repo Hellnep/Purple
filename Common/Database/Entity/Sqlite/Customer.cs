@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
 
-namespace Purple.Common.Database.Entity;
+namespace Purple.Common.Database.Entity.Sqlite;
 
 public class Customer
 {
@@ -10,9 +9,7 @@ public class Customer
 
     [Required]
     [StringLength(20)]
-    [RegularExpression("[w]+")]
     public required string Username { get; set; }
 
-    [Required]
-    public DateOnly Date { get; set; }
+    public DateOnly? Date { get; set; }
 }
