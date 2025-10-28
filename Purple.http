@@ -14,5 +14,25 @@ POST {{Purple_HostAddress}}/customers/create
 Content-Type: application/json
 
 {
-    "Username": "Steven"
+    "Username": "Urojai"
+}
+
+###
+
+GET {{Purple_HostAddress}}/products
+Accept: application/json
+
+###
+
+GET {{Purple_HostAddress}}/products/id=1
+Accept: application/json
+
+###
+
+POST {{Purple_HostAddress}}/products/create
+Content-Type: application/json
+
+{
+    "name": "Milk",
+    "description": "It's greatest milk forever"
 }

@@ -11,5 +11,5 @@ public class Customer
     [StringLength(20)]
     public required string Username { get; set; }
 
-    public DateOnly? Date { get; set; }
+    public DateOnly Date { get; set; }
 }

@@ -5,7 +5,7 @@ namespace Purple.Common.Database.Entity.Sql;
 public class Product
 {
     [Key]
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     [Required]
     [StringLength(25)]
