@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Purple.Common.Database.Context.Sqlite;
+
 namespace Purple.Web;
 
 internal static class ServicesExtension
@@ -11,5 +14,8 @@ internal static class ServicesExtension
     {
         services.AddOpenApi();
         services.AddControllers();
+        services.AddDbContext<PurpleOcean>(
+            options => options.UseSqlite("Data Source=PurpleOcean.db")
+        );
     }
 }
