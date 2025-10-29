@@ -12,6 +12,10 @@ public class SqliteTest
     SqliteConnection connection;
     DbContextOptions<PurpleOcean> options;
 
+    /// <summary>
+    /// Adding database settings and connection settings
+    /// during test initialization.
+    /// </summary>
     public SqliteTest()
     {
         connection = new SqliteConnection("Data Source=:memory:");
@@ -22,7 +26,11 @@ public class SqliteTest
             .Options;
     }
 
-    private DateOnly Today() => DateOnly.FromDateTime(DateTime.Now);
+    /// <summary>
+    /// The return of today is date.
+    /// </summary>
+    /// <returns>Returns a DateOnly object.</returns>
+    private static DateOnly Today() => DateOnly.FromDateTime(DateTime.Now);
 
     [Fact]
     public void Adding_a_buyer()
