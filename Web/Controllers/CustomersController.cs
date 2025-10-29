@@ -44,27 +44,27 @@ public class CustomersController : ControllerBase
 
     [HttpPost]
     [Route("create")]
-    public async Task<ActionResult<Customer>> Post([FromBody] Customer data)
+    public async Task<ActionResult<Customer>> Post([FromBody] Customer inputData)
     {
-        if (data is null)
+        if (inputData is null)
             return BadRequest();
 
-        data.Id = _purpleOcean.Customers.Count() + 1;
-        data.Date = DateOnly.FromDateTime(DateTime.Now);
+        inputData.Id = _purpleOcean.Customers.Count() + 1;
+        inputData.Date = DateOnly.FromDateTime(DateTime.Now);
 
-        _purpleOcean.Add(data);
+        _purpleOcean.Add(inputData);
         await _purpleOcean.SaveChangesAsync();
 
-        return Ok(data);
+        return Ok(inputData);
     }
 
     [HttpPut("change")]
-    public async Task<ActionResult<Customer>> Put([FromQuery]int id, [FromBody] Customer data)
+    public async Task<ActionResult<Customer>> Put([FromQuery]int id, [FromBody] Customer inputData)
     {
         try
         {
             Customer customer = _purpleOcean.Customers.First(customer => customer.Id == id);
-            customer.Username = data.Username;
+            customer.Username = inputData.Username;
 
             await _purpleOcean.SaveChangesAsync();  
             return Ok(customer);

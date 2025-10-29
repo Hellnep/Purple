@@ -19,32 +19,61 @@ public class ProductsController : ControllerBase
     [HttpGet]
     public ActionResult<List<Product>> Get()
     {
-        return _purpleOcean.Products.ToList();
+        try
+        {
+            return _purpleOcean.Products.ToList();
+        }
+        catch (ArgumentNullException exception)
+        {
+            return NotFound(exception.Message);
+        }
     }
 
-    [HttpGet("id={id}")]
+    [HttpGet("{id}")]
     public ActionResult<Product> Get(long id)
     {
-        Product product = _purpleOcean.Products.First(product => product.Id == id);
-
-        if (product is null)
-            return NotFound();
-        else
+        try
+        {
+            Product product = _purpleOcean.Products.First(product => product.Id == id);
             return product;
+        }
+        catch (ArgumentNullException exception)
+        {
+            return NotFound(exception.Message);
+        }    
     }
 
     [HttpPost]
     [Route("create")]
-    public async Task<ActionResult<Product>> Post([FromBody]Product product)
+    public async Task<ActionResult<Product>> Post([FromBody] Product inputData)
     {
-        if (product is null)
-            return NotFound();
+        if (inputData is null)
+            return BadRequest();
 
-        product.Id = _purpleOcean.Products.Count() + 1;
+        inputData.Id = _purpleOcean.Products.Count() + 1;
 
-        _purpleOcean.Add(product);
+        _purpleOcean.Add(inputData);
         await _purpleOcean.SaveChangesAsync();
 
-        return Ok(product);
+        return Ok(inputData);
+    }
+
+    [HttpPut("change")]
+    public async Task<ActionResult<Product>> Put([FromQuery] int id, [FromBody] Product inputData)
+    {
+        try
+        {
+            Product product = _purpleOcean.Products.First(product => product.Id == id);
+
+            product.Name = inputData.Name;
+            product.Description = inputData.Description;
+
+            await _purpleOcean.SaveChangesAsync();
+            return Ok(product);
+        }
+        catch (ArgumentNullException exception)
+        {
+            return NotFound(exception.Message);
+        }
     }
 }
