@@ -45,7 +45,11 @@ public class SqliteTest
             context.SaveChanges();
 
             // Assert
-            Assert.NotNull(context.Customers.Single(customer => customer.Id == 1));
+            Assert.NotNull(context.Customers);
+            Customer customer = context.Customers.First(customer => customer.Id == 1);
+
+            Assert.Equal("Hellnep", customer.Username);
+            Assert.Equal(Today(), customer.Date);
         }
     }
 
