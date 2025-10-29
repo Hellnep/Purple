@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+
 using Purple.Common.Database.Context.Sqlite;
 
 namespace Purple.Web;

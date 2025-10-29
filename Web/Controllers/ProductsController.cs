@@ -6,7 +6,7 @@ using Purple.Common.Database.Entity.Sql;
 namespace Purple.Web.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class ProductsController : ControllerBase
 {
     private PurpleOcean _purpleOcean;
@@ -25,10 +25,10 @@ public class ProductsController : ControllerBase
     [HttpGet("id={id}")]
     public ActionResult<Product> Get(long id)
     {
-        Product product = _purpleOcean.Products.Single(product => product.Id == id);
+        Product product = _purpleOcean.Products.First(product => product.Id == id);
 
         if (product is null)
-            return BadRequest();
+            return NotFound();
         else
             return product;
     }
@@ -38,7 +38,7 @@ public class ProductsController : ControllerBase
     public async Task<ActionResult<Product>> Post([FromBody]Product product)
     {
         if (product is null)
-            return BadRequest();
+            return NotFound();
 
         product.Id = _purpleOcean.Products.Count() + 1;
 
