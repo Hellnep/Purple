@@ -1,16 +1,16 @@
 @Purple_HostAddress = http://localhost:5147
 
-GET {{Purple_HostAddress}}/customers
+GET {{Purple_HostAddress}}/api/customers
 Accept: application/json
 
 ###
 
-GET {{Purple_HostAddress}}/customers/id=1
+GET {{Purple_HostAddress}}/api/customers/id=1
 Accept: application/json
 
 ###
 
-POST {{Purple_HostAddress}}/customers/create
+POST {{Purple_HostAddress}}/api/customers/create
 Content-Type: application/json
 
 {
@@ -19,17 +19,26 @@ Content-Type: application/json
 
 ###
 
-GET {{Purple_HostAddress}}/products
+PUT {{Purple_HostAddress}}/api/customers/2/change
+Content-Type: application/json
+
+{
+    "Username": "Steven"
+}
+
+###
+
+GET {{Purple_HostAddress}}/api/products
 Accept: application/json
 
 ###
 
-GET {{Purple_HostAddress}}/products/id=1
+GET {{Purple_HostAddress}}/api/products/id=1
 Accept: application/json
 
 ###
 
-POST {{Purple_HostAddress}}/products/create
+POST {{Purple_HostAddress}}/api/products/create
 Content-Type: application/json
 
 {

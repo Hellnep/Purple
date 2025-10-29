@@ -6,7 +6,7 @@ using Purple.Common.Database.Context.Sqlite;
 namespace Purple.Web.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class CustomersController : ControllerBase
 {
     private PurpleOcean _purpleOcean;
@@ -19,28 +19,59 @@ public class CustomersController : ControllerBase
     [HttpGet]
     public ActionResult<List<Customer>> Get()
     {
-        return _purpleOcean.Customers.ToList();
+        try
+        {
+            return _purpleOcean.Customers.ToList();
+        }
+        catch (ArgumentNullException exception)
+        {
+            return NotFound(exception.Message);
+        }
     }
 
     [HttpGet("id={id}")]
     public ActionResult<Customer> Get(int id)
     {
-        return _purpleOcean.Customers.Single(product => product.Id == id);
+        try
+        {
+            return _purpleOcean.Customers.Single(product => product.Id == id);
+        }
+        catch (ArgumentNullException exception)
+        {
+            return NotFound(exception.Message);
+        }     
     }
 
     [HttpPost]
     [Route("create")]
-    public async Task<ActionResult<Customer>> Post([FromBody]Customer customer)
+    public async Task<ActionResult<Customer>> Post([FromBody] Customer data)
     {
-        if (customer is null)
+        if (data is null)
             return BadRequest();
 
-        customer.Id = _purpleOcean.Customers.Count() + 1;
-        customer.Date = DateOnly.FromDateTime(DateTime.Now);
+        data.Id = _purpleOcean.Customers.Count() + 1;
+        data.Date = DateOnly.FromDateTime(DateTime.Now);
 
-        _purpleOcean.Add(customer);
+        _purpleOcean.Add(data);
         await _purpleOcean.SaveChangesAsync();
 
-        return Ok(customer);
+        return Ok(data);
+    }
+
+    [HttpPut("{id}/change")]
+    public async Task<ActionResult<Customer>> Put(int id, [FromBody] Customer data)
+    {
+        try
+        {
+            Customer customer = _purpleOcean.Customers.First(customer => customer.Id == id);
+            customer.Username = data.Username;
+
+            await _purpleOcean.SaveChangesAsync();  
+            return Ok(customer);
+        }
+        catch (ArgumentNullException exception)
+        {
+            return NotFound(exception.Message);
+        }
     }
 }
