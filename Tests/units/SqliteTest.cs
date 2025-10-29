@@ -1,10 +1,11 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
+using Purple.Common.Database.DTO.Sql;
 using Purple.Common.Database.Entity.Sql;
 using Purple.Common.Database.Context.Sqlite;
 
-namespace Purple.Tests.Unit;
+namespace Purple.Tests.Units;
 
 public class SqliteTest
 {
@@ -21,6 +22,8 @@ public class SqliteTest
             .Options;
     }
 
+    private DateOnly Today() => DateOnly.FromDateTime(DateTime.Now);
+
     [Fact]
     public void Adding_a_buyer()
     {
@@ -29,7 +32,7 @@ public class SqliteTest
         {
             // Act
             context.Customers.Add(
-                new Customer { Id = 1, Username = "Hellnep", Date = DateOnly.FromDateTime(DateTime.Now) }
+                new Customer { Id = 1, Username = "Hellnep", Date = Today() }
             );
             context.SaveChanges();
 
@@ -55,7 +58,27 @@ public class SqliteTest
             Assert.NotNull(context.Products);
             Assert.Equal(2, context.Products.Count());
             Assert.Null(context.Products.Single(products => products.Id == 1).Description);
-
         }
+    }
+
+    [Fact]
+    public void Mapping_CustomerDTO_inCustomer()
+    {
+        using (PurpleOcean context = new PurpleOcean(options))
+        {
+            // Act
+            context.AddRange(
+                new Customer { Id = 1, Username = "Hellnep", Date = Today() },
+                new Customer { Id = 2, Username = "heats", Date = Today() }
+            );
+            context.SaveChanges();
+
+            CustomerDTO customerDTO = context.Customers
+                .Select(customer => new CustomerDTO { Username = customer.Username, Date = customer.Date })
+                .Single(customer => customer.Username == "Hellnep");
+
+            // Assert
+            Assert.NotNull(customerDTO);
+        }    
     }
 }
