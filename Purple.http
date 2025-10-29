@@ -1,16 +1,16 @@
-@Purple_HostAddress = http://localhost:5147
+@localhost = http://localhost:5147
 
-GET {{Purple_HostAddress}}/api/customers
+GET {{localhost}}/api/customers
 Accept: application/json
 
 ###
 
-GET {{Purple_HostAddress}}/api/customers/id=1
+GET {{localhost}}/api/customers/id=1
 Accept: application/json
 
 ###
 
-POST {{Purple_HostAddress}}/api/customers/create
+POST {{localhost}}/api/customers/create
 Content-Type: application/json
 
 {
@@ -19,7 +19,7 @@ Content-Type: application/json
 
 ###
 
-PUT {{Purple_HostAddress}}/api/customers/change?id=1
+PUT {{localhost}}/api/customers/change?id=1
 Content-Type: application/json
 
 {
@@ -28,20 +28,29 @@ Content-Type: application/json
 
 ###
 
-GET {{Purple_HostAddress}}/api/products
+GET {{localhost}}/api/products
 Accept: application/json
 
 ###
 
-GET {{Purple_HostAddress}}/api/products/id=1
+GET {{localhost}}/api/products/1
 Accept: application/json
 
 ###
 
-POST {{Purple_HostAddress}}/api/products/create
+POST {{localhost}}/api/products/create
 Content-Type: application/json
 
 {
-    "name": "Milk",
-    "description": "It's greatest milk forever"
+    "name": "Pedigry"
+}
+
+###
+
+PUT {{localhost}}/api/products/change?id=3
+Content-Type: application/json
+
+{
+    "name": "Coconut",
+    "description": "It's not beautiful!"
 }
