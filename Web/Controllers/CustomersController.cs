@@ -58,8 +58,8 @@ public class CustomersController : ControllerBase
         return Ok(data);
     }
 
-    [HttpPut("{id}/change")]
-    public async Task<ActionResult<Customer>> Put(int id, [FromBody] Customer data)
+    [HttpPut("change")]
+    public async Task<ActionResult<Customer>> Put([FromQuery]int id, [FromBody] Customer data)
     {
         try
         {
