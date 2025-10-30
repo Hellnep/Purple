@@ -86,11 +86,12 @@ public class SqliteTest
             context.SaveChanges();
 
             CustomerDTO customerDTO = context.Customers
-                .Select(customer => new CustomerDTO { Username = customer.Username, Date = customer.Date })
-                .Single(customer => customer.Username == "Hellnep");
+                .Select(customer => new CustomerDTO { Username = customer.Username, Date = customer.Date, Id = customer.Id })
+                .Single(customer => customer.Id == 1);
 
             // Assert
             Assert.NotNull(customerDTO);
+            Assert.Equal("Hellnep", customerDTO.Username);
         }    
     }
 }
