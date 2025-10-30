@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 
-using Purple.Common.Database.Context.Sqlite;
+using Purple.Common.Database.DTO.Sql;
 using Purple.Common.Database.Entity.Sql;
+using Purple.Common.Database.Context.Sqlite;
 
 namespace Purple.Web.Controllers;
 
@@ -45,27 +46,32 @@ public class ProductsController : ControllerBase
 
     [HttpPost]
     [Route("create")]
-    public async Task<ActionResult<Product>> Post([FromBody] Product inputData)
+    public async Task<ActionResult<ProductDTO>> Post([FromBody] ProductDTO inputData)
     {
         if (inputData is null)
             return BadRequest();
 
-        inputData.Id = _purpleOcean.Products.Count() + 1;
+        Product product = new()
+        {
+            Id = _purpleOcean.Products.Count() + 1,
+            Name = inputData.Name ?? throw new ArgumentNullException(),
+            Description = inputData.Description
+        };
 
-        _purpleOcean.Add(inputData);
+        _purpleOcean.Add(product);
         await _purpleOcean.SaveChangesAsync();
 
-        return Ok(inputData);
+        return Ok(product);
     }
 
     [HttpPut("change")]
-    public async Task<ActionResult<Product>> Put([FromQuery] int id, [FromBody] Product inputData)
+    public async Task<ActionResult<ProductDTO>> Put([FromQuery] int id, [FromBody] ProductDTO inputData)
     {
         try
         {
             Product product = _purpleOcean.Products.First(product => product.Id == id);
 
-            product.Name = inputData.Name;
+            product.Name = inputData.Name ?? throw new ArgumentNullException();
             product.Description = inputData.Description;
 
             await _purpleOcean.SaveChangesAsync();
