@@ -40,7 +40,7 @@ public class SqliteTest
         {
             // Act
             context.Customers.Add(
-                new Customer { Id = 1, Username = "Hellnep", Date = Today() }
+                new Customer { Username = "Hellnep" }
             );
             context.SaveChanges();
 
@@ -61,8 +61,8 @@ public class SqliteTest
         {
             // Act
             context.Products.AddRange(
-                new Product { Id = 1, Name = "Milk" },
-                new Product { Id = 2, Name = "Orange", Description = "It's fucking orange" }
+                new Product { Name = "Milk" },
+                new Product { Name = "Orange", Description = "It's fucking orange" }
             );
             context.SaveChanges();
 
@@ -80,8 +80,8 @@ public class SqliteTest
         {
             // Act
             context.AddRange(
-                new Customer { Id = 1, Username = "Hellnep", Date = Today() },
-                new Customer { Id = 2, Username = "heats", Date = Today() }
+                new Customer { Username = "Hellnep" },
+                new Customer { Username = "heats" }
             );
             context.SaveChanges();
 
