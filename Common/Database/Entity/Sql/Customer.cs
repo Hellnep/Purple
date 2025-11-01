@@ -11,10 +11,9 @@ public class Customer
 
     [Required]
     [MinLength(5), StringLength(32)]
-    [Display(Name = "Name")]
+    [Column("Name")]
     public required string Username { get; set; }
 
-    [Required]
-    [Display(Name = "RegistrationDate")]
-    public required DateOnly Date { get; set; }
+    [Column("RegistrationDate")]
+    public DateOnly Date { get; set; }
 }

@@ -54,7 +54,6 @@ public class CustomersController : ControllerBase
         {
             Id = _purpleOcean.Customers.Count() + 1,
             Username = inputData.Username ?? throw new ArgumentNullException(),
-            Date = DateOnly.FromDateTime(DateTime.Now)
         };
 
         _purpleOcean.Add(customer);
