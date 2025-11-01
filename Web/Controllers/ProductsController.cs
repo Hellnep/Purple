@@ -53,7 +53,6 @@ public class ProductsController : ControllerBase
 
         Product product = new()
         {
-            Id = _purpleOcean.Products.Count() + 1,
             Name = inputData.Name ?? throw new ArgumentNullException(),
             Description = inputData.Description
         };

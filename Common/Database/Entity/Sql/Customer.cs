@@ -7,6 +7,7 @@ namespace Purple.Common.Database.Entity.Sql;
 public class Customer
 {
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
 
     [Required]

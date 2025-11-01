@@ -52,7 +52,6 @@ public class CustomersController : ControllerBase
 
         Customer customer = new()
         {
-            Id = _purpleOcean.Customers.Count() + 1,
             Username = inputData.Username ?? throw new ArgumentNullException(),
         };
 

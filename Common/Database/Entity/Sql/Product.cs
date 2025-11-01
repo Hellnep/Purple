@@ -7,11 +7,12 @@ namespace Purple.Common.Database.Entity.Sql;
 public class Product
 {
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
 
     [Required]
     [MinLength(5), StringLength(40)]
-    [Display(Name = "Title")]
+    [Column("Title")]
     public required string Name { get; set; }
 
     [MaxLength(200)]
