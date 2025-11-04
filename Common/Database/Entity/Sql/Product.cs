@@ -13,7 +13,7 @@ public class Product
     [Required]
     [MinLength(5), StringLength(40)]
     [Column("Title")]
-    public required string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     [MaxLength(200)]
     [Column("ProductDescription")]

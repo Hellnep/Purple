@@ -13,7 +13,7 @@ public class Customer
     [Required]
     [MinLength(5), StringLength(32)]
     [Column("Name")]
-    public required string Username { get; set; }
+    public string Username { get; set; } = string.Empty;
 
     [Column("RegistrationDate")]
     public DateOnly Date { get; set; }
