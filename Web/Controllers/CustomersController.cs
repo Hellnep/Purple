@@ -30,29 +30,34 @@ public class CustomersController : ControllerBase
         }
     }
 
-    [HttpGet("id={id}")]
-    public ActionResult<Customer> Get(int id)
+    [HttpGet("{id}")]
+    public ActionResult<Customer> Get(long id)
     {
         try
         {
-            return _purpleOcean.Customers.Single(product => product.Id == id);
+            Customer customer = _purpleOcean.Customers.FirstOrDefault(customer => customer.Id == id);
+
+            if (customer is null)
+                return NotFound("Customer not found");
+            else
+                return Ok(customer);
         }
-        catch (ArgumentNullException exception)
+        catch (Exception exception)
         {
-            return NotFound(exception.Message);
-        }     
+            return StatusCode(500, exception.Message);
+        }
     }
 
     [HttpPost]
     [Route("create")]
     public async Task<ActionResult<CustomerDTO>> Post([FromBody] CustomerDTO inputData)
     {
-        if (inputData is null)
+        if (inputData.Username is null)
             return BadRequest();
 
         Customer customer = new()
         {
-            Username = inputData.Username ?? throw new ArgumentNullException(),
+            Username = inputData.Username,
         };
 
         _purpleOcean.Add(customer);
