@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
+using Purple.Common.Database.Mapping;
 using Purple.Common.Database.DTO.Sql;
 using Purple.Common.Database.Entity.Sql;
 using Purple.Common.Database.Context.Sqlite;
@@ -51,11 +52,7 @@ public class ProductsController : ControllerBase
         if (inputData is null)
             return BadRequest();
 
-        Product product = new()
-        {
-            Name = inputData.Name ?? throw new ArgumentNullException(),
-            Description = inputData.Description
-        };
+        Product product = Mapping.Get<Product, ProductDTO>(inputData);
 
         _purpleOcean.Add(product);
         await _purpleOcean.SaveChangesAsync();

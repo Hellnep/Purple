@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
+using Purple.Common.Database.Mapping;
 using Purple.Common.Database.DTO.Sql;
 using Purple.Common.Database.Entity.Sql;
 using Purple.Common.Database.Context.Sqlite;
@@ -55,10 +56,7 @@ public class CustomersController : ControllerBase
         if (inputData.Username is null)
             return BadRequest();
 
-        Customer customer = new()
-        {
-            Username = inputData.Username,
-        };
+        Customer customer = Mapping.Get<Customer, CustomerDTO>(inputData);
 
         _purpleOcean.Add(customer);
         await _purpleOcean.SaveChangesAsync();
