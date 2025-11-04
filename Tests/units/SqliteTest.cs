@@ -128,4 +128,29 @@ public class SqliteTest
                 context.Customers.First(customer => customer.Id == 1).Date);
         }
     }
+
+    [Fact]
+    public void Auto_Mapping_From_ProductDTO_InProduct()
+    {
+        // Arrange
+        using (PurpleOcean context = new PurpleOcean(options))
+        {
+            // Act
+            ProductDTO product = new ProductDTO
+            {
+                Name = "Coconut",
+                Description = "Coconut is beautiful!"
+            };
+
+            context.Add(Mapping.Get<Product, ProductDTO>(product));
+            context.SaveChanges();
+
+            var newProduct = Mapping.Get<ProductDTO, Product>(
+                context.Products.First(product => product.Id == 1));
+
+            // Assert
+            Assert.NotNull(newProduct);
+            Assert.Equal(1, context.Products.Count());
+        }
+    }
 }
