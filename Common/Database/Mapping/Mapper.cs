@@ -1,6 +1,4 @@
 ﻿using System.Reflection;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Purple.Common.Database.Mapping;
 

@@ -32,12 +32,16 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Product> Get(long id)
+    public IActionResult Get(long id)
     {
         try
         {
-            Product product = _purpleOcean.Products.First(product => product.Id == id);
-            return product;
+            var product = _purpleOcean.Products.FirstOrDefault(product => product.Id == id);
+
+            if (product is null)
+                return NotFound();
+            else
+                return Ok(product);
         }
         catch (ArgumentNullException exception)
         {
@@ -47,7 +51,7 @@ public class ProductsController : ControllerBase
 
     [HttpPost]
     [Route("create")]
-    public async Task<ActionResult<ProductDTO>> Post([FromBody] ProductDTO inputData)
+    public async Task<IActionResult> Post([FromBody] ProductDTO inputData)
     {
         if (inputData is null)
             return BadRequest();
@@ -61,21 +65,29 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPut("change")]
-    public async Task<ActionResult<ProductDTO>> Put([FromQuery] int id, [FromBody] ProductDTO inputData)
+    public async Task<IActionResult> Put([FromQuery] int id,
+        [FromBody] ProductDTO inputData)
     {
         try
         {
-            Product product = _purpleOcean.Products.First(product => product.Id == id);
+            var product = _purpleOcean.Products.FirstOrDefault(product => product.Id == id);
 
-            product.Name = inputData.Name ?? throw new ArgumentNullException();
-            product.Description = inputData.Description;
+            if (product is null)
+                return NotFound();
+            else
+            {
+                if (inputData.Name is not null)
+                    product.Name = inputData.Name;
 
-            await _purpleOcean.SaveChangesAsync();
-            return Ok(product);
+                product.Description = inputData.Description;
+
+                await _purpleOcean.SaveChangesAsync();
+                return Ok(product);
+            }
         }
         catch (ArgumentNullException exception)
         {
-            return NotFound(exception.Message);
+            return BadRequest(exception.Message);
         }
     }
 }

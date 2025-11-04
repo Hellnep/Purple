@@ -32,16 +32,16 @@ public class CustomersController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Customer> Get(long id)
+    public IActionResult Get(long id)
     {
         try
         {
-            Customer customer = _purpleOcean.Customers.FirstOrDefault(customer => customer.Id == id);
+            var customer = _purpleOcean.Customers.FirstOrDefault(customer => customer.Id == id);
 
             if (customer is null)
                 return NotFound("Customer not found");
             else
-                return Ok(customer);
+                return Ok(Mapping.Get<CustomerDTO, Customer>(customer));
         }
         catch (Exception exception)
         {
@@ -51,7 +51,7 @@ public class CustomersController : ControllerBase
 
     [HttpPost]
     [Route("create")]
-    public async Task<ActionResult<CustomerDTO>> Post([FromBody] CustomerDTO inputData)
+    public async Task<IActionResult> Post([FromBody] CustomerDTO inputData)
     {
         if (inputData.Username is null)
             return BadRequest();
@@ -65,19 +65,27 @@ public class CustomersController : ControllerBase
     }
 
     [HttpPut("change")]
-    public async Task<ActionResult<CustomerDTO>> Put([FromQuery]int id, [FromBody] CustomerDTO inputData)
+    public async Task<IActionResult> Put([FromQuery] int id,
+        [FromBody] CustomerDTO inputData)
     {
         try
         {
-            Customer customer = _purpleOcean.Customers.First(customer => customer.Id == id);
-            customer.Username = inputData.Username ?? throw new ArgumentNullException();
+            var customer = _purpleOcean.Customers.FirstOrDefault(customer => customer.Id == id);
 
-            await _purpleOcean.SaveChangesAsync();  
-            return Ok(customer);
+            if (customer is null)
+                return NotFound();
+            else
+            {
+                if (inputData.Username is not null)
+                    customer.Username = inputData.Username;
+
+                await _purpleOcean.SaveChangesAsync();  
+                return Ok(customer);
+            }            
         }
         catch (ArgumentNullException exception)
         {
-            return NotFound(exception.Message);
+            return BadRequest(exception.Message);
         }
     }
 }

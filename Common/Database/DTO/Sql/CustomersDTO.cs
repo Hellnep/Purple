@@ -1,6 +1,5 @@
 namespace Purple.Common.Database.DTO.Sql;
 
-// TODO: Выполнить реализацию представления охвата Customer
 public class CustomerDTO
 {
     public long? Id { get; set; }
