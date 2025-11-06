@@ -12,9 +12,13 @@ public class Customer
 
     [Required]
     [MinLength(5), StringLength(32)]
-    [Column("Name")]
-    public string Username { get; set; } = string.Empty;
+    [Column("FirstName")]
+    public string FirstName { get; set; } = string.Empty;
 
     [Column("RegistrationDate")]
     public DateOnly Date { get; set; }
+
+    [RegularExpression(pattern: @"^(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6})$", ErrorMessage = "This is not a email address.")]
+    [Column("EmailAddress", TypeName = "varchar(60)")]
+    public string? Email { get; set; } = null!;
 }

@@ -5,7 +5,7 @@ Accept: application/json
 
 ###
 
-GET {{localhost}}/api/customers/id=1
+GET {{localhost}}/api/customers/1
 Accept: application/json
 
 ###
@@ -14,16 +14,16 @@ POST {{localhost}}/api/customers/create
 Content-Type: application/json
 
 {
-    "Username": "Urojai"
+    "FirstName": "Hellnep"
 }
 
 ###
 
-PUT {{localhost}}/api/customers/change?id=1
+PATCH {{localhost}}/api/customers/change?id=1
 Content-Type: application/json
 
 {
-    "Username": "Hellnep"
+    "FirstName": "Денис"
 }
 
 ###
@@ -42,7 +42,7 @@ POST {{localhost}}/api/products/create
 Content-Type: application/json
 
 {
-    "name": "Pedigry"
+    "name": "Pipes"
 }
 
 ###

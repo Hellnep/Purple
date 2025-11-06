@@ -41,15 +41,14 @@ public class SqliteTest
         {
             // Act
             context.Customers.Add(
-                new Customer { Username = "Hellnep" }
-            );
+                new Customer { FirstName = "Hellnep", Email = "hellnepya.ru" });
             context.SaveChanges();
 
             // Assert
             Assert.NotNull(context.Customers);
             Customer customer = context.Customers.First(customer => customer.Id == 1);
 
-            Assert.Equal("Hellnep", customer.Username);
+            Assert.Equal("Hellnep", customer.FirstName);
             Assert.Equal(Today(), customer.Date);
         }
     }
@@ -84,14 +83,14 @@ public class SqliteTest
         {
             // Act
             context.AddRange(
-                new Customer { Username = "Hellnep" },
-                new Customer { Username = "heats" }
+                new Customer { FirstName = "Hellnep" },
+                new Customer { FirstName = "heats" }
             );
             context.SaveChanges();
 
             CustomerDTO customerDTO = context.Customers
                 .Select(customer => new CustomerDTO {
-                    Username = customer.Username,
+                    FirstName = customer.FirstName,
                     Date = customer.Date,
                     Id = customer.Id
                 })
@@ -99,7 +98,7 @@ public class SqliteTest
 
             // Assert
             Assert.NotNull(customerDTO);
-            Assert.Equal("Hellnep", customerDTO.Username);
+            Assert.Equal("Hellnep", customerDTO.FirstName);
         }
     }
 
@@ -112,7 +111,8 @@ public class SqliteTest
             // Act
             CustomerDTO customer = new CustomerDTO
             {
-                Username = "Hellnep"
+                FirstName = "Hellnep",
+                Email = "hellnep@ya.ru"
             };
 
             context.Add(Mapping.Get<Customer, CustomerDTO>(customer));
@@ -126,6 +126,8 @@ public class SqliteTest
             Assert.Equal(1, context.Customers.Count());
             Assert.Equal(Today(),
                 context.Customers.First(customer => customer.Id == 1).Date);
+            Assert.Equal(customer.Email,
+                context.Customers.First(customer => customer.Id == 1).Email);
         }
     }
 

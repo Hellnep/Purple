@@ -53,7 +53,7 @@ public class CustomersController : ControllerBase
     [Route("create")]
     public async Task<IActionResult> Post([FromBody] CustomerDTO inputData)
     {
-        if (inputData.Username is null)
+        if (inputData.FirstName is null)
             return BadRequest();
 
         Customer customer = Mapping.Get<Customer, CustomerDTO>(inputData);
@@ -64,8 +64,8 @@ public class CustomersController : ControllerBase
         return Ok(customer);
     }
 
-    [HttpPut("change")]
-    public async Task<IActionResult> Put([FromQuery] int id,
+    [HttpPatch("change")]
+    public async Task<IActionResult> Patch([FromQuery] int id,
         [FromBody] CustomerDTO inputData)
     {
         try
@@ -76,8 +76,11 @@ public class CustomersController : ControllerBase
                 return NotFound();
             else
             {
-                if (inputData.Username is not null)
-                    customer.Username = inputData.Username;
+                if (inputData.FirstName is not null)
+                    customer.FirstName = inputData.FirstName;
+
+                if (inputData.Email is not null)
+                    customer.Email = inputData.Email;
 
                 await _purpleOcean.SaveChangesAsync();  
                 return Ok(customer);
