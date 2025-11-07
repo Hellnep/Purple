@@ -53,7 +53,8 @@ public class CustomersController : ControllerBase
     [Route("create")]
     public async Task<IActionResult> Post([FromBody] CustomerDTO inputData)
     {
-        if (inputData.FirstName is null)
+        if (inputData.FirstName is null ||
+            inputData.Email is null)
             return BadRequest();
 
         Customer customer = Mapping.Get<Customer, CustomerDTO>(inputData);
@@ -61,7 +62,7 @@ public class CustomersController : ControllerBase
         _purpleOcean.Add(customer);
         await _purpleOcean.SaveChangesAsync();
 
-        return Ok(customer);
+        return Created();
     }
 
     [HttpPatch("change")]

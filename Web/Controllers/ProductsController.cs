@@ -61,7 +61,7 @@ public class ProductsController : ControllerBase
         _purpleOcean.Add(product);
         await _purpleOcean.SaveChangesAsync();
 
-        return Ok(product);
+        return Created();
     }
 
     [HttpPut("change")]
