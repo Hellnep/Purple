@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using Purple.Common.Database.Mapping;
 using Purple.Common.Database.DTO.Sql;
@@ -19,11 +20,15 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<List<Product>> Get()
+    public ActionResult<List<ProductDTO>> Get()
     {
         try
         {
-            return _purpleOcean.Products.ToList();
+            List<ProductDTO> products = _purpleOcean.Products
+                .Select(product => Mapping.Get<ProductDTO, Product>(product))
+                .ToList();
+
+            return products;
         }
         catch (ArgumentNullException exception)
         {
@@ -32,16 +37,17 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public IActionResult Get(long id)
+    public async Task<IActionResult> Get(long id)
     {
         try
         {
-            var product = _purpleOcean.Products.FirstOrDefault(product => product.Id == id);
+            var product = await _purpleOcean.Products
+                .FirstOrDefaultAsync(product => product.Id == id);
 
             if (product is null)
-                return NotFound();
+                return NotFound($"Product with ID {id} not found");
             else
-                return Ok(product);
+                return Ok(Mapping.Get<ProductDTO, Product>(product));
         }
         catch (ArgumentNullException exception)
         {
@@ -50,36 +56,51 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
-    [Route("create")]
     public async Task<IActionResult> Post([FromBody] ProductDTO inputData)
     {
         if (inputData is null)
-            return BadRequest();
+            return NoContent();
 
-        Product product = Mapping.Get<Product, ProductDTO>(inputData);
+        try
+        {
+            Product product = Mapping.Get<Product, ProductDTO>(inputData);
 
-        _purpleOcean.Add(product);
-        await _purpleOcean.SaveChangesAsync();
+            _purpleOcean.Add(product);
+            await _purpleOcean.SaveChangesAsync();
 
-        return Created();
+            ProductDTO productDto = Mapping.Get<ProductDTO, Product>(product);
+            return CreatedAtAction(
+                nameof(Get),
+                new { Id = product.Id },
+                productDto
+            );
+        }
+        catch (ArgumentNullException exception)
+        {
+            return BadRequest(exception.Message);
+        }
     }
 
-    [HttpPut("change")]
-    public async Task<IActionResult> Put([FromQuery] int id,
+    [HttpPatch]
+    public async Task<IActionResult> Patch([FromQuery] long id,
         [FromBody] ProductDTO inputData)
     {
         try
         {
-            var product = _purpleOcean.Products.FirstOrDefault(product => product.Id == id);
+            var product = _purpleOcean.Products
+                .FirstOrDefault(product => product.Id == id);
 
             if (product is null)
-                return NotFound();
+                return BadRequest();
             else
             {
-                if (inputData.Name is not null)
-                    product.Name = inputData.Name;
+                product.Name = inputData.Name is not null
+                    ? inputData.Name
+                    : product.Name;
 
-                product.Description = inputData.Description;
+                product.Description = inputData.Description is not null 
+                    ? inputData.Description 
+                    : product.Description;
 
                 await _purpleOcean.SaveChangesAsync();
                 return Ok(product);

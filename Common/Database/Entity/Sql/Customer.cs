@@ -18,7 +18,7 @@ public class Customer
     [Column("RegistrationDate")]
     public DateOnly Date { get; set; }
 
-    [RegularExpression(pattern: @"^(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6})$", ErrorMessage = "This is not a email address.")]
+    [EmailAddress]
     [Column("EmailAddress", TypeName = "varchar(60)")]
-    public string? Email { get; set; } = null!;
+    public string? Email { get; set; }
 }
