@@ -34,7 +34,7 @@ public class CustomersController : ControllerBase
         }
         catch (ArgumentNullException exception)
         {
-            return NotFound(exception.Message);
+            return StatusCode(500, exception.Message);
         }
     }
 
@@ -53,7 +53,7 @@ public class CustomersController : ControllerBase
         }
         catch (ArgumentNullException exception)
         {
-            return NotFound(exception.Message);
+            return StatusCode(500, exception.Message);
         }
     }
 
@@ -94,7 +94,7 @@ public class CustomersController : ControllerBase
                 .FirstOrDefault(customer => customer.Id == id);
 
             if (customer is null)
-                return NoContent();
+                return NotFound();
             else
             {
                 if (!Validate.TryValidate(inputData, out var results))
@@ -114,7 +114,7 @@ public class CustomersController : ControllerBase
         }
         catch (ArgumentNullException exception)
         {
-            return BadRequest(exception.Message);
+            return StatusCode(500, exception.Message);
         }
     }
 }

@@ -93,7 +93,7 @@ public class ProductsController : ControllerBase
                 .FirstOrDefault(product => product.Id == id);
 
             if (product is null)
-                return NoContent();
+                return NotFound();
             else
             {
                 if (!Validate.TryValidate(inputData, out var results))

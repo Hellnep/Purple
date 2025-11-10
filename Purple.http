@@ -10,20 +10,21 @@ Accept: application/json
 
 ###
 
-POST {{localhost}}/api/customers/create
+POST {{localhost}}/api/customers
 Content-Type: application/json
 
 {
-    "FirstName": "Hellnep"
+    "FirstName": "Steven",
+    "Email": "stevenyandex.r"
 }
 
 ###
 
-PATCH {{localhost}}/api/customers/change?id=1
+PATCH {{localhost}}/api/customers?id=1
 Content-Type: application/json
 
 {
-    "FirstName": "Денис"
+    "Email": "hellnep@yanedx.ru"
 }
 
 ###
@@ -38,16 +39,16 @@ Accept: application/json
 
 ###
 
-POST {{localhost}}/api/products/create
+POST {{localhost}}/api/products
 Content-Type: application/json
 
 {
-    "name": "Pipes"
+    "name": "Orange"
 }
 
 ###
 
-PUT {{localhost}}/api/products/change?id=3
+PATCH {{localhost}}/api/products?id=3
 Content-Type: application/json
 
 {

@@ -45,7 +45,7 @@ public class SqliteTest
             Customer customer = new()
             {
                 FirstName = "Hellnep",
-                Email = "hellnepya.ru"
+                Email = "hellnep@ya.ru"
             };
 
             context.Add(customer);
