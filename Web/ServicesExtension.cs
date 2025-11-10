@@ -18,5 +18,14 @@ internal static class ServicesExtension
         services.AddDbContext<PurpleOcean>(
             options => options.UseSqlite("Data Source=PurpleOcean.db")
         );
+        services.AddProblemDetails(options =>
+        {
+            options.CustomizeProblemDetails = customize =>
+            {
+                customize.ProblemDetails.Extensions["traceId"] = customize.HttpContext.TraceIdentifier;
+                customize.ProblemDetails.Extensions["timestamp"] = DateTime.UtcNow;
+                customize.ProblemDetails.Instance = $"{customize.HttpContext.Request.Method}, {customize.HttpContext.Request.Path}";
+            };
+        });
     }
 }
