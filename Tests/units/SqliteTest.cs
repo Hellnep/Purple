@@ -1,6 +1,8 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
+using System.ComponentModel.DataAnnotations;
+
 using Purple.Common.Database.DTO.Sql;
 using Purple.Common.Database.Entity.Sql;
 using Purple.Common.Database.Context.Sqlite;
@@ -40,13 +42,18 @@ public class SqliteTest
         using (PurpleOcean context = new PurpleOcean(options))
         {
             // Act
-            context.Customers.Add(
-                new Customer { FirstName = "Hellnep", Email = "hellnepya.ru" });
+            Customer customer = new()
+            {
+                FirstName = "Hellnep",
+                Email = "hellnepya.ru"
+            };
+
+            context.Add(customer);
             context.SaveChanges();
 
             // Assert
             Assert.NotNull(context.Customers);
-            Customer customer = context.Customers.First(customer => customer.Id == 1);
+            Customer newCustomer = context.Customers.First(customer => customer.Id == 1);
 
             Assert.Equal("Hellnep", customer.FirstName);
             Assert.Equal(Today(), customer.Date);
