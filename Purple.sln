@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ModelValidator", "ModelVali
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validator", "Common\ModelValidator\Validator.csproj", "{EB092D8C-4B61-42BE-BB98-A590AA738B5D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor", "Blazor\Blazor.csproj", "{7B87EC32-8199-436B-9AA3-D655DE422808}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,18 @@ Global
 		{EB092D8C-4B61-42BE-BB98-A590AA738B5D}.Release|x64.Build.0 = Release|Any CPU
 		{EB092D8C-4B61-42BE-BB98-A590AA738B5D}.Release|x86.ActiveCfg = Release|Any CPU
 		{EB092D8C-4B61-42BE-BB98-A590AA738B5D}.Release|x86.Build.0 = Release|Any CPU
+		{7B87EC32-8199-436B-9AA3-D655DE422808}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B87EC32-8199-436B-9AA3-D655DE422808}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B87EC32-8199-436B-9AA3-D655DE422808}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7B87EC32-8199-436B-9AA3-D655DE422808}.Debug|x64.Build.0 = Debug|Any CPU
+		{7B87EC32-8199-436B-9AA3-D655DE422808}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7B87EC32-8199-436B-9AA3-D655DE422808}.Debug|x86.Build.0 = Debug|Any CPU
+		{7B87EC32-8199-436B-9AA3-D655DE422808}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B87EC32-8199-436B-9AA3-D655DE422808}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B87EC32-8199-436B-9AA3-D655DE422808}.Release|x64.ActiveCfg = Release|Any CPU
+		{7B87EC32-8199-436B-9AA3-D655DE422808}.Release|x64.Build.0 = Release|Any CPU
+		{7B87EC32-8199-436B-9AA3-D655DE422808}.Release|x86.ActiveCfg = Release|Any CPU
+		{7B87EC32-8199-436B-9AA3-D655DE422808}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

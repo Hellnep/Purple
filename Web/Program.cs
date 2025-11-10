@@ -1,3 +1,4 @@
+using System.Net;
 using Purple.Web;
 
 var builder = WebApplication.CreateBuilder(args);
