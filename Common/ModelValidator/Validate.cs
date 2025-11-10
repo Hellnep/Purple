@@ -11,7 +11,7 @@ public static class Validate
     /// <param name="model">Entered data model</param>
     /// <param name="results">Generated list of validation errors</param>
     /// <returns>Returns a list of data verification results</returns>
-    public static bool TryValidate<T> (T model,
+    public static bool TryValidate<T>(T model,
         out List<ValidationResult> results)
     {
         var context = new ValidationContext(model,

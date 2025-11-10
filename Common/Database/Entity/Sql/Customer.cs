@@ -11,7 +11,7 @@ public class Customer
     public long Id { get; set; }
 
     [Required]
-    [MinLength(5), StringLength(32)]
+    [MinLength(4), StringLength(40)]
     [Column("FirstName")]
     public string FirstName { get; set; } = string.Empty;
 

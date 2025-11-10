@@ -5,6 +5,7 @@ using Purple.Common.Database.Mapping;
 using Purple.Common.Database.DTO.Sql;
 using Purple.Common.Database.Entity.Sql;
 using Purple.Common.Database.Context.Sqlite;
+using Purple.Common.ModelValidator;
 
 namespace Purple.Web.Controllers;
 
@@ -58,14 +59,15 @@ public class ProductsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] ProductDTO inputData)
     {
-        if (inputData is null)
-            return NoContent();
-
         try
         {
             Product product = Mapping.Get<Product, ProductDTO>(inputData);
 
-            _purpleOcean.Add(product);
+            if (!Validate.TryValidate(inputData, out var results))
+                this.ValidationProblems(results);
+            else
+                _purpleOcean.Add(product);
+
             await _purpleOcean.SaveChangesAsync();
 
             ProductDTO productDto = Mapping.Get<ProductDTO, Product>(product);
@@ -91,9 +93,12 @@ public class ProductsController : ControllerBase
                 .FirstOrDefault(product => product.Id == id);
 
             if (product is null)
-                return BadRequest();
+                return NoContent();
             else
             {
+                if (!Validate.TryValidate(inputData, out var results))
+                    this.ValidationProblems(results);
+
                 product.Name = inputData.Name is not null
                     ? inputData.Name
                     : product.Name;

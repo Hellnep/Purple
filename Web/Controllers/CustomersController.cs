@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+using Purple.Web;
+using Purple.Common.ModelValidator;
 using Purple.Common.Database.Mapping;
 using Purple.Common.Database.DTO.Sql;
 using Purple.Common.Database.Entity.Sql;
@@ -58,18 +60,18 @@ public class CustomersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] CustomerDTO inputData)
     {
-        if (string.IsNullOrWhiteSpace(inputData.FirstName))
-            return BadRequest("FirstName is required");
-
         try
         {
             Customer customer = Mapping.Get<Customer, CustomerDTO>(inputData);
 
-            _purpleOcean.Add(customer);
+            if (!Validate.TryValidate(customer, out var results))
+                this.ValidationProblems(results);
+            else
+                _purpleOcean.Add(customer);
+
             await _purpleOcean.SaveChangesAsync();
 
             CustomerDTO customerDto =  Mapping.Get<CustomerDTO, Customer>(customer);
-
             return CreatedAtAction(
                 nameof(Get),
                 new { Id = customer.Id },
@@ -92,9 +94,12 @@ public class CustomersController : ControllerBase
                 .FirstOrDefault(customer => customer.Id == id);
 
             if (customer is null)
-                return BadRequest();
+                return NoContent();
             else
             {
+                if (!Validate.TryValidate(inputData, out var results))
+                    this.ValidationProblems(results);
+
                 customer.FirstName = inputData.FirstName is not null
                     ? inputData.FirstName
                     : customer.FirstName;
