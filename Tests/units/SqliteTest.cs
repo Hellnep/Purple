@@ -1,8 +1,6 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-using System.ComponentModel.DataAnnotations;
-
 using Purple.Common.Database.DTO.Sql;
 using Purple.Common.Database.Entity.Sql;
 using Purple.Common.Database.Context.Sqlite;
@@ -36,13 +34,13 @@ public class SqliteTest
     private static DateOnly Today() => DateOnly.FromDateTime(DateTime.Now);
 
     [Fact]
-    public void Adding_a_buyer()
+    public void Adding_a_Customer()
     {
         // Arrange
         using (PurpleOcean context = new PurpleOcean(options))
         {
             // Act
-            Customer customer = new()
+            Common.Database.Entity.Sql.Customer customer = new()
             {
                 FirstName = "Hellnep",
                 Email = "hellnep@ya.ru"
@@ -53,7 +51,7 @@ public class SqliteTest
 
             // Assert
             Assert.NotNull(context.Customers);
-            Customer newCustomer = context.Customers.First(customer => customer.Id == 1);
+            Common.Database.Entity.Sql.Customer newCustomer = context.Customers.First(customer => customer.CustomerId == 1);
 
             Assert.Equal("Hellnep", customer.FirstName);
             Assert.Equal(Today(), customer.Date);
@@ -61,17 +59,61 @@ public class SqliteTest
     }
 
     [Fact]
-    public void Adding_a_product()
+    public void Adding_a_Product_FromCustomer()
+    {
+        using (PurpleOcean context = new PurpleOcean(options))
+        {
+            Customer customer = new Customer
+            {
+                FirstName = "Денис",
+                Email = "hellnep@ya.ru"
+            };
+
+            context.Customers.Add(customer);
+            context.SaveChanges();
+
+            Assert.NotNull(context.Customers);
+
+            Product product = new Product
+            {
+                Name = "Титульник",
+                Description = "Описание"
+            };
+
+            var products = context.Customers
+                .Include(customer => customer.Products)
+                .First(customer => customer.CustomerId == 1);
+
+            products.Products.Add(product);
+            context.SaveChanges();
+
+            Assert.NotNull(context.Products);
+            Assert.Equal(
+                context.Customers.First(customer => customer.FirstName == "Денис").CustomerId,
+                context.Products.First(product => product.Name == "Титульник").AuthorRefId
+            );
+        }
+    }
+
+    [Fact]
+    public void Adding_a_Products()
     {
         // Arrange
         using (PurpleOcean context = new PurpleOcean(options))
         {
             // Act
+            context.Customers.Add(new Customer
+            {
+                FirstName = "Денис"
+            });
+            context.SaveChanges();
+
             context.Products.AddRange(
-                new Product { Name = "Milk" },
+                new Product { Name = "Milk", AuthorRefId = 1 },
                 new Product {
                     Name = "Orange",
-                    Description = "It's fucking orange"
+                    Description = "It's fucking orange",
+                    AuthorRefId = 1
                 }
             );
             context.SaveChanges();
@@ -79,7 +121,7 @@ public class SqliteTest
             // Assert
             Assert.NotNull(context.Products);
             Assert.Equal(2, context.Products.Count());
-            Assert.Null(context.Products.Single(products => products.Id == 1).Description);
+            Assert.Null(context.Products.Single(products => products.ProductId == 1).Description);
         }
     }
 
@@ -95,13 +137,13 @@ public class SqliteTest
             );
             context.SaveChanges();
 
-            CustomerDTO customerDTO = context.Customers
-                .Select(customer => new CustomerDTO {
+            Customer customerDTO = context.Customers
+                .Select(customer => new Customer {
                     FirstName = customer.FirstName,
                     Date = customer.Date,
-                    Id = customer.Id
+                    CustomerId = customer.CustomerId
                 })
-                .Single(customer => customer.Id == 1);
+                .Single(customer => customer.CustomerId == 1);
 
             // Assert
             Assert.NotNull(customerDTO);
@@ -126,15 +168,15 @@ public class SqliteTest
             context.SaveChanges();
 
             CustomerDTO newCustomer = Mapping.Get<CustomerDTO, Customer>(
-                context.Customers.First(customer => customer.Id == 1));
+                context.Customers.First(customer => customer.CustomerId == 1));
 
             // Assert
             Assert.NotNull(newCustomer);
             Assert.Equal(1, context.Customers.Count());
             Assert.Equal(Today(),
-                context.Customers.First(customer => customer.Id == 1).Date);
+                context.Customers.First(customer => customer.CustomerId == 1).Date);
             Assert.Equal(customer.Email,
-                context.Customers.First(customer => customer.Id == 1).Email);
+                context.Customers.First(customer => customer.CustomerId == 1).Email);
         }
     }
 
@@ -145,21 +187,66 @@ public class SqliteTest
         using (PurpleOcean context = new PurpleOcean(options))
         {
             // Act
+            context.Customers.Add(new Customer
+            {
+                FirstName = "Денис"
+            });
+
             ProductDTO product = new ProductDTO
             {
                 Name = "Coconut",
-                Description = "Coconut is beautiful!"
+                Description = "Coconut is beautiful!",
+                AuthorRefId = 1
             };
 
             context.Add(Mapping.Get<Product, ProductDTO>(product));
             context.SaveChanges();
 
             var newProduct = Mapping.Get<ProductDTO, Product>(
-                context.Products.First(product => product.Id == 1));
+                context.Products.First(product => product.ProductId == 1));
 
             // Assert
             Assert.NotNull(newProduct);
             Assert.Equal(1, context.Products.Count());
+        }
+    }
+
+    [Fact]
+    public void Creating_AConnection_Between_Entities()
+    {
+        // Assert + Act
+        using (PurpleOcean context = new PurpleOcean(options))
+        {
+            Common.Database.DTO.Sql.CustomerDTO customerDTO = new Common.Database.DTO.Sql.CustomerDTO
+            {
+                FirstName = "Денис",
+            };
+
+            context.Customers.Add(Mapping.Get<Common.Database.Entity.Sql.Customer, Common.Database.DTO.Sql.CustomerDTO>(customerDTO));
+            context.SaveChanges();
+
+            Assert.NotEmpty(context.Customers);
+            Assert.Equal(1, context.Customers
+                .First(customer => customer.FirstName == "Денис").CustomerId);
+
+            ProductDTO productDTO = new ProductDTO
+            {
+                AuthorRefId = context.Customers
+                    .First(customer => customer.FirstName == "Денис").CustomerId,
+                Name = "Решение задач",
+                Description = "Пример решения задач."
+            };
+
+            context.Products.Add(Mapping.Get<Product, ProductDTO>(productDTO));
+            context.SaveChanges();
+
+            Assert.NotEmpty(context.Products);
+            Assert.Equal(
+                context.Customers
+                    .First(customer => customer.FirstName == "Денис"), 
+                context.Products
+                    .First(product => product.Name == "Решение задач").Author
+            );
         }
     }
 }
