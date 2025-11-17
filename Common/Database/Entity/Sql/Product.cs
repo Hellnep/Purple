@@ -8,7 +8,15 @@ public class Product
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public long Id { get; set; }
+    public long ProductId { get; set; }
+
+    [Column("DateOfCreate")]
+    public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+
+    [ForeignKey("Author")]
+    public long? AuthorRefId { get; set; }
+
+    public Customer? Author { get; set; }
 
     [Required]
     [MinLength(5), StringLength(40)]
