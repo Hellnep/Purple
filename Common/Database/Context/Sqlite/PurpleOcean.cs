@@ -14,11 +14,4 @@ public class PurpleOcean : DbContext
     {
         Database.EnsureCreated();
     }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Customer>()
-            .Property(customer => customer.Date)
-            .HasDefaultValue(DateOnly.FromDateTime(DateTime.Now));
-    }
 }
