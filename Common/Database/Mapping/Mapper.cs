@@ -38,17 +38,20 @@ public static class Mapping
             if (entityProperty is not null)
             {
                 object? dtoValue = dtoProperty.GetValue(inputType);
+                var entityType = entityProperty.PropertyType;
 
                 if (dtoValue is null)
                     continue;
 
-                if (!entityProperty.PropertyType.IsPrimitive &&
-                    entityProperty.PropertyType != typeof(string) &&
-                    entityProperty.PropertyType != typeof(DateOnly) && 
-                    entityProperty.PropertyType != typeof(DateOnly?))
+                if (!entityType.IsPrimitive &&
+                    entityType != typeof(string) &&
+                    entityType != typeof(DateOnly) && 
+                    entityType != typeof(DateOnly?))
                 {
                     var method = typeof(Mapping)
-                        .GetMethod(nameof(Get), BindingFlags.Public | BindingFlags.Static);
+                        .GetMethod(nameof(Get), 
+                            BindingFlags.Public | 
+                            BindingFlags.Static);
                     
                     var genericMethod = method!
                         .MakeGenericMethod(entityProperty.PropertyType, dtoProperty.PropertyType);

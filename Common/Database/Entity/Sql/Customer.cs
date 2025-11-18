@@ -25,5 +25,5 @@ public class Customer
     [Phone]
     public string? Phone { get; set;}
 
-    public ICollection<Product> Products { get; set;}
+    public ICollection<Product>? Products { get; set;}
 }
