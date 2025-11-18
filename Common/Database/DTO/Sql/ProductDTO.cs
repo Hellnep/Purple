@@ -4,13 +4,12 @@ namespace Purple.Common.Database.DTO.Sql;
 
 public class ProductDTO
 {
-    public long? ProductId { get; set; }
+    public long ProductId { get; set; }
 
     [MinLength(4), MaxLength(40)]
     public string? Name { get; set; }
 
-    [Required]
-    public long? AuthorRefId { get; set; }
+    public CustomerDTO? Author { get; set; }
 
     public DateOnly? Date { get; set; }    
 

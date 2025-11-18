@@ -16,7 +16,7 @@ public class Customer
     public string FirstName { get; set; } = string.Empty;
 
     [Column("RegistrationDate")]
-    public DateOnly Date { get; init; } = DateOnly.FromDateTime(DateTime.Now);
+    public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
     [EmailAddress]
     [Column("EmailAddress", TypeName = "varchar(60)")]
@@ -25,5 +25,5 @@ public class Customer
     [Phone]
     public string? Phone { get; set;}
 
-    public ICollection<Product>? Products { get; set;}
+    public ICollection<Product> Products { get; set;}
 }
