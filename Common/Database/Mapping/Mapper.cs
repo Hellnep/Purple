@@ -35,11 +35,34 @@ public static class Mapping
                 p.Name.Equals(dtoProperty.Name, StringComparison.OrdinalIgnoreCase) &&
                 p.CanWrite);
 
-            if (entityProperty != null &&
-                entityProperty.PropertyType.IsAssignableFrom(dtoProperty.PropertyType))
+            if (entityProperty is not null)
             {
-                object? value = dtoProperty.GetValue(inputType);
-                entityProperty.SetValue(entity, value);
+                object? dtoValue = dtoProperty.GetValue(inputType);
+
+                if (dtoValue is null)
+                    continue;
+
+                if (!entityProperty.PropertyType.IsPrimitive &&
+                    entityProperty.PropertyType != typeof(string) &&
+                    entityProperty.PropertyType != typeof(DateOnly) && 
+                    entityProperty.PropertyType != typeof(DateOnly?))
+                {
+                    var method = typeof(Mapping)
+                        .GetMethod(nameof(Get), BindingFlags.Public | BindingFlags.Static);
+                    
+                    var genericMethod = method!
+                        .MakeGenericMethod(entityProperty.PropertyType, dtoProperty.PropertyType);
+                    
+                    var nestedValue = genericMethod
+                        .Invoke(null, new object?[] { dtoValue});
+
+                    entityProperty.SetValue(entity, nestedValue);
+                }
+                else
+                {
+                    if (entityProperty.PropertyType.IsAssignableFrom(dtoProperty.PropertyType))
+                        entityProperty.SetValue(entity, dtoValue);
+                }
             }
         }
 
