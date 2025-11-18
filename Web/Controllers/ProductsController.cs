@@ -26,10 +26,11 @@ public class ProductsController : ControllerBase
         try
         {
             List<ProductDTO> products = _purpleOcean.Products
+                .Include(product => product.Author)
                 .Select(product => Mapping.Get<ProductDTO, Product>(product))
                 .ToList();
 
-            return products;
+            return Ok(products);
         }
         catch (ArgumentNullException exception)
         {
@@ -38,17 +39,20 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(long id)
+    public async Task<ActionResult<ProductDTO>> Get(long id)
     {
         try
         {
-            var product = await _purpleOcean.Products
-                .FirstOrDefaultAsync(product => product.Id == id);
+            ProductDTO? product = Mapping.Get<ProductDTO, Product>(
+                _purpleOcean.Products
+                    .Include(product => product.Author)
+                    .First(product => product.ProductId == id)
+                );
 
             if (product is null)
                 return NotFound($"Product with ID {id} not found");
             else
-                return Ok(Mapping.Get<ProductDTO, Product>(product));
+                return Ok(product);
         }
         catch (ArgumentNullException exception)
         {
@@ -57,23 +61,30 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] ProductDTO inputData)
+    public async Task<IActionResult> Post([FromQuery] long id, [FromBody] ProductDTO inputData)
     {
         try
         {
-            Product product = Mapping.Get<Product, ProductDTO>(inputData);
-
             if (!Validate.TryValidate(inputData, out var results))
                 this.ValidationProblems(results);
             else
-                _purpleOcean.Add(product);
+            {
+                var newProduct = Mapping.Get<Product, ProductDTO>(inputData);
+                var customer = _purpleOcean.Customers
+                    .Include(customer => customer.Products)
+                    .First(customer => customer.CustomerId == id);
 
-            await _purpleOcean.SaveChangesAsync();
+                customer.Products.Add(newProduct);
+                await _purpleOcean.SaveChangesAsync();
+            }
+
+            var product = _purpleOcean.Products
+                .First(product => product.Name == inputData.Name);
 
             ProductDTO productDto = Mapping.Get<ProductDTO, Product>(product);
             return CreatedAtAction(
                 nameof(Get),
-                new { Id = product.Id },
+                new { Id = productDto.ProductId },
                 productDto
             );
         }
@@ -90,7 +101,7 @@ public class ProductsController : ControllerBase
         try
         {
             var product = _purpleOcean.Products
-                .FirstOrDefault(product => product.Id == id);
+                .FirstOrDefault(product => product.ProductId == id);
 
             if (product is null)
                 return NotFound();
