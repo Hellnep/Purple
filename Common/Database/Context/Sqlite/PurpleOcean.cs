@@ -14,4 +14,14 @@ public class PurpleOcean : DbContext
     {
         Database.EnsureCreated();
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Customer>()
+            .HasMany(customer => customer.Products)
+            .WithOne(product => product.Author)
+            .HasForeignKey(product => product.AuthorRefId);
+
+        base.OnModelCreating(modelBuilder);
+    }
 }
