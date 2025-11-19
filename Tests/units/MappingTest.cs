@@ -5,10 +5,11 @@ using Purple.Common.Database.DTO.Sql;
 using Purple.Common.Database.Entity.Sql;
 using Purple.Common.Database.Context.Sqlite;
 using Purple.Common.Database.Mapping;
+using Purple.Tests.Utilities;
 
 namespace Purple.Tests.Units;
 
-public class SqliteTest
+public class MappingTest
 {
     SqliteConnection connection;
     DbContextOptions<PurpleOcean> options;
@@ -17,7 +18,7 @@ public class SqliteTest
     /// Adding database settings and connection settings
     /// during test initialization.
     /// </summary>
-    public SqliteTest()
+    public MappingTest()
     {
         connection = new SqliteConnection("Data Source=:memory:");
         connection.Open();
@@ -31,23 +32,17 @@ public class SqliteTest
     /// The return of today is date.
     /// </summary>
     /// <returns>Returns a DateOnly object.</returns>
-    private static DateOnly Today() => DateOnly.FromDateTime(DateTime.Now);
+    private static DateOnly Today() => 
+        DateOnly.FromDateTime(DateTime.Now);
 
-    [Fact]
-    public void Adding_a_Customer()
+    [Theory]
+    [MemberData(nameof(TestData.TestDataCustomerDTO), MemberType = typeof(TestData))]
+    public void Adding_a_Customer(CustomerDTO dtoCustomer)
     {
-        
         using (PurpleOcean context = new PurpleOcean(options))
         {
             // Arrange
             context.Database.EnsureCreated();
-
-            var dtoCustomer = new CustomerDTO()
-            {
-                FirstName = "Hellnep",
-                Email = "hellnep@ya.ru",
-                Phone = "8(999)9999999"
-            };
             
             // Act
             var customer = Mapping.Get<Customer, CustomerDTO>(dtoCustomer);
