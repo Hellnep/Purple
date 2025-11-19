@@ -24,6 +24,13 @@ public static class TestData
                 FirstName = "Никита",
                 Email = "example@google.com",
                 Products = new List<Product>()
+                {
+                    new Product
+                    {
+                        Name = "Tomato",
+                        Description = "It is so good"
+                    }
+                }
             }
         };
 
@@ -33,7 +40,8 @@ public static class TestData
             {
                 FirstName = "Hellnep",
                 Email = "example@google.com",
-                Phone = "8(999)9999999"
+                Phone = "8(999)9999999",
+                Products = new List<Product>()
             }
         };
     }

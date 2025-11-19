@@ -38,10 +38,11 @@ public class RepositoryTest
             IRepository<Customer> repository = new CustomerRepository(context);
 
             repository.Add(customer);
-            var temp = context.Customers.First();
+            var temp = repository.Get(1);
 
             // Assert
             Assert.Contains(customer, context.Customers);
+            Assert.NotNull(temp.Products);
             
             Assert.Equal(customer.Email, temp.Email);
             Assert.Equal(customer.FirstName, temp.FirstName);
@@ -54,11 +55,14 @@ public class RepositoryTest
     {
         using(var context = new PurpleOcean(options))
         {
-            // Act            
-            IRepository<Product> repository = new ProductRepository(context);
+            // Act
+            IRepository<Customer> customerRepository = new CustomerRepository(context);            
+            IRepository<Product> productRepository = new ProductRepository(context);
 
-            repository.Add(product);
-            var temp = context.Products.First();
+            customerRepository.Add(product.Author);
+            productRepository.Add(product);
+            
+            var temp = productRepository.Get(1);
 
             // Assert
             Assert.Contains(product, context.Products);

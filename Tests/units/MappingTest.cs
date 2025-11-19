@@ -44,9 +44,9 @@ public class MappingTest
             // Arrange
             context.Database.EnsureCreated();
             
-            // Act
             var customer = Mapping.Get<Customer, CustomerDTO>(dtoCustomer);
 
+            // Act
             context.Add(customer);
             context.SaveChanges();
 
@@ -57,8 +57,9 @@ public class MappingTest
             var checkCustomer = context.Customers.First(customer => customer.CustomerId == 1);
             var mappedCustomer = Mapping.Get<CustomerDTO, Customer>(checkCustomer);
 
-            Assert.Equal(customer.FirstName, mappedCustomer.FirstName);
+            Assert.Equal(dtoCustomer.FirstName, mappedCustomer.FirstName);
             Assert.Equal(dtoCustomer.Email, mappedCustomer.Email);
+            
             Assert.Equal(checkCustomer.Phone, mappedCustomer.Phone);
             Assert.Equal(Today(), checkCustomer.Date);
 

@@ -1,5 +1,6 @@
 using Purple.Common.Database.Entity.Sql;
 using Purple.Common.Database.Context.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
 namespace Purple.Common.Database.Repository;
 
@@ -18,18 +19,16 @@ public class CustomerRepository : IRepository<Customer>
         await _context.SaveChangesAsync();
         
         var customer = _context.Customers
-            .FirstOrDefault(customer => customer.FirstName == input.FirstName);
-
-        if (customer is null)
-            throw new ArgumentNullException("The returned DbContext object has a null value");
+            .First(customer => customer.FirstName == input.FirstName);
 
         return customer;
     }
 
-    public async Task<Customer> Get(int customerId)
+    public Customer Get(long id)
     {
         var customer = _context.Customers
-            .FirstOrDefault(customer => customer.CustomerId == customerId);
+            .Include(customer => customer.Products)
+            .FirstOrDefault(customer => customer.CustomerId == id);
 
         if (customer is null)
             throw new ArgumentNullException("The returned DbContext object has a null value");

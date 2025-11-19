@@ -16,4 +16,6 @@ public class CustomerDTO
 
     [Phone]
     public string? Phone { get; set;}
+
+    public List<ProductDTO>? Products { get; set;}
 }

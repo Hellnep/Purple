@@ -3,5 +3,5 @@
 public interface IRepository<T>
 {
     public Task<T> Add(T input);
-    public Task<T> Get(int output);
+    public T Get(long id);
 }
