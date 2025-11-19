@@ -25,7 +25,7 @@ public static class Mapping
     /// </exception>
     public static T1 Get<T1, T2>(T2 inputType) where T1 : new()
     {
-        T1 entity = new();
+        T1 entity = new();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 
         var (entityProperties, dtoProperties) = GetProperties(typeof(T1), typeof(T2));
 
