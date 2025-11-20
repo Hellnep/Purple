@@ -20,18 +20,19 @@ public class ProductRepository : IRepository<Product>
             throw new ArgumentNullException("Author for a new product should not be null");
 
         long authorRefId = input.Author.CustomerId;
-        var customer = _context.Customers
+        var customer = await _context.Customers
             .Include(customer => customer.Products)
-            .First(customer => customer.CustomerId == authorRefId);
+            .FirstOrDefaultAsync(customer => customer.CustomerId == authorRefId);
 
-        customer.Products?.Add(input);
+        if (customer is null)
+            throw new ArgumentNullException($"Customer with Id={authorRefId} not found");
+
+        customer.Products ??= new List<Product>();
+        customer.Products.Add(input);
+
         await _context.SaveChangesAsync();
-        
-        var product = _context.Products
-            .Where(product => product.AuthorRefId == authorRefId)
-            .First(product => product.Name == input.Name);
 
-        return product;
+        return input;
     }
 
     public Product Get(long id)
