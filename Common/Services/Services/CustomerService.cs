@@ -1,9 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Purple.Common.Database.DTO.Sql;
+﻿using Purple.Common.Database.DTO.Sql;
 using Purple.Common.Database.Entity.Sql;
 using Purple.Common.Database.Mapping;
 using Purple.Common.Database.Repository;
-using Purple.Common.ModelValidator;
 using Purple.Common.Services.Interface;
 
 namespace Purple.Common.Services;
@@ -23,11 +21,10 @@ public class CustomerService : ICustomerService
             .Get<Customer, CustomerDTO>(input);
 
         if (customer.Email is null)
-            OperationResult<CustomerDTO>.Failure("You need to enter an email address");
+            return OperationResult<CustomerDTO>.Failure("You need to enter an email address");
 
-#pragma warning disable CS8604
         if (_repository.EmailExists(customer.Email))
-            OperationResult<CustomerDTO>.Failure("A user with such an email address already exists");
+            return OperationResult<CustomerDTO>.Failure("A user with such an email address already exists");
 
         var result = _repository.Add(customer).Result;
         
@@ -68,5 +65,17 @@ public class CustomerService : ICustomerService
         {
             return OperationResult<CustomerDTO>.Failure(exception.Message);
         }
+    }
+
+    public async Task<OperationResult<ICollection<CustomerDTO>>> GetCustomersAsync()
+    {
+        var customers = _repository.Get();
+        var result = new List<CustomerDTO>();
+
+        foreach (Customer customer in customers)
+            result.Add(Mapping.Get<CustomerDTO, Customer>(customer));
+
+        return OperationResult<ICollection<CustomerDTO>>
+            .Success(result);
     }
 }

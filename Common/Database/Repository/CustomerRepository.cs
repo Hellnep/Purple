@@ -42,4 +42,13 @@ public class CustomerRepository : ICustomerRepository
 
     public async Task<int> Update() =>
         await _context.SaveChangesAsync();
+
+    public ICollection<Customer> Get()
+    {
+        var customers = _context.Customers
+            .Include(customer => customer.Products)
+            .ToList();
+
+        return customers;
+    }
 }

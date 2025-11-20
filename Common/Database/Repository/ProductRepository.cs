@@ -46,6 +46,15 @@ public class ProductRepository : IRepository<Product>
         return product;
     }
 
+    public ICollection<Product> Get()
+    {
+        var products = _context.Products
+            .Include(product => product.Author)
+            .ToList();
+
+        return products;
+    }
+
     public async Task<int> Update() =>
         await _context.SaveChangesAsync();
 }

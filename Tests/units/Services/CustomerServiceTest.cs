@@ -31,7 +31,7 @@ public class CustomerServiceTest
 
     [Theory]
     [MemberData(nameof(TestData.TestDataCustomerDTO), MemberType = typeof(TestData))]
-    public async Task Add_A_Customer_Through_The_Service(CustomerDTO input)
+    public async Task Add_ACustomer_Through(CustomerDTO input)
     {
         using (var context = new PurpleOcean(options))
         {
@@ -52,7 +52,7 @@ public class CustomerServiceTest
 
     [Theory]
     [MemberData(nameof(TestData.TestDataCustomerDTO), MemberType = typeof(TestData))]
-    public async Task Get_A_Customer_Through_The_Service(CustomerDTO input)
+    public async Task Get_ACustomer_Through(CustomerDTO input)
     {
         using (var context = new PurpleOcean(options))
         {
@@ -72,9 +72,44 @@ public class CustomerServiceTest
         }
     }
 
+    [Fact]
+    public async Task Get_List_OfCustomers()
+    {
+        using (var context = new PurpleOcean(options))
+        {
+            // Arrange
+            ICustomerRepository repository = new CustomerRepository(context);
+            ICustomerService service = new CustomerService(repository);
+
+            var customer01 = new CustomerDTO()
+            {
+                FirstName = "Hellnep",
+                Email = "example@test.com"
+            };
+
+            var customer02 = new CustomerDTO()
+            {
+                FirstName = "Никита",
+                Email = "test@examlpe.com",
+                Phone = "8(999)9999999"
+            };
+
+            await service.CreateCustomerAsync(customer01);
+            await service.CreateCustomerAsync(customer02);
+
+            // Act
+            
+            var result = await service.GetCustomersAsync();
+
+            // Assert
+            Assert.True(result.IsSuccess);
+            Assert.Equal(2, result.Data?.Count());
+        }
+    }
+
     [Theory]
     [MemberData(nameof(TestData.TestDataCustomerDTO), MemberType = typeof(TestData))]
-    public async Task Change_A_Customer_Through_The_Service(CustomerDTO input)
+    public async Task Change_ACustomer_Through(CustomerDTO input)
     {
         using (var context = new PurpleOcean(options))
         {
