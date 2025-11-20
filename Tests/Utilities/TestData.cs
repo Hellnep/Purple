@@ -12,7 +12,7 @@ public static class TestData
             new Customer 
             { 
                 FirstName = "Hellnep", 
-                Email = "example@google.com",
+                Email = "example@test.com",
                 Products = new List<Product>()
             }
         };
@@ -22,7 +22,7 @@ public static class TestData
             new Customer
             {
                 FirstName = "Никита",
-                Email = "example@google.com",
+                Email = "example@test.com",
                 Products = new List<Product>()
                 {
                     new Product
@@ -39,7 +39,7 @@ public static class TestData
             new Customer
             {
                 FirstName = "Hellnep",
-                Email = "example@google.com",
+                Email = "test@example.com",
                 Phone = "8(999)9999999",
                 Products = new List<Product>()
             }
@@ -62,7 +62,7 @@ public static class TestData
             new CustomerDTO
             {
                 FirstName = "Никита",
-                Email = "example@google.com",
+                Email = "example@test.com",
             }
         };
 
@@ -71,7 +71,7 @@ public static class TestData
             new CustomerDTO
             {
                 FirstName = "Hellnep",
-                Email = "example@google.com",
+                Email = "test@example.com",
                 Phone = "8(999)9999999"
             }
         };

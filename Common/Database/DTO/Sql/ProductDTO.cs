@@ -10,7 +10,6 @@ public class ProductDTO
     [MinLength(4), MaxLength(40)]
     public string? Name { get; set; }
 
-    [Required]
     [JsonIgnore]
     public CustomerDTO? Author { get; set; }
 

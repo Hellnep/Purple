@@ -182,8 +182,8 @@ public class RepositoryTest
                 productRepository.Get(context.Products.Count() + 1));
 
             // Assert
-            Assert.Equal("The returned DbContext object has a null value", exProduct.Message);
-            Assert.Equal("The returned DbContext object has a null value", exCustomer.Message);
+            Assert.Equal("The returned DbContext object has a null value", exProduct.ParamName);
+            Assert.Equal("The returned DbContext object has a null value", exCustomer.ParamName);
         }
     }
 }
