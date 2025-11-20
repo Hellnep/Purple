@@ -27,6 +27,7 @@
     <ProjectReference Include="..\Common\Database\Mapping\Mapping.csproj" />
     <ProjectReference Include="..\Common\ModelValidator\Validator.csproj" />
     <ProjectReference Include="..\Common\Database\Repository\Repository.csproj" />
+    <ProjectReference Include="..\Common\Services\Services.csproj" />
   </ItemGroup>
 
 </Project>
