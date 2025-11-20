@@ -26,7 +26,7 @@ public class CustomerService : ICustomerService
         if (_repository.EmailExists(customer.Email))
             return OperationResult<CustomerDTO>.Failure("A user with such an email address already exists");
 
-        var result = _repository.Add(customer).Result;
+        var result = await _repository.Add(customer);
         
         return OperationResult<CustomerDTO>
             .Success(Mapping.Get<CustomerDTO, Customer>(result));
@@ -40,12 +40,24 @@ public class CustomerService : ICustomerService
             .Success(Mapping.Get<CustomerDTO, Customer>(result));
     }
 
+    public async Task<OperationResult<ICollection<CustomerDTO>>> GetCustomersAsync()
+    {
+        var customers = _repository.Get();
+        var result = new List<CustomerDTO>();
+
+        foreach (Customer customer in customers)
+            result.Add(Mapping.Get<CustomerDTO, Customer>(customer));
+
+        return OperationResult<ICollection<CustomerDTO>>
+            .Success(result);
+    }
+
     public async Task<OperationResult<CustomerDTO>> ChangeCustomerAsync(long id, CustomerDTO input)
     {
         try
         {
-            var customer = _repository.Get(id);
             var newData = Mapping.Get<Customer, CustomerDTO>(input);
+            var customer = _repository.Get(id);
 
             if (newData.FirstName is not null)
                 customer.FirstName = newData.FirstName;
@@ -65,17 +77,5 @@ public class CustomerService : ICustomerService
         {
             return OperationResult<CustomerDTO>.Failure(exception.Message);
         }
-    }
-
-    public async Task<OperationResult<ICollection<CustomerDTO>>> GetCustomersAsync()
-    {
-        var customers = _repository.Get();
-        var result = new List<CustomerDTO>();
-
-        foreach (Customer customer in customers)
-            result.Add(Mapping.Get<CustomerDTO, Customer>(customer));
-
-        return OperationResult<ICollection<CustomerDTO>>
-            .Success(result);
     }
 }

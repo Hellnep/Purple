@@ -1,10 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
-using Purple.Web;
 using Purple.Common.ModelValidator;
-using Purple.Common.Database.Mapping;
 using Purple.Common.Database.DTO.Sql;
-using Purple.Common.Database.Entity.Sql;
 using Purple.Common.Services.Interface;
 
 namespace Purple.Web.Controllers;
@@ -39,7 +36,7 @@ public class CustomersController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(long id)
+    public async Task<ActionResult<CustomerDTO>> Get(long id)
     {
         try
         {
@@ -57,7 +54,7 @@ public class CustomersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] CustomerDTO input)
+    public async Task<ActionResult> Post([FromBody] CustomerDTO input)
     {
         try
         {
@@ -79,7 +76,7 @@ public class CustomersController : ControllerBase
     }
     
     [HttpPatch]
-    public async Task<IActionResult> Patch([FromQuery] long id,
+    public async Task<ActionResult> Patch([FromQuery] long id,
         [FromBody] CustomerDTO input)
     {
         try

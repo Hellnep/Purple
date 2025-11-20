@@ -15,7 +15,7 @@ public class ProductService : IProductService
         _repository = repository;
     }
 
-    public async Task<OperationResult<ProductDTO>> CreateProductAsync(ProductDTO input)
+    public async Task<OperationResult<ProductDTO>> CreateProductAsync(long id, ProductDTO input)
     {
         Product product = Mapping
             .Get<Product, ProductDTO>(input);
@@ -23,6 +23,7 @@ public class ProductService : IProductService
         if (string.IsNullOrEmpty(product.Name))
             return OperationResult<ProductDTO>.Failure("You need to enter a name for product");
 
+        product.AuthorRefId = id;
         var result = await _repository.Add(product);
 
         return OperationResult<ProductDTO>
@@ -74,10 +75,10 @@ public class ProductService : IProductService
             if (product is null)
                 return OperationResult<ProductDTO>.Failure($"Product with Id={productId} do not exists");
 
-            if (string.IsNullOrEmpty(newData.Name))
+            if (!string.IsNullOrEmpty(newData.Name))
                 product.Name = newData.Name;
 
-            if (string.IsNullOrEmpty(newData.Description))
+            if (!string.IsNullOrEmpty(newData.Description))
                 product.Description = newData.Description;
 
             await _repository.Update();

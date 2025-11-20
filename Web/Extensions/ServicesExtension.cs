@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using Purple.Common.Database.Context.Sqlite;
+using Purple.Common.Database.Entity.Sql;
 using Purple.Common.Database.Repository;
 using Purple.Common.Services;
 using Purple.Common.Services.Interface;
@@ -24,6 +25,9 @@ internal static class ServicesExtension
             options => options.UseSqlite("Data Source=PurpleOcean.db")
         );
         
+        services.AddTransient<IRepository<Product>, ProductRepository>();
+        services.AddTransient<IProductService, ProductService>();
+
         services.AddTransient<ICustomerRepository, CustomerRepository>();
         services.AddTransient<ICustomerService, CustomerService>();
 
