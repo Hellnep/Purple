@@ -16,10 +16,10 @@ public class ProductRepository : IRepository<Product>
 
     public async Task<Product> Add(Product input)
     {
-        if (input.Author is null)
+        if (input.AuthorRefId is null)
             throw new ArgumentNullException("Author for a new product should not be null");
 
-        long authorRefId = input.Author.CustomerId;
+        long authorRefId = (long)input.AuthorRefId;
         var customer = await _context.Customers
             .Include(customer => customer.Products)
             .FirstOrDefaultAsync(customer => customer.CustomerId == authorRefId);
@@ -38,6 +38,7 @@ public class ProductRepository : IRepository<Product>
     public Product Get(long id)
     {
         var product = _context.Products
+            .Include(product => product.Author)
             .FirstOrDefault(product => product.ProductId == id);
 
         if (product is null)

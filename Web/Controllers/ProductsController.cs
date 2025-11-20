@@ -1,11 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-using Purple.Common.Database.Mapping;
 using Purple.Common.Database.DTO.Sql;
-using Purple.Common.Database.Entity.Sql;
-using Purple.Common.Database.Context.Sqlite;
 using Purple.Common.ModelValidator;
+using Purple.Common.Services.Interface;
 
 namespace Purple.Web.Controllers;
 
@@ -13,28 +10,28 @@ namespace Purple.Web.Controllers;
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase
 {
-    private PurpleOcean _purpleOcean;
+    private IProductService _service;
 
-    public ProductsController(PurpleOcean purpleOcean)
+    public ProductsController(IProductService service)
     {
-        _purpleOcean = purpleOcean;
+        _service = service;
     }
 
     [HttpGet]
-    public ActionResult<List<ProductDTO>> Get()
+    public async Task<ActionResult<List<ProductDTO>>> Get()
     {
         try
         {
-            List<ProductDTO> products = _purpleOcean.Products
-                .Include(product => product.Author)
-                .Select(product => Mapping.Get<ProductDTO, Product>(product))
-                .ToList();
+            var result = await _service.GetProductsAsync();
 
-            return Ok(products);
+            if (result.IsSuccess)
+                return Ok(result.Data);
+            else
+                return NotFound(result.Errors);
         }
         catch (ArgumentNullException exception)
         {
-            return NotFound(exception.Message);
+            return StatusCode(500, exception.Message);
         }
     }
 
@@ -43,16 +40,31 @@ public class ProductsController : ControllerBase
     {
         try
         {
-            ProductDTO? product = Mapping.Get<ProductDTO, Product>(
-                _purpleOcean.Products
-                    .Include(product => product.Author)
-                    .First(product => product.ProductId == id)
-                );
+            var result = await _service.GetProductAsync(id);
 
-            if (product is null)
-                return NotFound($"Product with ID {id} not found");
+            if (result.IsSuccess)
+                return Ok(result.Data);
             else
-                return Ok(product);
+                return NotFound(result.Errors);
+        }
+        catch (ArgumentNullException exception)
+        {
+            return NotFound(exception.Message);
+        }    
+    }
+
+    [HttpGet]
+    [Route("~/api/customers/{id}/[controller]")]
+    public async Task<ActionResult<List<ProductDTO>>> GetAuthor(long id)
+    {
+        try
+        {
+            var result = await _service.GetAuthorProductsAsync(id);
+
+            if (result.IsSuccess)
+                return Ok(result.Data);
+            else
+                return NotFound(result.Errors);
         }
         catch (ArgumentNullException exception)
         {
@@ -61,32 +73,23 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromQuery] long id, [FromBody] ProductDTO inputData)
+    [Route("~/api/customers/{id}/[controller]")]
+    public async Task<IActionResult> Post(long id, 
+        [FromBody] ProductDTO input)
     {
         try
         {
-            if (!Validate.TryValidate(inputData, out var results))
-                this.ValidationProblems(results);
+            if (!Validate.TryValidate(input, out var results))
+                return BadRequest(results);
             else
             {
-                var newProduct = Mapping.Get<Product, ProductDTO>(inputData);
-                var customer = _purpleOcean.Customers
-                    .Include(customer => customer.Products)
-                    .First(customer => customer.CustomerId == id);
+                var result = await _service.CreateProductAsync(id, input);
 
-                customer.Products.Add(newProduct);
-                await _purpleOcean.SaveChangesAsync();
+                if (result.IsSuccess)
+                    return Ok(result.Data);
+                else
+                    return NotFound(result.Errors);
             }
-
-            var product = _purpleOcean.Products
-                .First(product => product.Name == inputData.Name);
-
-            ProductDTO productDto = Mapping.Get<ProductDTO, Product>(product);
-            return CreatedAtAction(
-                nameof(Get),
-                new { Id = productDto.ProductId },
-                productDto
-            );
         }
         catch (ArgumentNullException exception)
         {
@@ -95,31 +98,23 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPatch]
-    public async Task<IActionResult> Patch([FromQuery] long id,
-        [FromBody] ProductDTO inputData)
+    [Route("~/api/customers/{customerId}/[controller]")]
+    public async Task<IActionResult> Patch(long customerId, 
+        [FromQuery] long id,
+        [FromBody] ProductDTO input)
     {
         try
         {
-            var product = _purpleOcean.Products
-                .FirstOrDefault(product => product.ProductId == id);
-
-            if (product is null)
-                return NotFound();
+            if (!Validate.TryValidate(input, out var results))
+                return BadRequest(results);
             else
             {
-                if (!Validate.TryValidate(inputData, out var results))
-                    this.ValidationProblems(results);
+                var result = await _service.ChangeProductAsync(customerId, id, input);
 
-                product.Name = inputData.Name is not null
-                    ? inputData.Name
-                    : product.Name;
-
-                product.Description = inputData.Description is not null 
-                    ? inputData.Description 
-                    : product.Description;
-
-                await _purpleOcean.SaveChangesAsync();
-                return Ok(product);
+                if (result.IsSuccess)
+                    return Ok(result.Data);
+                else
+                    return NotFound(result.Errors);          
             }
         }
         catch (ArgumentNullException exception)
