@@ -24,9 +24,6 @@ public class ProductRepository : IRepository<Product>
             .Include(customer => customer.Products)
             .First(customer => customer.CustomerId == authorRefId);
 
-        if (customer is null)
-            throw new ArgumentNullException("Customer does not exist");
-
         customer.Products?.Add(input);
         await _context.SaveChangesAsync();
         
@@ -47,4 +44,7 @@ public class ProductRepository : IRepository<Product>
 
         return product;
     }
+
+    public async Task<int> Update() =>
+        await _context.SaveChangesAsync();
 }

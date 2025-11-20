@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Purple.Common.Database.Repository;
 
-public class CustomerRepository : IRepository<Customer>
+public class CustomerRepository : ICustomerRepository
 {
     private PurpleOcean _context;
 
@@ -35,4 +35,11 @@ public class CustomerRepository : IRepository<Customer>
 
         return customer;
     }
+
+    public bool EmailExists(string email) =>
+        _context.Customers
+            .Any(customer => string.Equals(customer.Email, email));
+
+    public async Task<int> Update() =>
+        await _context.SaveChangesAsync();
 }
