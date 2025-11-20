@@ -19,7 +19,7 @@ public class Product
     public Customer? Author { get; set; }
 
     [Required]
-    [MinLength(5), StringLength(40)]
+    [MinLength(3), StringLength(40)]
     [Column("Title")]
     public string Name { get; set; } = string.Empty;
 
