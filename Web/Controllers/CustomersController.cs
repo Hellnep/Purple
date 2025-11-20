@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 using Purple.Web;
 using Purple.Common.ModelValidator;
 using Purple.Common.Database.Mapping;
 using Purple.Common.Database.DTO.Sql;
 using Purple.Common.Database.Entity.Sql;
-using Purple.Common.Database.Context.Sqlite;
+using Purple.Common.Services.Interface;
 
 namespace Purple.Web.Controllers;
 
@@ -14,23 +13,24 @@ namespace Purple.Web.Controllers;
 [Route("api/[controller]")]
 public class CustomersController : ControllerBase
 {
-    private PurpleOcean _purpleOcean;
+    private ICustomerService _service;
 
-    public CustomersController(PurpleOcean purpleOcean)
+    public CustomersController(ICustomerService service)
     {
-        _purpleOcean = purpleOcean;
+        _service = service;
     }
 
     [HttpGet]
-    public ActionResult<List<CustomerDTO>> Get()
+    public async Task<ActionResult<List<CustomerDTO>>> Get()
     {
         try
         {
-            List<CustomerDTO> customers = _purpleOcean.Customers
-                .Select(customer => Mapping.Get<CustomerDTO, Customer>(customer))
-                .ToList();
-            
-            return Ok(customers);
+            var result = await _service.GetCustomersAsync();
+
+            if (result.IsSuccess)
+                return Ok(result.Data);
+            else
+                return NotFound(result.Errors);
         }
         catch (ArgumentNullException exception)
         {
@@ -43,13 +43,12 @@ public class CustomersController : ControllerBase
     {
         try
         {
-            var customer = await _purpleOcean.Customers
-                .FirstOrDefaultAsync(customer => customer.CustomerId == id);
+            var result = await _service.GetCustomerAsync(id);
 
-            if (customer is null)
-                return NotFound($"Customer with ID {id} not found");
+            if (result.IsSuccess)
+                return Ok(result.Data);
             else
-                return Ok(Mapping.Get<CustomerDTO, Customer>(customer));
+                return NotFound(result.Errors);
         }
         catch (ArgumentNullException exception)
         {
@@ -58,93 +57,44 @@ public class CustomersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] CustomerDTO inputData)
+    public async Task<IActionResult> Post([FromBody] CustomerDTO input)
     {
         try
         {
-            Customer customer = Mapping.Get<Customer, CustomerDTO>(inputData);
+            if (!Validate.TryValidate(input, out var results))
+                return BadRequest(results);
+            {
+                var result = await _service.CreateCustomerAsync(input);
 
-            if (!Validate.TryValidate(customer, out var results))
-                this.ValidationProblems(results);
-            else
-                _purpleOcean.Add(customer);
-
-            await _purpleOcean.SaveChangesAsync();
-
-            CustomerDTO customerDto = Mapping.Get<CustomerDTO, Customer>(customer);
-            return CreatedAtAction(
-                nameof(Get),
-                new { Id = customer.CustomerId },
-                customerDto
-            );
+                if (result.IsSuccess)
+                    return Ok(result.Data);
+                else
+                    return NotFound(result.Errors);
+            }
         }
         catch (ArgumentNullException exception)
         {
             return StatusCode(500, exception.Message);
         }
     }
-
-    [HttpPost("{id}")]
-    public async Task<IActionResult> Post(int id, [FromBody] ProductDTO inputData)
-    {
-        try
-        {
-            if (!Validate.TryValidate(inputData, out var results))
-                this.ValidationProblems(results);
-            else
-            {
-                var newProduct = Mapping.Get<Product, ProductDTO>(inputData);
-                var customer = _purpleOcean.Customers
-                    .Include(customer => customer.Products)
-                    .First(customer => customer.CustomerId == id);
-
-                customer.Products.Add(newProduct);
-                await _purpleOcean.SaveChangesAsync();
-            }
-
-            var product = _purpleOcean.Products
-                .First(product => product.Name == inputData.Name);
-
-            ProductDTO productDto = Mapping.Get<ProductDTO, Product>(product);
-            return CreatedAtAction(
-                nameof(Get),
-                new { Id = productDto.ProductId },
-                productDto
-            );
-        }
-        catch (ArgumentNullException exception)
-        {
-            return BadRequest(exception.Message);
-        }
-    }
-
+    
     [HttpPatch]
     public async Task<IActionResult> Patch([FromQuery] long id,
-        [FromBody] CustomerDTO inputData)
+        [FromBody] CustomerDTO input)
     {
         try
         {
-            var customer = _purpleOcean.Customers
-                .FirstOrDefault(customer => customer.CustomerId == id);
-
-            if (customer is null)
-                return NotFound();
+            if (!Validate.TryValidate(input, out var results))
+                return BadRequest(results);
             else
             {
-                if (!Validate.TryValidate(inputData, out var results))
-                    this.ValidationProblems(results);
+                var result = await _service.ChangeCustomerAsync(id, input);
 
-                customer.FirstName = inputData.FirstName is not null
-                    ? inputData.FirstName
-                    : customer.FirstName;
-
-                customer.Email = inputData.Email is not null
-                    ? inputData.Email
-                    : customer.Email;
-
-                await _purpleOcean.SaveChangesAsync();  
-                return Ok(customer);
-            }            
+                if (result.IsSuccess)
+                    return Ok(result.Data);
+                else
+                    return NotFound(result.Errors);          
+            }
         }
         catch (ArgumentNullException exception)
         {
