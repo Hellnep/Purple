@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.OpenApi;
 using PurpleBackendService.Core;
 using PurpleBackendService.Core.Repository;
 using PurpleBackendService.Domain.Entity;
@@ -8,7 +8,7 @@ using PurpleBackendService.Infrastructure.Sqlite;
 
 namespace Purple.Web;
 
-internal static class ServicesExtension
+internal static class DependencyInjectionExtension
 {
     /// <summary>
     /// Расширенный метод инициализации сервисов с данной сборке.
@@ -20,15 +20,20 @@ internal static class ServicesExtension
         services.AddOpenApi();
         services.AddControllers();
 
+        services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "Purple Content Service",
+                Version = "v1"
+            });
+        });
+
         services.AddDbContext<PurpleOcean>(
             options => options.UseSqlite("Data Source=PurpleOcean.db")
         );
         
-        services.AddTransient<IRepository<Product>, ProductRepository>();
-        services.AddTransient<IProductService, ProductService>();
-
-        services.AddTransient<ICustomerRepository, CustomerRepository>();
-        services.AddTransient<ICustomerService, CustomerService>();
+        services.AddCoreServices();
 
         services.AddProblemDetails(options =>
         {
@@ -39,5 +44,25 @@ internal static class ServicesExtension
                 customize.ProblemDetails.Instance = $"{customize.HttpContext.Request.Method}, {customize.HttpContext.Request.Path}";
             };
         });
+    }
+
+    public static void AddCoreServices(this IServiceCollection services)
+    {
+        services.AddTransient<IRepository<Product>, ProductRepository>();
+        services.AddTransient<ICustomerRepository, CustomerRepository>();
+
+        services.AddTransient<IProductService, ProductService>();
+        services.AddTransient<ICustomerService, CustomerService>();
+    }
+
+    public static void AddMapControllers(this WebApplication app)
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+
+        app.UseDeveloperExceptionPage();
+        
+        app.UseRouting();
+        app.MapControllers();
     }
 }
