@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!-- ReReference on packages -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+  </ItemGroup>
+  
+  <!-- Reference on projects -->
+  <ItemGroup>
+    <ProjectReference Include="../PurpleBackendService.Domain/PurpleBackendService.Domain.csproj" />
+  </ItemGroup>
+</Project>

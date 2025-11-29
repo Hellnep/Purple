@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Reference on projects -->
+  <ItemGroup>
+    <ProjectReference Include="../PurpleBackendService.Domain/PurpleBackendService.Domain.csproj" />
+    <ProjectReference Include="../PurpleBackendService.Infrastructure.Sqlite/PurpleBackendService.Infrastructure.Sqlite.csproj" />
+  </ItemGroup>
+</Project>

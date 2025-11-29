@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <!-- Reference on packages -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
+  </ItemGroup>
+
+  <!-- Reference on projects -->
+  <ItemGroup>
+    <ProjectReference Include="../PurpleBackendService.Core/PurpleBackendService.Core.csproj" />
+    <ProjectReference Include="../PurpleBackendService.Infrastructure.Sqlite/PurpleBackendService.Infrastructure.Sqlite.csproj"/>
+    <ProjectReference Include="../PurpleBackendService.Domain/PurpleBackendService.Domain.csproj" />
+  </ItemGroup>
+</Project>
