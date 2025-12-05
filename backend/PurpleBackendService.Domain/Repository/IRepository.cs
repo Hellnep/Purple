@@ -1,4 +1,4 @@
-﻿namespace PurpleBackendService.Core.Repository
+﻿namespace PurpleBackendService.Domain.Repository
 {
     public interface IRepository<T>
     {

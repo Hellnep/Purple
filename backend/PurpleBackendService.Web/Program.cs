@@ -11,5 +11,3 @@ if (app.Environment.IsDevelopment())
 
 app.AddMapControllers();
 app.Run();
-
-

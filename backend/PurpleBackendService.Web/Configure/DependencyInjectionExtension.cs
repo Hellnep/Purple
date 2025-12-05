@@ -1,9 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
-using PurpleBackendService.Core;
+
 using PurpleBackendService.Core.Repository;
+using PurpleBackendService.Core.Services;
+
 using PurpleBackendService.Domain.Entity;
+using PurpleBackendService.Domain.Repository;
 using PurpleBackendService.Domain.Service;
+
 using PurpleBackendService.Infrastructure.Sqlite;
 
 namespace Purple.Web;

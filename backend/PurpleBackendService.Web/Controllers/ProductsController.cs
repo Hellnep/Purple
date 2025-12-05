@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
-using PurpleBackendService.Core;
 using PurpleBackendService.Domain.DTO;
+using PurpleBackendService.Domain.Service;
 using PurpleBackendService.Domain.Utility;
 
 namespace PurpleBackendService.Web.Controllers;

@@ -1,6 +1,6 @@
 using PurpleBackendService.Domain.DTO;
 
-namespace PurpleBackendService.Core
+namespace PurpleBackendService.Domain.Service
 {
     public interface ICustomerService
     {

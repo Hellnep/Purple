@@ -1,4 +1,4 @@
-namespace PurpleBackendService.Core
+namespace PurpleBackendService.Domain.Service
 {
     public class OperationResult<T>
     {
