@@ -1,7 +1,5 @@
 ﻿using System.Collections;
 using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace PurpleBackendService.Domain.Utility
 {
@@ -86,7 +84,12 @@ namespace PurpleBackendService.Domain.Utility
         /// <param name="dtoProperty">Child object property</param>
         /// <param name="value">Input values</param>
         /// <param name="entity">The mapping class for</param>
-        private static void GenerateCollection<T> (PropertyInfo entityProperty, PropertyInfo dtoProperty, object value,T entity)
+        private static void GenerateCollection<T> (
+            PropertyInfo entityProperty, 
+            PropertyInfo dtoProperty, 
+            object value,
+            T entity
+        )
         {
             IEnumerable? sourceCollection = (IEnumerable?)value;
 
@@ -96,8 +99,11 @@ namespace PurpleBackendService.Domain.Utility
 
                 // Getting information about collection types
                 // Получаем информацию о типах коллекий
-                Type sourceElementType = dtoProperty.PropertyType.GetGenericArguments()[0];
-                Type targetElementType = entityProperty.PropertyType.GetGenericArguments()[0];
+                Type sourceElementType = dtoProperty.PropertyType
+                    .GetGenericArguments()[0];
+
+                Type targetElementType = entityProperty.PropertyType
+                    .GetGenericArguments()[0];
 
                 foreach (var item in sourceCollection)
                 {
@@ -113,7 +119,10 @@ namespace PurpleBackendService.Domain.Utility
                 if (entityProperty.PropertyType.IsArray &&
                     targetCollection is IList list)
                 {
-                    Array array = Array.CreateInstance(entityProperty.PropertyType.GetElementType()!, list.Count);
+                    Array array = Array.CreateInstance(entityProperty.PropertyType
+                        .GetElementType()!, 
+                        list.Count
+                    );
 
                     list.CopyTo(array, 0);
                     entityProperty.SetValue(entity, array);
@@ -134,11 +143,15 @@ namespace PurpleBackendService.Domain.Utility
         {
             if (collectionType.IsArray)
             {
-                Type? elementTypeLocal = collectionType.GetElementType()!;
-                Type listTypeLocal = typeof(List<>).MakeGenericType(elementTypeLocal);
+                Type? elementTypeLocal = collectionType
+                    .GetElementType()!;
+
+                Type listTypeLocal = typeof(List<>)
+                    .MakeGenericType(elementTypeLocal);
 
                 return Activator.CreateInstance(listTypeLocal)!;
-            } else if (collectionType.IsGenericType)
+            } 
+            else if (collectionType.IsGenericType)
             {
                 if (collectionType.GetGenericTypeDefinition() == typeof(IEnumerable<>) ||
                     collectionType.GetGenericTypeDefinition() == typeof(HashSet<>))
@@ -147,8 +160,11 @@ namespace PurpleBackendService.Domain.Utility
                 }
             }
 
-            Type elementType = collectionType.GetGenericArguments()[0];
-            Type listType = typeof(List<>).MakeGenericType(elementType);
+            Type elementType = collectionType
+                .GetGenericArguments()[0];
+
+            Type listType = typeof(List<>)
+                .MakeGenericType(elementType);
 
             return Activator.CreateInstance(listType)!;
         }
@@ -177,7 +193,12 @@ namespace PurpleBackendService.Domain.Utility
         /// <param name="dtoProperty">Child object property</param>
         /// <param name="value">Input values</param>
         /// <param name="entity">The mapping class for</param>
-        private static void GenerateClass<T> (PropertyInfo entityProperty, PropertyInfo dtoProperty, object value,T entity)
+        private static void GenerateClass<T> (
+            PropertyInfo entityProperty, 
+            PropertyInfo dtoProperty, 
+            object value,
+            T entity
+        )
         {
             var method = GenerateMethod(entityProperty.PropertyType, dtoProperty.PropertyType);
             var nestedValue = method.Invoke(null, new object?[] { value });
@@ -207,7 +228,10 @@ namespace PurpleBackendService.Domain.Utility
         /// The type of data where the data will be taken from
         /// </param>
         /// <returns>Returns properties corresponding to the types</returns>
-        private static (PropertyInfo[], PropertyInfo[]) GetProperties(Type outputType, Type inputType)
+        private static (PropertyInfo[], PropertyInfo[]) GetProperties(
+            Type outputType, 
+            Type inputType
+        )
         {
             var key = (outputType, inputType);
 

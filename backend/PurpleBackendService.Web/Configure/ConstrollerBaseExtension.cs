@@ -14,8 +14,12 @@ internal static class ControllerBaseExtension
     public static void ValidationProblems(this ControllerBase controller, ICollection<ValidationResult> results)
     {
         foreach (var result in results)
+        {
             foreach (var member in result.MemberNames)
+            {
                 controller.ModelState.AddModelError(member, result.ErrorMessage ?? string.Empty);
+            }
+        }
 
         controller.ValidationProblem();
     }

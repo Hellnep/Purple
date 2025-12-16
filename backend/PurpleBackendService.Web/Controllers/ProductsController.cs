@@ -4,87 +4,118 @@ using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Service;
 using PurpleBackendService.Domain.Utility;
 
-namespace PurpleBackendService.Web.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class ProductsController : ControllerBase
+namespace PurpleBackendService.Web.Controllers
 {
-    private IProductService _service;
-
-    public ProductsController(IProductService service)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ProductsController : ControllerBase
     {
-        _service = service;
-    }
+        private IProductService _productService;
 
-    [HttpGet]
-    public async Task<ActionResult<List<ProductDTO>>> Get()
-    {
-        var result = await _service.GetProductsAsync();
-
-        if (result.IsSuccess)
-            return Ok(result.Data);
-        else
-            return NotFound(result.Errors);
-    }
-
-    [HttpGet("{id}")]
-    public async Task<ActionResult<ProductDTO>> Get(long id)
-    {
-        var result = await _service.GetProductAsync(id);
-
-        if (result.IsSuccess)
-            return Ok(result.Data);
-        else
-            return NotFound(result.Errors);  
-    }
-
-    [HttpGet]
-    [Route("~/api/customers/{id}/[controller]")]
-    public async Task<ActionResult<List<ProductDTO>>> GetAuthor(long id)
-    {
-        var result = await _service.GetAuthorProductsAsync(id);
-
-        if (result.IsSuccess)
-            return Ok(result.Data);
-        else
-            return NotFound(result.Errors);  
-    }
-
-    [HttpPost]
-    [Route("~/api/customers/{id}/[controller]")]
-    public async Task<IActionResult> Post(long id, 
-        [FromBody] ProductDTO input)
-    {
-        if (!Validate.TryValidate(input, out var results))
-            return BadRequest(results);
-        else
+        public ProductsController(IProductService service)
         {
-            var result = await _service.CreateProductAsync(id, input);
-
-            if (result.IsSuccess)
-                return Ok(result.Data);
-            else
-                return NotFound(result.Errors);
+            _productService = service;
         }
-    }
 
-    [HttpPatch]
-    [Route("~/api/customers/{customerId}/[controller]")]
-    public async Task<IActionResult> Patch(long customerId, 
-        [FromQuery] long id,
-        [FromBody] ProductDTO input)
-    {
-        if (!Validate.TryValidate(input, out var results))
-            return BadRequest(results);
-        else
+        [HttpGet]
+        public async Task<ActionResult<List<ProductDTO>>> Get()
         {
-            var result = await _service.ChangeProductAsync(customerId, id, input);
+            var result = await _productService
+                .GetProductsAsync();
 
             if (result.IsSuccess)
-                return Ok(result.Data);
+            {
+                return Ok(result.Result);
+            }
             else
-                return NotFound(result.Errors);          
+            {
+                return NotFound(result.Errors);
+            }
+        }
+
+        [HttpGet("{productId}")]
+        public async Task<ActionResult<ProductDTO>> Get(long productId)
+        {
+            var result = await _productService
+                .GetProductAsync(productId);
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Result);
+            }
+            else
+            {
+                return NotFound(result.Errors);
+            }  
+        }
+
+        [HttpGet]
+        [Route("~/api/customers/{customerId}/[controller]")]
+        public async Task<ActionResult<List<ProductDTO>>> GetFromAuthor(long customerId)
+        {
+            var result = await _productService
+                .GetAuthorProductsAsync(customerId);
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Result);
+            }
+            else
+            {
+                return NotFound(result.Errors);
+            }  
+        }
+
+        [HttpPost]
+        [Route("~/api/customers/{custometId}/[controller]")]
+        public async Task<IActionResult> Post(long custometId, 
+            [FromBody] ProductDTO product)
+        {
+            if (!Validate.TryValidate(product, out var results))
+            {
+                return BadRequest(results);
+            }
+            else
+            {
+                var result = await _productService
+                    .CreateProductAsync(custometId, product);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(result.Result);
+                }
+                else
+                {
+                    return NotFound(result.Errors);
+                }
+            }
+        }
+
+        [HttpPatch]
+        [Route("~/api/customers/{customerId}/[controller]")]
+        public async Task<IActionResult> Patch(long customerId, 
+            [FromQuery] long productId, 
+            [FromBody] ProductDTO product
+        )
+        {
+            if (!Validate.TryValidate(product, out var results))
+            {
+                return BadRequest(results);
+            }
+            else
+            {
+                var result = await _productService
+                    .ChangeProductAsync(customerId, productId, product);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(result.Result);
+                }
+                else
+                {
+                    return NotFound(result.Errors);
+                }          
+            }
         }
     }
 }

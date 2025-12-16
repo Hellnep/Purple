@@ -1,3 +1,4 @@
+using System.Configuration;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,10 +37,6 @@ internal static class DependencyInjectionExtension
                 Version = "v1"
             });
         });
-
-        services.AddDbContext<PurpleOcean>(
-            options => options.UseSqlite("Data Source=PurpleOcean.db")
-        );
         
         services.AddCoreServices();
 
@@ -52,6 +49,13 @@ internal static class DependencyInjectionExtension
                 customize.ProblemDetails.Instance = $"{customize.HttpContext.Request.Method}, {customize.HttpContext.Request.Path}";
             };
         });
+    }
+
+    public static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDbContext<PurpleOcean>(
+            options => options.UseSqlite(configuration["ConnectionStrings:DefaultConnection"])
+        );
     }
 
     public static void AddCoreServices(this IServiceCollection services)

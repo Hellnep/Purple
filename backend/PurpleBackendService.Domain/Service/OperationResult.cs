@@ -1,16 +1,31 @@
 namespace PurpleBackendService.Domain.Service
 {
+    /// <summary>
+    /// The class acting as the result of the operation
+    /// </summary>
+    /// <typeparam name="T">The class that should return this result</typeparam>
     public class OperationResult<T>
     {
+        /// <summary>
+        /// Checking for successful completion of the operation
+        /// </summary>
         public bool IsSuccess { get; private set; }
+
+        /// <summary>
+        /// Contains a list of errors in the form of strings
+        /// </summary>
         public List<string> Errors { get; private set; } = new List<string>();
-        public T? Data { get; private set; }
+
+        /// <summary>
+        /// Result of operation
+        /// </summary>
+        public T? Result { get; private set; }
 
         public static OperationResult<T> Success(T data) =>
             new OperationResult<T>
             {
                 IsSuccess = true,
-                Data = data
+                Result = data
             };
 
         public static OperationResult<T> Failure(params string[] errors) =>

@@ -50,24 +50,24 @@ namespace PurpleBackendService.Domain.Service
                 .Success(result);
         }
 
-        public async Task<OperationResult<ICollection<ProductDTO>>> GetAuthorProductsAsync(long id)
+        public async Task<OperationResult<ICollection<ProductDTO>>> GetAuthorProductsAsync(long authorRefId)
         {
             var products = _repository.Get();
             var result = new List<ProductDTO>();
 
             foreach (Product product in products)
-                if (product.AuthorRefId == id)
+                if (product.AuthorRefId == authorRefId)
                     result.Add(Mapping.Get<ProductDTO, Product>(product));
 
             return OperationResult<ICollection<ProductDTO>>
                 .Success(result);
         }
 
-        public async Task<OperationResult<ProductDTO>> ChangeProductAsync(long customerId, long productId, ProductDTO input)
+        public async Task<OperationResult<ProductDTO>> ChangeProductAsync(long customerId, long productId, ProductDTO inputProduct)
         {
             try
             {
-                var newData = Mapping.Get<Product, ProductDTO>(input);
+                var newData = Mapping.Get<Product, ProductDTO>(inputProduct);
                 var product = _repository.Get()
                     .Where(product => product.AuthorRefId == customerId)
                     .FirstOrDefault(product => product.ProductId == productId);

@@ -1,73 +1,100 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Service;
 using PurpleBackendService.Domain.Utility;
 
-namespace PurpleBackendService.Web.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class CustomersController : ControllerBase
+namespace PurpleBackendService.Web.Controllers
 {
-    private ICustomerService _service;
-
-    public CustomersController(ICustomerService service)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class CustomersController : ControllerBase
     {
-        _service = service;
-    }
+        private ICustomerService _customerService;
 
-    [HttpGet]
-    public async Task<ActionResult<List<CustomerDTO>>> Get()
-    {
-        var result = await _service.GetCustomersAsync();
-
-        if (result.IsSuccess)
-            return Ok(result.Data);
-        else
-            return NotFound(result.Errors);
-    }
-
-    [HttpGet("{id}")]
-    public async Task<ActionResult> Get(long id)
-    {
-        var result = await _service.GetCustomerAsync(id);
-
-        if (result.IsSuccess)
-            return Ok(result.Data);
-        else
-            return NotFound(result.Errors);
-    }
-
-    [HttpPost]
-    public async Task<ActionResult> Post([FromBody] CustomerDTO input)
-    {
-        if (!Validate.TryValidate(input, out var results))
-            return BadRequest(results);
+        public CustomersController(ICustomerService service)
         {
-            var result = await _service.CreateCustomerAsync(input);
-
-            if (result.IsSuccess)
-                return Ok(result.Data);
-            else
-                return NotFound(result.Errors);
+            _customerService = service;
         }
-    }
-    
-    [HttpPatch]
-    public async Task<ActionResult> Patch([FromQuery] long id,
-        [FromBody] CustomerDTO input)
-    {
-        if (!Validate.TryValidate(input, out var results))
-            return BadRequest(results);
-        else
+
+        [HttpGet]
+        public async Task<ActionResult<List<CustomerDTO>>> Get()
         {
-            var result = await _service.ChangeCustomerAsync(id, input);
+            var result = await _customerService
+                .GetCustomersAsync();
 
             if (result.IsSuccess)
-                return Ok(result.Data);
+            {
+                return Ok(result.Result);
+            }
             else
-                return NotFound(result.Errors);          
+            {
+                return NotFound(result.Errors);
+            }
+        }
+
+        [HttpGet("{customerId}")]
+        public async Task<ActionResult> Get(long customerId)
+        {
+            var result = await _customerService
+                .GetCustomerAsync(customerId);
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Result);
+            }
+            else
+            {
+                return NotFound(result.Errors);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Post([FromBody] CustomerDTO customer)
+        {
+            if (!Validate.TryValidate(customer, out var results))
+            {
+                return BadRequest(results);
+            }
+            else
+            {
+                var result = await _customerService
+                    .CreateCustomerAsync(customer);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(result.Result);
+                }
+                else
+                {
+                    return NotFound(result.Errors);
+                }
+            }
+        }
+        
+        [HttpPatch]
+        public async Task<ActionResult> Patch([FromQuery] long customerId, 
+            [FromBody] CustomerDTO customer
+        )
+        {
+            if (!Validate.TryValidate(customer, out var results))
+            {
+                return BadRequest(results);
+            }
+            else
+            {
+                var result = await _customerService
+                    .ChangeCustomerAsync(customerId, customer);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(result.Result);
+                }
+                else
+                {
+                    return NotFound(result.Errors);
+                }          
+            }
         }
     }
 }
