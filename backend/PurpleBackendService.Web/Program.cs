@@ -10,4 +10,5 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 
 app.AddMapControllers();
+app.AddCaptionThrow();
 app.Run();

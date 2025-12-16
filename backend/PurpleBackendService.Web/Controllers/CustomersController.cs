@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Service;
 using PurpleBackendService.Domain.Utility;
@@ -20,58 +20,37 @@ public class CustomersController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<CustomerDTO>>> Get()
     {
-        try
-        {
-            var result = await _service.GetCustomersAsync();
+        var result = await _service.GetCustomersAsync();
 
-            if (result.IsSuccess)
-                return Ok(result.Data);
-            else
-                return NotFound(result.Errors);
-        }
-        catch (ArgumentNullException exception)
-        {
-            return StatusCode(500, exception.Message);
-        }
+        if (result.IsSuccess)
+            return Ok(result.Data);
+        else
+            return NotFound(result.Errors);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<CustomerDTO>> Get(long id)
+    public async Task<ActionResult> Get(long id)
     {
-        try
-        {
-            var result = await _service.GetCustomerAsync(id);
+        var result = await _service.GetCustomerAsync(id);
 
-            if (result.IsSuccess)
-                return Ok(result.Data);
-            else
-                return NotFound(result.Errors);
-        }
-        catch (ArgumentNullException exception)
-        {
-            return StatusCode(500, exception.Message);
-        }
+        if (result.IsSuccess)
+            return Ok(result.Data);
+        else
+            return NotFound(result.Errors);
     }
 
     [HttpPost]
     public async Task<ActionResult> Post([FromBody] CustomerDTO input)
     {
-        try
+        if (!Validate.TryValidate(input, out var results))
+            return BadRequest(results);
         {
-            if (!Validate.TryValidate(input, out var results))
-                return BadRequest(results);
-            {
-                var result = await _service.CreateCustomerAsync(input);
+            var result = await _service.CreateCustomerAsync(input);
 
-                if (result.IsSuccess)
-                    return Ok(result.Data);
-                else
-                    return NotFound(result.Errors);
-            }
-        }
-        catch (ArgumentNullException exception)
-        {
-            return StatusCode(500, exception.Message);
+            if (result.IsSuccess)
+                return Ok(result.Data);
+            else
+                return NotFound(result.Errors);
         }
     }
     
@@ -79,23 +58,16 @@ public class CustomersController : ControllerBase
     public async Task<ActionResult> Patch([FromQuery] long id,
         [FromBody] CustomerDTO input)
     {
-        try
+        if (!Validate.TryValidate(input, out var results))
+            return BadRequest(results);
+        else
         {
-            if (!Validate.TryValidate(input, out var results))
-                return BadRequest(results);
-            else
-            {
-                var result = await _service.ChangeCustomerAsync(id, input);
+            var result = await _service.ChangeCustomerAsync(id, input);
 
-                if (result.IsSuccess)
-                    return Ok(result.Data);
-                else
-                    return NotFound(result.Errors);          
-            }
-        }
-        catch (ArgumentNullException exception)
-        {
-            return StatusCode(500, exception.Message);
+            if (result.IsSuccess)
+                return Ok(result.Data);
+            else
+                return NotFound(result.Errors);          
         }
     }
 }

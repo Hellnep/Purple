@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+
 using Microsoft.EntityFrameworkCore;
+
 using Microsoft.OpenApi;
 
 using PurpleBackendService.Core.Repository;
 using PurpleBackendService.Core.Services;
 
-using PurpleBackendService.Domain.Entity;
 using PurpleBackendService.Domain.Repository;
 using PurpleBackendService.Domain.Service;
 
@@ -23,6 +26,7 @@ internal static class DependencyInjectionExtension
     {
         services.AddOpenApi();
         services.AddControllers();
+        services.AddProblemDetails();
 
         services.AddSwaggerGen(options =>
         {
@@ -68,5 +72,35 @@ internal static class DependencyInjectionExtension
         
         app.UseRouting();
         app.MapControllers();
+    }
+
+    /// <summary>
+    /// Global catcbing all error on process work an app.
+    /// </summary>
+    /// <param name="app">Current web application</param>
+    public static void AddCaptionThrow(this WebApplication app)
+    {
+        app.UseExceptionHandler(appError =>
+        {
+            appError.Run(async handler =>
+            {
+                var exception = handler.Features.Get<IExceptionHandlerFeature>()?.Error;
+                var (status, title) = exception switch
+                {
+                    ArgumentNullException => (StatusCodes.Status500InternalServerError, "Resource not found"),
+                    _ => (StatusCodes.Status500InternalServerError, "Server Error")
+                };
+
+                handler.Response.StatusCode = status;
+                
+                await handler.Response.WriteAsJsonAsync(new ProblemDetails
+                {
+                    Status = status,
+                    Title = title,
+                    Detail = app.Environment.IsDevelopment() ? exception?.Message : null,
+                    Instance = handler.Request.Path
+                });
+            });
+        });
     }
 }

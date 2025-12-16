@@ -20,56 +20,35 @@ public class ProductsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<ProductDTO>>> Get()
     {
-        try
-        {
-            var result = await _service.GetProductsAsync();
+        var result = await _service.GetProductsAsync();
 
-            if (result.IsSuccess)
-                return Ok(result.Data);
-            else
-                return NotFound(result.Errors);
-        }
-        catch (ArgumentNullException exception)
-        {
-            return StatusCode(500, exception.Message);
-        }
+        if (result.IsSuccess)
+            return Ok(result.Data);
+        else
+            return NotFound(result.Errors);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<ProductDTO>> Get(long id)
     {
-        try
-        {
-            var result = await _service.GetProductAsync(id);
+        var result = await _service.GetProductAsync(id);
 
-            if (result.IsSuccess)
-                return Ok(result.Data);
-            else
-                return NotFound(result.Errors);
-        }
-        catch (ArgumentNullException exception)
-        {
-            return NotFound(exception.Message);
-        }    
+        if (result.IsSuccess)
+            return Ok(result.Data);
+        else
+            return NotFound(result.Errors);  
     }
 
     [HttpGet]
     [Route("~/api/customers/{id}/[controller]")]
     public async Task<ActionResult<List<ProductDTO>>> GetAuthor(long id)
     {
-        try
-        {
-            var result = await _service.GetAuthorProductsAsync(id);
+        var result = await _service.GetAuthorProductsAsync(id);
 
-            if (result.IsSuccess)
-                return Ok(result.Data);
-            else
-                return NotFound(result.Errors);
-        }
-        catch (ArgumentNullException exception)
-        {
-            return NotFound(exception.Message);
-        }    
+        if (result.IsSuccess)
+            return Ok(result.Data);
+        else
+            return NotFound(result.Errors);  
     }
 
     [HttpPost]
@@ -77,23 +56,16 @@ public class ProductsController : ControllerBase
     public async Task<IActionResult> Post(long id, 
         [FromBody] ProductDTO input)
     {
-        try
+        if (!Validate.TryValidate(input, out var results))
+            return BadRequest(results);
+        else
         {
-            if (!Validate.TryValidate(input, out var results))
-                return BadRequest(results);
-            else
-            {
-                var result = await _service.CreateProductAsync(id, input);
+            var result = await _service.CreateProductAsync(id, input);
 
-                if (result.IsSuccess)
-                    return Ok(result.Data);
-                else
-                    return NotFound(result.Errors);
-            }
-        }
-        catch (ArgumentNullException exception)
-        {
-            return BadRequest(exception.Message);
+            if (result.IsSuccess)
+                return Ok(result.Data);
+            else
+                return NotFound(result.Errors);
         }
     }
 
@@ -103,23 +75,16 @@ public class ProductsController : ControllerBase
         [FromQuery] long id,
         [FromBody] ProductDTO input)
     {
-        try
+        if (!Validate.TryValidate(input, out var results))
+            return BadRequest(results);
+        else
         {
-            if (!Validate.TryValidate(input, out var results))
-                return BadRequest(results);
-            else
-            {
-                var result = await _service.ChangeProductAsync(customerId, id, input);
+            var result = await _service.ChangeProductAsync(customerId, id, input);
 
-                if (result.IsSuccess)
-                    return Ok(result.Data);
-                else
-                    return NotFound(result.Errors);          
-            }
-        }
-        catch (ArgumentNullException exception)
-        {
-            return BadRequest(exception.Message);
+            if (result.IsSuccess)
+                return Ok(result.Data);
+            else
+                return NotFound(result.Errors);          
         }
     }
 }
