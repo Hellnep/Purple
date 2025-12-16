@@ -52,7 +52,7 @@ internal static class DependencyInjectionExtension
 
     public static void AddCoreServices(this IServiceCollection services)
     {
-        services.AddTransient<IRepository<Product>, ProductRepository>();
+        services.AddTransient<IProductRepository, ProductRepository>();
         services.AddTransient<ICustomerRepository, CustomerRepository>();
 
         services.AddTransient<IProductService, ProductService>();

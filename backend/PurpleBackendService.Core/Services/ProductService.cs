@@ -8,9 +8,9 @@ namespace PurpleBackendService.Domain.Service
 {
     public class ProductService : IProductService
     {
-        private IRepository<Product> _repository;
+        private IProductRepository _repository;
 
-        public ProductService(IRepository<Product> repository)
+        public ProductService(IProductRepository repository)
         {
             _repository = repository;
         }
