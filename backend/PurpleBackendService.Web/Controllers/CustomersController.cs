@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-
+using Purple.Web;
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Service;
 using PurpleBackendService.Domain.Utility;
@@ -54,7 +54,7 @@ namespace PurpleBackendService.Web.Controllers
         {
             if (!Validate.TryValidate(customer, out var results))
             {
-                return BadRequest(results);
+                this.ValidationProblems(results);
             }
             else
             {
@@ -70,6 +70,8 @@ namespace PurpleBackendService.Web.Controllers
                     return NotFound(result.Errors);
                 }
             }
+
+            return BadRequest();
         }
         
         [HttpPatch]
@@ -79,7 +81,7 @@ namespace PurpleBackendService.Web.Controllers
         {
             if (!Validate.TryValidate(customer, out var results))
             {
-                return BadRequest(results);
+                this.ValidationProblems(results);
             }
             else
             {
@@ -95,6 +97,8 @@ namespace PurpleBackendService.Web.Controllers
                     return NotFound(result.Errors);
                 }          
             }
+
+            return BadRequest();
         }
     }
 }

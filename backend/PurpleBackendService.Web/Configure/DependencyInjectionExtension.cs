@@ -1,4 +1,3 @@
-using System.Configuration;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,9 +18,9 @@ namespace Purple.Web;
 internal static class DependencyInjectionExtension
 {
     /// <summary>
-    /// Расширенный метод инициализации сервисов с данной сборке.
+    /// Extention method for services collection
     /// </summary>
-    /// <param name="services">Сервис, который должен инициализировать службы.</param>
+    /// <param name="services">Input services</param>
     /// <returns></returns>
     public static void Initialize(this IServiceCollection services)
     {

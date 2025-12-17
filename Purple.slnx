@@ -9,12 +9,15 @@
             <BuildDependency Project="backend/PurpleBackendService.Domain/PurpleBackendService.Domain.csproj" />
             <BuildDependency Project="backend/PurpleBackendService.Infrastructure.Sqlite/PurpleBackendService.Infrastructure.Sqlite.csproj" />
         </Project>
+        
         <Project Path="backend/PurpleBackendService.Web/PurpleBackendService.Web.csproj">
             <BuildDependency Project="backend/PurpleBackendService.Core/PurpleBackendService.Core.csproj" />
             <BuildDependency Project="backend/PurpleBackendService.Infrastructure.Sqlite/PurpleBackendService.Infrastructure.Sqlite.csproj" />
             <BuildDependency Project="backend/PurpleBackendService.Domain/PurpleBackendService.Domain.csproj" />
         </Project>   
+        
         <Project Path="backend/PurpleBackendService.Domain/PurpleBackendService.Domain.csproj" />
+        
         <Project Path="backend/PurpleBackendService.Infrastructure.Sqlite/PurpleBackendService.Infrastructure.Sqlite.csproj">
             <BuildDependency Project="backend/PurpleBackendService.Domain/PurpleBackendService.Domain.csproj" />
         </Project>
