@@ -8,12 +8,12 @@ public class Customer
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public long CustomerId { get; set; }
+    public long Id { get; set; }
 
     [Required]
     [MinLength(4), StringLength(40)]
     [Column("FirstName")]
-    public string FirstName { get; set; } = string.Empty;
+    public string Nickname { get; set; } = string.Empty;
 
     [Column("RegistrationDate")]
     public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Now);

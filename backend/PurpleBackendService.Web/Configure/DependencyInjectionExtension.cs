@@ -1,16 +1,12 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-
 using Microsoft.EntityFrameworkCore;
-
 using Microsoft.OpenApi;
 
 using PurpleBackendService.Core.Repository;
 using PurpleBackendService.Core.Services;
-
 using PurpleBackendService.Domain.Repository;
 using PurpleBackendService.Domain.Service;
-
 using PurpleBackendService.Infrastructure.Sqlite;
 
 namespace Purple.Web;
@@ -78,7 +74,7 @@ internal static class DependencyInjectionExtension
     }
 
     /// <summary>
-    /// Global catcbing all error on process work an app.
+    /// Global catching all error on process work an app.
     /// </summary>
     /// <param name="app">Current web application</param>
     public static void AddCaptionThrow(this WebApplication app)

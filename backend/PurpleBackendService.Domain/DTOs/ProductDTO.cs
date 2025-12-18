@@ -5,15 +5,15 @@ namespace PurpleBackendService.Domain.DTO;
 
 public class ProductDTO
 {
-    public long ProductId { get; set; }
+    public long Id { get; set; }
 
     [MinLength(4), MaxLength(40)]
-    public string? Name { get; set; }
+    public string? Title { get; set; }
 
     public CustomerDTO? Author { get; set; }
 
     public DateOnly? Date { get; set; }    
 
     [MaxLength(200)]
-    public string? Description { get; set; }
+    public string? Content { get; set; }
 } 

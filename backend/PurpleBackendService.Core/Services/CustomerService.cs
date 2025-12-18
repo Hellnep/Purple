@@ -2,7 +2,7 @@
 using PurpleBackendService.Domain.Entity;
 using PurpleBackendService.Domain.Repository;
 using PurpleBackendService.Domain.Service;
-using PurpleBackendService.Domain.Utility;
+using PurpleBackendService.Core.Utility;
 
 namespace PurpleBackendService.Core.Services
 {
@@ -59,8 +59,8 @@ namespace PurpleBackendService.Core.Services
                 var newData = Mapping.Get<Customer, CustomerDTO>(input);
                 var customer = _repository.Get(id);
 
-                if (newData.FirstName is not null)
-                    customer.FirstName = newData.FirstName;
+                if (newData.Nickname is not null)
+                    customer.Nickname = newData.Nickname;
 
                 if (newData.Email is not null)
                     customer.Email = newData.Email;

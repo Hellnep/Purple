@@ -24,7 +24,7 @@ namespace PurpleBackendService.Core.Repository
             long authorRefId = (long)input.AuthorRefId;
             var customer = await _context.Customers
                 .Include(customer => customer.Products)
-                .FirstOrDefaultAsync(customer => customer.CustomerId == authorRefId);
+                .FirstOrDefaultAsync(customer => customer.Id == authorRefId);
 
             if (customer is null)
                 throw new ArgumentNullException($"Customer with Id={authorRefId} not found");
@@ -41,7 +41,7 @@ namespace PurpleBackendService.Core.Repository
         {
             var product = _context.Products
                 .Include(product => product.Author)
-                .FirstOrDefault(product => product.ProductId == id);
+                .FirstOrDefault(product => product.Id == id);
 
             if (product is null)
                 throw new ArgumentNullException("The returned DbContext object has a null value");

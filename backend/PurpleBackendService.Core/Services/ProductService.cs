@@ -1,7 +1,7 @@
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Entity;
 using PurpleBackendService.Domain.Repository;
-using PurpleBackendService.Domain.Utility;
+using PurpleBackendService.Core.Utility;
 
 
 namespace PurpleBackendService.Domain.Service
@@ -20,7 +20,7 @@ namespace PurpleBackendService.Domain.Service
             Product product = Mapping
                 .Get<Product, ProductDTO>(input);
 
-            if (string.IsNullOrEmpty(product.Name))
+            if (string.IsNullOrEmpty(product.Title))
                 return OperationResult<ProductDTO>.Failure("You need to enter a name for product");
 
             product.AuthorRefId = id;
@@ -70,16 +70,16 @@ namespace PurpleBackendService.Domain.Service
                 var newData = Mapping.Get<Product, ProductDTO>(inputProduct);
                 var product = _repository.Get()
                     .Where(product => product.AuthorRefId == customerId)
-                    .FirstOrDefault(product => product.ProductId == productId);
+                    .FirstOrDefault(product => product.Id == productId);
 
                 if (product is null)
                     return OperationResult<ProductDTO>.Failure($"Product with Id={productId} do not exists");
 
-                if (!string.IsNullOrEmpty(newData.Name))
-                    product.Name = newData.Name;
+                if (!string.IsNullOrEmpty(newData.Title))
+                    product.Title = newData.Title;
 
-                if (!string.IsNullOrEmpty(newData.Description))
-                    product.Description = newData.Description;
+                if (!string.IsNullOrEmpty(newData.Content))
+                    product.Content = newData.Content;
 
                 await _repository.Update();
 

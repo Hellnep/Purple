@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Purple.Web;
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Service;
-using PurpleBackendService.Domain.Utility;
+using PurpleBackendService.Core.Utility;
 
 namespace PurpleBackendService.Web.Controllers
 {

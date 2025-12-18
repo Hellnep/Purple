@@ -22,7 +22,7 @@ namespace PurpleBackendService.Core.Repository
             await _context.SaveChangesAsync();
             
             var customer = _context.Customers
-                .First(customer => customer.FirstName == input.FirstName);
+                .First(customer => customer.Nickname == input.Nickname);
 
             return customer;
         }
@@ -31,7 +31,7 @@ namespace PurpleBackendService.Core.Repository
         {
             var customer = _context.Customers
                 .Include(customer => customer.Products)
-                .FirstOrDefault(customer => customer.CustomerId == id);
+                .FirstOrDefault(customer => customer.Id == id);
 
             if (customer is null)
                 throw new ArgumentNullException("The returned DbContext object has a null value");

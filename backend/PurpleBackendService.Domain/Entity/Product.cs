@@ -8,7 +8,7 @@ public class Product
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public long ProductId { get; set; }
+    public long Id { get; set; }
 
     [Column("DateOfCreate")]
     public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Now);
@@ -21,9 +21,9 @@ public class Product
     [Required]
     [MinLength(3), StringLength(40)]
     [Column("Title")]
-    public string Name { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
 
     [MaxLength(200)]
-    [Column("ProductDescription")]
-    public string? Description { get; set; } = null!;
+    [Column("Content")]
+    public string? Content { get; set; } = null!;
 }
