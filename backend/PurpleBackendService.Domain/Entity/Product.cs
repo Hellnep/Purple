@@ -1,29 +1,33 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PurpleBackendService.Domain.Entity;
-
-[Table("Products")]
-public class Product
+namespace PurpleBackendService.Domain.Entity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public long Id { get; set; }
+    [Table("Products")]
+    public class Product
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long Id { get; set; }
 
-    [Column("DateOfCreate")]
-    public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+        [Column("Created_at")]
+        public DateOnly Created { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
-    [ForeignKey("Author")]
-    public long? AuthorRefId { get; set; }
+        [Column("Updated_at")]
+        public DateTime Updated { get; set; } = DateTime.Now;
 
-    public Customer? Author { get; set; }
+        [ForeignKey("Author")]
+        public long? AuthorRefId { get; set; }
 
-    [Required]
-    [MinLength(3), StringLength(40)]
-    [Column("Title")]
-    public string Title { get; set; } = string.Empty;
+        public Customer? Author { get; set; }
 
-    [MaxLength(200)]
-    [Column("Content")]
-    public string? Content { get; set; } = null!;
+        [Required]
+        [MinLength(3), StringLength(40)]
+        [Column("Title")]
+        public string Title { get; set; } = string.Empty;
+
+        [MaxLength(200)]
+        [Column("Content")]
+        public string? Content { get; set; } = null!;
+    }
 }

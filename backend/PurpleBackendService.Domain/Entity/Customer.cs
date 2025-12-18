@@ -1,29 +1,30 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PurpleBackendService.Domain.Entity;
-
-[Table("Customers")]
-public class Customer
+namespace PurpleBackendService.Domain.Entity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public long Id { get; set; }
+    [Table("Customers")]
+    public class Customer
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long Id { get; set; }
 
-    [Required]
-    [MinLength(4), StringLength(40)]
-    [Column("FirstName")]
-    public string Nickname { get; set; } = string.Empty;
+        [Required]
+        [MinLength(4), StringLength(40)]
+        [Column("FirstName")]
+        public string Nickname { get; set; } = string.Empty;
 
-    [Column("RegistrationDate")]
-    public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+        [Column("RegistrationDate")]
+        public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
-    [EmailAddress]
-    [Column("EmailAddress", TypeName = "varchar(60)")]
-    public string? Email { get; set; }
+        [EmailAddress]
+        [Column("EmailAddress", TypeName = "varchar(60)")]
+        public string? Email { get; set; }
 
-    [Phone]
-    public string? Phone { get; set;}
+        [Phone]
+        public string? Phone { get; set;}
 
-    public ICollection<Product>? Products { get; set;}
+        public ICollection<Product>? Products { get; set;}
+    }
 }
