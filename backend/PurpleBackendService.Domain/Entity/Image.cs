@@ -30,5 +30,10 @@ namespace PurpleBackendService.Domain.Entity
 
         [Column("Updated_at")]
         public DateTime Updated { get; set; } = DateTime.Now;
+
+        [ForeignKey("Product")]
+        public long? ProductRefId { get; set; }
+
+        public Product? Product { get; set; }
     }
 }
