@@ -18,5 +18,7 @@ namespace PurpleBackendService.Domain.DTO
 
         [MaxLength(200)]
         public string? Content { get; set; }
+
+        public ICollection<ImageDTO>? Images { get; set; }
     } 
 }

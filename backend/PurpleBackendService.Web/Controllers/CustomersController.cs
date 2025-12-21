@@ -10,7 +10,7 @@ namespace PurpleBackendService.Web.Controllers
     [Route("api/[controller]")]
     public class CustomersController : ControllerBase
     {
-        private ICustomerService _customerService;
+        private readonly ICustomerService _customerService;
 
         public CustomersController(ICustomerService service)
         {

@@ -12,11 +12,14 @@ namespace PurpleBackendService.Web.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        private IProductService _productService;
+        private readonly IProductService _productService;
+        private readonly IImageService _imageService;
 
-        public ProductsController(IProductService service)
+
+        public ProductsController(IProductService service, IImageService imageService)
         {
             _productService = service;
+            _imageService = imageService;
         }
 
         [HttpGet]
@@ -71,8 +74,17 @@ namespace PurpleBackendService.Web.Controllers
         [HttpPost]
         [Route("~/api/customers/{custometId}/[controller]")]
         public async Task<IActionResult> Post(long custometId, 
-            [FromBody] ProductDTO product)
+            [FromForm] string title,
+            [FromForm] string content,
+            [FromForm] IFormFileCollection files
+        )
         {
+            var product = new ProductDTO
+            {
+                Title = title,
+                Content = content
+            };
+
             if (!Validate.TryValidate(product, out var results))
             {
                 this.ValidationProblems(results);
@@ -84,6 +96,11 @@ namespace PurpleBackendService.Web.Controllers
 
                 if (result.IsSuccess)
                 {
+                    var images = await _imageService    
+                        .AddImagesAsync(result.Result!.Id, files);
+
+                    result.Result.Images = images.Result;
+                    
                     return Ok(result.Result);
                 }
                 else
@@ -99,9 +116,16 @@ namespace PurpleBackendService.Web.Controllers
         [Route("~/api/customers/{customerId}/[controller]")]
         public async Task<IActionResult> Patch(long customerId, 
             [FromQuery] long productId, 
-            [FromBody] ProductDTO product
+            [FromForm] string title,
+            [FromForm] string content
         )
         {
+            var product = new ProductDTO
+            {
+                Title = title,
+                Content = content
+            };
+
             if (!Validate.TryValidate(product, out var results))
             {
                 this.ValidationProblems(results);
