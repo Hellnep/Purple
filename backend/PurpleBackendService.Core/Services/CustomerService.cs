@@ -4,7 +4,7 @@ using PurpleBackendService.Domain.Repository;
 using PurpleBackendService.Domain.Service;
 using PurpleBackendService.Core.Utility;
 
-namespace PurpleBackendService.Core.Services
+namespace PurpleBackendService.Core.Service
 {
     public class CustomerService : ICustomerService
     {

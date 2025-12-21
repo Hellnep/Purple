@@ -1,14 +1,15 @@
+using PurpleBackendService.Core.Utility;
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Entity;
 using PurpleBackendService.Domain.Repository;
-using PurpleBackendService.Core.Utility;
+using PurpleBackendService.Domain.Service;
 
 
-namespace PurpleBackendService.Domain.Service
+namespace PurpleBackendService.Core.Service
 {
     public class ProductService : IProductService
     {
-        private IProductRepository _repository;
+        private readonly IProductRepository _repository;
 
         public ProductService(IProductRepository repository)
         {

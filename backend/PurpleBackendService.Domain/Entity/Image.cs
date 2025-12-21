@@ -19,7 +19,7 @@ namespace PurpleBackendService.Domain.Entity
         
         public string Url { get; set; } = string.Empty;
 
-        public long Weight { get; set; }
+        public long Length { get; set; }
 
         public long Width { get; set; }
 

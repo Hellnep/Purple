@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 
 using PurpleBackendService.Core.Repository;
-using PurpleBackendService.Core.Services;
+using PurpleBackendService.Core.Service;
 using PurpleBackendService.Domain.Repository;
 using PurpleBackendService.Domain.Service;
 using PurpleBackendService.Infrastructure.Sqlite;
