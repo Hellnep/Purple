@@ -7,51 +7,53 @@ using PurpleBackendService.Infrastructure.Sqlite;
 
 namespace PurpleBackendService.Core.Repository
 { 
-    public class ProductRepository : IProductRepository
+    public class ProductRepository : Repository, IProductRepository
     {
-        private PurpleOcean _context;
-
-        public ProductRepository(PurpleOcean context)
+        public ProductRepository(PurpleOcean repository) : base(repository)
         {
-            _context = context;
         }
 
-        public async Task<Product> Add(Product input)
+        public async Task<Product> Add(Product product)
         {
-            if (input.AuthorRefId is null)
+            if (product.AuthorRefId is null)
+            {
                 throw new ArgumentNullException("Author for a new product should not be null");
+            }
 
-            long authorRefId = (long)input.AuthorRefId;
-            var customer = await _context.Customers
+            long authorRefId = (long)product.AuthorRefId;
+            var customer = await _repository.Customers
                 .Include(customer => customer.Products)
                 .FirstOrDefaultAsync(customer => customer.Id == authorRefId);
 
             if (customer is null)
+            {
                 throw new ArgumentNullException($"Customer with Id={authorRefId} not found");
+            }
 
             customer.Products ??= new List<Product>();
-            customer.Products.Add(input);
+            customer.Products.Add(product);
 
-            await _context.SaveChangesAsync();
-
-            return input;
+            await _repository.SaveChangesAsync();
+            return product;
         }
 
         public Product Get(long id)
         {
-            var product = _context.Products
+            var product = _repository.Products
                 .Include(product => product.Author)
                 .FirstOrDefault(product => product.Id == id);
 
             if (product is null)
+            {
                 throw new ArgumentNullException("The returned DbContext object has a null value");
+            }
 
             return product;
         }
 
         public ICollection<Product> Get()
         {
-            var products = _context.Products
+            var products = _repository.Products
                 .Include(product => product.Author)
                 .ToList();
 
@@ -59,6 +61,6 @@ namespace PurpleBackendService.Core.Repository
         }
 
         public async Task<int> Update() =>
-            await _context.SaveChangesAsync();
+            await _repository.SaveChangesAsync();
     }
 }

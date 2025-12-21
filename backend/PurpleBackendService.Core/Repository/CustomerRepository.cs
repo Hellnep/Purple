@@ -7,21 +7,18 @@ using PurpleBackendService.Infrastructure.Sqlite;
 
 namespace PurpleBackendService.Core.Repository
 { 
-    public class CustomerRepository : ICustomerRepository
+    public class CustomerRepository : Repository, ICustomerRepository
     {
-        private PurpleOcean _context;
-
-        public CustomerRepository(PurpleOcean context)
+        public CustomerRepository(PurpleOcean repository) : base(repository)
         {
-            _context = context;
         }
 
         public async Task<Customer> Add(Customer input)
         {
-            _context.Customers.Add(input);
-            await _context.SaveChangesAsync();
+            _repository.Customers.Add(input);
+            await _repository.SaveChangesAsync();
             
-            var customer = _context.Customers
+            var customer = _repository.Customers
                 .First(customer => customer.Nickname == input.Nickname);
 
             return customer;
@@ -29,7 +26,7 @@ namespace PurpleBackendService.Core.Repository
 
         public Customer Get(long id)
         {
-            var customer = _context.Customers
+            var customer = _repository.Customers
                 .Include(customer => customer.Products)
                 .FirstOrDefault(customer => customer.Id == id);
 
@@ -40,15 +37,15 @@ namespace PurpleBackendService.Core.Repository
         }
 
         public bool EmailExists(string email) =>
-            _context.Customers
+            _repository.Customers
                 .Any(customer => string.Equals(customer.Email, email));
 
         public async Task<int> Update() =>
-            await _context.SaveChangesAsync();
+            await _repository.SaveChangesAsync();
 
         public ICollection<Customer> Get()
         {
-            var customers = _context.Customers
+            var customers = _repository.Customers
                 .Include(customer => customer.Products)
                 .ToList();
 
