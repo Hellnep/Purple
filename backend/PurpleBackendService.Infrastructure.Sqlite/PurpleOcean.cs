@@ -7,7 +7,10 @@ namespace PurpleBackendService.Infrastructure.Sqlite
     public class PurpleOcean : DbContext
     {
         public DbSet<Customer> Customers { get; set; }
+        
         public DbSet<Product> Products { get; set; }
+
+        public DbSet<Image> Images { get; set; }
 
         public PurpleOcean(DbContextOptions<PurpleOcean> options)
             : base(options)
@@ -21,6 +24,11 @@ namespace PurpleBackendService.Infrastructure.Sqlite
                 .HasMany(customer => customer.Products)
                 .WithOne(product => product.Author)
                 .HasForeignKey(product => product.AuthorRefId);
+
+            modelBuilder.Entity<Product>()
+                .HasMany(product => product.Images)
+                .WithOne(image => image.Product)
+                .HasForeignKey(image => image.ProductRefId);
 
             base.OnModelCreating(modelBuilder);
         }
