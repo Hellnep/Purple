@@ -31,7 +31,9 @@ namespace PurpleBackendService.Core.Repository
                 .FirstOrDefault(customer => customer.Id == id);
 
             if (customer is null)
+            {
                 throw new ArgumentNullException("The returned DbContext object has a null value");
+            }
 
             return customer;
         }
