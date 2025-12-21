@@ -3,6 +3,10 @@
   <ItemGroup>
     <ProjectReference Include="../PurpleBackendService.Domain/PurpleBackendService.Domain.csproj" />
     <ProjectReference Include="../PurpleBackendService.Infrastructure.Sqlite/PurpleBackendService.Infrastructure.Sqlite.csproj" />
+  </ItemGroup>
+
+  <!-- Reference on packages -->
+  <ItemGroup>
     <PackageReference Include="SixLabors.ImageSharp" />
   </ItemGroup>
 </Project>

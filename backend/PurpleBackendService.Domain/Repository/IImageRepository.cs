@@ -6,7 +6,7 @@ namespace PurpleBackendService.Domain.Repository
     {
         public Task<Image> Add(Image image);
 
-        public Image Get(long id);
+        public Image Get(long imageId);
 
         public Task<int> Update();
     }

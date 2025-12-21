@@ -36,11 +36,11 @@ namespace PurpleBackendService.Core.Repository
             return image;
         }
 
-        public Image Get(long id)
+        public Image Get(long imageId)
         {
             var image = _repository.Images
                 .Include(image => image.Product)
-                .FirstOrDefault(image => image.ProductRefId == id);
+                .FirstOrDefault(image => image.ProductRefId == imageId);
 
             if (image is null)
             {
