@@ -54,6 +54,7 @@ namespace PurpleBackendService.Core.Repository
         {
             var products = _repository.Products
                 .Include(product => product.Author)
+                .Include(product => product.Images)
                 .ToList();
 
             return products;
