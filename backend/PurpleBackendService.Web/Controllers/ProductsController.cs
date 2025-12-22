@@ -13,6 +13,7 @@ namespace PurpleBackendService.Web.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
+        
         private readonly IImageService _imageService;
 
 
@@ -79,11 +80,7 @@ namespace PurpleBackendService.Web.Controllers
             [FromForm] IFormFileCollection files
         )
         {
-            var product = new ProductDTO
-            {
-                Title = title,
-                Content = content
-            };
+            var product = Create(title, content);
 
             if (!Validate.TryValidate(product, out var results))
             {
@@ -120,11 +117,7 @@ namespace PurpleBackendService.Web.Controllers
             [FromForm] string content
         )
         {
-            var product = new ProductDTO
-            {
-                Title = title,
-                Content = content
-            };
+            var product = Create(title, content);
 
             if (!Validate.TryValidate(product, out var results))
             {
@@ -147,5 +140,12 @@ namespace PurpleBackendService.Web.Controllers
 
             return BadRequest();
         }
+
+        private ProductDTO Create(string? title, string? content) =>
+            new ProductDTO
+            {
+                Title = title,
+                Content = content
+            };
     }
 }

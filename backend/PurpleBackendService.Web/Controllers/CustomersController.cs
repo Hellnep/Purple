@@ -3,6 +3,7 @@ using Purple.Web;
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Service;
 using PurpleBackendService.Core.Utility;
+using PurpleBackendService.Domain.Entity;
 
 namespace PurpleBackendService.Web.Controllers
 {
@@ -50,8 +51,14 @@ namespace PurpleBackendService.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] CustomerDTO customer)
+        public async Task<ActionResult> Post(
+            [FromForm] string nickname,
+            [FromForm] string? email,
+            [FromForm] string? phone
+        )
         {
+            var customer = Create(nickname, email, phone);
+
             if (!Validate.TryValidate(customer, out var results))
             {
                 this.ValidationProblems(results);
@@ -76,9 +83,13 @@ namespace PurpleBackendService.Web.Controllers
         
         [HttpPatch]
         public async Task<ActionResult> Patch([FromQuery] long customerId, 
-            [FromBody] CustomerDTO customer
+            [FromForm] string? nickname,
+            [FromForm] string? email,
+            [FromForm] string? phone
         )
         {
+            var customer = Create(nickname, email, phone);
+
             if (!Validate.TryValidate(customer, out var results))
             {
                 this.ValidationProblems(results);
@@ -100,5 +111,13 @@ namespace PurpleBackendService.Web.Controllers
 
             return BadRequest();
         }
+
+        private CustomerDTO Create(string? nickname, string? email, string? phone) =>
+            new CustomerDTO
+            {
+                Nickname = nickname,
+                Email = email,
+                Phone = phone
+            };
     }
 }

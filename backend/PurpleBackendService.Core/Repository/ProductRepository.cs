@@ -40,6 +40,7 @@ namespace PurpleBackendService.Core.Repository
         {
             var product = _repository.Products
                 .Include(product => product.Author)
+                .Include(product => product.Images)
                 .FirstOrDefault(product => product.Id == id);
 
             if (product is null)
