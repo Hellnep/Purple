@@ -7,7 +7,7 @@ namespace PurpleBackendService.Domain.Service
     {
         public Task<OperationResult<ICollection<ImageDTO>>> AddImagesAsync(long id, IFormFileCollection files);
 
-        public Task<OperationResult<ImageDTO>> GetImageAsync(long id);
+        public OperationResult<ImageDTO> GetImage(long id);
 
         public Task<OperationResult<ImageDTO>> ChangeImageAsync(long id, IFormFile file);
     }

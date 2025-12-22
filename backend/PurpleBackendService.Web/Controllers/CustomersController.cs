@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Purple.Web;
+
+using PurpleBackendService.Web.Configure;
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Service;
 using PurpleBackendService.Core.Utility;
-using PurpleBackendService.Domain.Entity;
 
 namespace PurpleBackendService.Web.Controllers
 {
@@ -19,10 +19,10 @@ namespace PurpleBackendService.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<CustomerDTO>>> Get()
+        public ActionResult<List<CustomerDTO>> Get()
         {
-            var result = await _customerService
-                .GetCustomersAsync();
+            var result = _customerService
+                .GetCustomers();
 
             if (result.IsSuccess)
             {
@@ -35,10 +35,10 @@ namespace PurpleBackendService.Web.Controllers
         }
 
         [HttpGet("{customerId}")]
-        public async Task<ActionResult> Get(long customerId)
+        public ActionResult Get(long customerId)
         {
-            var result = await _customerService
-                .GetCustomerAsync(customerId);
+            var result = _customerService
+                .GetCustomer(customerId);
 
             if (result.IsSuccess)
             {
@@ -80,7 +80,7 @@ namespace PurpleBackendService.Web.Controllers
 
             return BadRequest();
         }
-        
+
         [HttpPatch]
         public async Task<ActionResult> Patch([FromQuery] long customerId, 
             [FromForm] string? nickname,
@@ -106,14 +106,14 @@ namespace PurpleBackendService.Web.Controllers
                 else
                 {
                     return NotFound(result.Errors);
-                }          
+                }
             }
 
             return BadRequest();
         }
 
-        private CustomerDTO Create(string? nickname, string? email, string? phone) =>
-            new CustomerDTO
+        private static CustomerDTO Create(string? nickname, string? email, string? phone) =>
+            new()
             {
                 Nickname = nickname,
                 Email = email,

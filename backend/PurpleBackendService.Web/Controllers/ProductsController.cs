@@ -1,7 +1,6 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
-using Purple.Web;
+using PurpleBackendService.Web.Configure;
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Service;
 using PurpleBackendService.Core.Utility;
@@ -13,7 +12,7 @@ namespace PurpleBackendService.Web.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
-        
+
         private readonly IImageService _imageService;
 
 
@@ -24,10 +23,10 @@ namespace PurpleBackendService.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ProductDTO>>> Get()
+        public ActionResult<List<ProductDTO>> Get()
         {
-            var result = await _productService
-                .GetProductsAsync();
+            var result = _productService
+                .GetProducts();
 
             if (result.IsSuccess)
             {
@@ -40,10 +39,10 @@ namespace PurpleBackendService.Web.Controllers
         }
 
         [HttpGet("{productId}")]
-        public async Task<ActionResult<ProductDTO>> Get(long productId)
+        public ActionResult<ProductDTO> Get(long productId)
         {
-            var result = await _productService
-                .GetProductAsync(productId);
+            var result = _productService
+                .GetProduct(productId);
 
             if (result.IsSuccess)
             {
@@ -52,15 +51,15 @@ namespace PurpleBackendService.Web.Controllers
             else
             {
                 return NotFound(result.Errors);
-            }  
+            }
         }
 
         [HttpGet]
         [Route("~/api/customers/{customerId}/[controller]")]
-        public async Task<ActionResult<List<ProductDTO>>> GetFromAuthor(long customerId)
+        public ActionResult<List<ProductDTO>> GetFromAuthor(long customerId)
         {
-            var result = await _productService
-                .GetAuthorProductsAsync(customerId);
+            var result = _productService
+                .GetAuthorProducts(customerId);
 
             if (result.IsSuccess)
             {
@@ -69,12 +68,12 @@ namespace PurpleBackendService.Web.Controllers
             else
             {
                 return NotFound(result.Errors);
-            }  
+            }
         }
 
         [HttpPost]
         [Route("~/api/customers/{custometId}/[controller]")]
-        public async Task<IActionResult> Post(long custometId, 
+        public async Task<IActionResult> Post(long custometId,
             [FromForm] string title,
             [FromForm] string content,
             [FromForm] IFormFileCollection files
@@ -93,11 +92,11 @@ namespace PurpleBackendService.Web.Controllers
 
                 if (result.IsSuccess)
                 {
-                    var images = await _imageService    
+                    var images = await _imageService
                         .AddImagesAsync(result.Result!.Id, files);
 
                     result.Result.Images = images.Result;
-                    
+
                     return Ok(result.Result);
                 }
                 else
@@ -105,7 +104,7 @@ namespace PurpleBackendService.Web.Controllers
                     return NotFound(result.Errors);
                 }
             }
-                
+
             return BadRequest();
         }
 
@@ -135,14 +134,14 @@ namespace PurpleBackendService.Web.Controllers
                 else
                 {
                     return NotFound(result.Errors);
-                }          
+                }
             }
 
             return BadRequest();
         }
 
-        private ProductDTO Create(string? title, string? content) =>
-            new ProductDTO
+        private static ProductDTO Create(string? title, string? content) =>
+            new()
             {
                 Title = title,
                 Content = content

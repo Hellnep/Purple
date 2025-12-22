@@ -8,7 +8,7 @@ using PurpleBackendService.Domain.Entity;
 using PurpleBackendService.Domain.Repository;
 using PurpleBackendService.Domain.Service;
 
-namespace PurpleBackendService.Core.Service
+namespace PurpleBackendService.Core.Services
 {
     public class ImageService : IImageService
     {
@@ -72,7 +72,7 @@ namespace PurpleBackendService.Core.Service
                 .Success(Mapping.Get<ImageDTO, Domain.Entity.Image>(existingImage));
         }
 
-        public async Task<OperationResult<ImageDTO>> GetImageAsync(long imageId)
+        public OperationResult<ImageDTO> GetImage(long imageId)
         {
             var image = _repository.Get(imageId);
 
@@ -103,7 +103,7 @@ namespace PurpleBackendService.Core.Service
                     {
                         Title = file.FileName,
                         Path = fileName,
-                        Url = $"/images{fileName}",
+                        Url = $"/uploads/{fileName}",
                         Length = file.Length,
                         Width = image.Width,
                         Height = image.Height,

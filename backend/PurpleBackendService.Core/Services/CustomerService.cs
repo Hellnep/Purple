@@ -4,11 +4,11 @@ using PurpleBackendService.Domain.Repository;
 using PurpleBackendService.Domain.Service;
 using PurpleBackendService.Core.Utility;
 
-namespace PurpleBackendService.Core.Service
+namespace PurpleBackendService.Core.Services
 {
     public class CustomerService : ICustomerService
     {
-        private ICustomerRepository _repository;
+        private readonly ICustomerRepository _repository;
 
         public CustomerService(ICustomerRepository repository)
         {
@@ -27,20 +27,20 @@ namespace PurpleBackendService.Core.Service
                 return OperationResult<CustomerDTO>.Failure("A user with such an email address already exists");
 
             var result = await _repository.Add(customer);
-            
+
             return OperationResult<CustomerDTO>
                 .Success(Mapping.Get<CustomerDTO, Customer>(result));
         }
 
-        public async Task<OperationResult<CustomerDTO>> GetCustomerAsync(long id)
+        public OperationResult<CustomerDTO> GetCustomer(long id)
         {
             var result = _repository.Get(id);
-            
+
             return OperationResult<CustomerDTO>
                 .Success(Mapping.Get<CustomerDTO, Customer>(result));
         }
 
-        public async Task<OperationResult<ICollection<CustomerDTO>>> GetCustomersAsync()
+        public OperationResult<ICollection<CustomerDTO>> GetCustomers()
         {
             var customers = _repository.Get();
             var result = new List<CustomerDTO>();
@@ -69,7 +69,7 @@ namespace PurpleBackendService.Core.Service
                     customer.Phone = newData.Phone;
 
                 await _repository.Update();
-                
+
                 return OperationResult<CustomerDTO>
                     .Success(Mapping.Get<CustomerDTO, Customer>(customer));
             }

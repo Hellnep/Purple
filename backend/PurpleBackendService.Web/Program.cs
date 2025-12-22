@@ -1,4 +1,4 @@
-using Purple.Web;
+using PurpleBackendService.Web.Configure;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 

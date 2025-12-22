@@ -5,7 +5,7 @@ using PurpleBackendService.Domain.Repository;
 using PurpleBackendService.Infrastructure.Sqlite;
 
 namespace PurpleBackendService.Core.Repository
-{ 
+{
     public class ProductRepository : Repository, IProductRepository
     {
         public ProductRepository(PurpleOcean repository) : base(repository)

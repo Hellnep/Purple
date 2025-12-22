@@ -22,14 +22,14 @@ namespace PurpleBackendService.Domain.Service
         public T? Result { get; private set; }
 
         public static OperationResult<T> Success(T data) =>
-            new OperationResult<T>
+            new()
             {
                 IsSuccess = true,
                 Result = data
             };
 
         public static OperationResult<T> Failure(params string[] errors) =>
-            new OperationResult<T>
+            new()
             {
                 IsSuccess = false,
                 Errors = errors.ToList()

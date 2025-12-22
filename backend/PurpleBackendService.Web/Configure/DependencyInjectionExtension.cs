@@ -4,105 +4,106 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 
 using PurpleBackendService.Core.Repository;
-using PurpleBackendService.Core.Service;
+using PurpleBackendService.Core.Services;
 using PurpleBackendService.Domain.Repository;
 using PurpleBackendService.Domain.Service;
 using PurpleBackendService.Infrastructure.Sqlite;
 
-namespace Purple.Web;
-
-internal static class DependencyInjectionExtension
+namespace PurpleBackendService.Web.Configure
 {
-    /// <summary>
-    /// Extention method for services collection
-    /// </summary>
-    /// <param name="services">Input services</param>
-    /// <returns></returns>
-    public static void Initialize(this IServiceCollection services)
+    internal static class DependencyInjectionExtension
     {
-        services.AddOpenApi();
-        services.AddControllers();
-        services.AddProblemDetails();
-
-        services.AddSwaggerGen(options =>
+        /// <summary>
+        /// Extention method for services collection
+        /// </summary>
+        /// <param name="services">Input services</param>
+        /// <returns></returns>
+        public static void Initialize(this IServiceCollection services)
         {
-            options.SwaggerDoc("v1", new OpenApiInfo
+            services.AddOpenApi();
+            services.AddControllers();
+            services.AddProblemDetails();
+
+            services.AddSwaggerGen(options =>
             {
-                Title = "Purple Content Service",
-                Version = "v1"
-            });
-        });
-        
-        services.AddCoreServices();
-
-        services.AddProblemDetails(options =>
-        {
-            options.CustomizeProblemDetails = customize =>
-            {
-                customize.ProblemDetails.Extensions["traceId"] = customize.HttpContext.TraceIdentifier;
-                customize.ProblemDetails.Extensions["timestamp"] = DateTime.UtcNow;
-                customize.ProblemDetails.Instance = $"{customize.HttpContext.Request.Method}, {customize.HttpContext.Request.Path}";
-            };
-        });
-    }
-
-    public static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddDbContext<PurpleOcean>(
-            options => options.UseSqlite(configuration["ConnectionStrings:DefaultConnection"])
-        );
-    }
-
-    public static void AddCoreServices(this IServiceCollection services)
-    {
-        services.AddTransient<IImageRepository, ImageRepository>();
-        services.AddTransient<IImageService, ImageService>();
-
-        services.AddTransient<IProductRepository, ProductRepository>();
-        services.AddTransient<ICustomerRepository, CustomerRepository>();
-
-        services.AddTransient<IProductService, ProductService>();
-        services.AddTransient<ICustomerService, CustomerService>();
-    }
-
-    public static void AddMapControllers(this WebApplication app)
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI();
-
-        app.UseDeveloperExceptionPage();
-        
-        app.UseRouting();
-        app.MapControllers();
-    }
-
-    /// <summary>
-    /// Global catching all error on process work an app.
-    /// </summary>
-    /// <param name="app">Current web application</param>
-    public static void AddCaptionThrow(this WebApplication app)
-    {
-        app.UseExceptionHandler(appError =>
-        {
-            appError.Run(async handler =>
-            {
-                var exception = handler.Features.Get<IExceptionHandlerFeature>()?.Error;
-                var (status, title) = exception switch
+                options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    ArgumentNullException => (StatusCodes.Status500InternalServerError, "Resource not found"),
-                    _ => (StatusCodes.Status500InternalServerError, "Server Error")
-                };
-
-                handler.Response.StatusCode = status;
-                
-                await handler.Response.WriteAsJsonAsync(new ProblemDetails
-                {
-                    Status = status,
-                    Title = title,
-                    Detail = app.Environment.IsDevelopment() ? exception?.Message : null,
-                    Instance = handler.Request.Path
+                    Title = "Purple Content Service",
+                    Version = "v1"
                 });
             });
-        });
+
+            services.AddCoreServices();
+
+            services.AddProblemDetails(options =>
+            {
+                options.CustomizeProblemDetails = customize =>
+                {
+                    customize.ProblemDetails.Extensions["traceId"] = customize.HttpContext.TraceIdentifier;
+                    customize.ProblemDetails.Extensions["timestamp"] = DateTime.UtcNow;
+                    customize.ProblemDetails.Instance = $"{customize.HttpContext.Request.Method}, {customize.HttpContext.Request.Path}";
+                };
+            });
+        }
+
+        public static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<PurpleOcean>(
+                options => options.UseSqlite(configuration["ConnectionStrings:DefaultConnection"])
+            );
+        }
+
+        public static void AddCoreServices(this IServiceCollection services)
+        {
+            services.AddTransient<IImageRepository, ImageRepository>();
+            services.AddTransient<IImageService, ImageService>();
+
+            services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<ICustomerRepository, CustomerRepository>();
+
+            services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<ICustomerService, CustomerService>();
+        }
+
+        public static void AddMapControllers(this WebApplication app)
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
+            app.UseDeveloperExceptionPage();
+
+            app.UseRouting();
+            app.MapControllers();
+        }
+
+        /// <summary>
+        /// Global catching all error on process work an app.
+        /// </summary>
+        /// <param name="app">Current web application</param>
+        public static void AddCaptionThrow(this WebApplication app)
+        {
+            app.UseExceptionHandler(appError =>
+            {
+                appError.Run(async handler =>
+                {
+                    var exception = handler.Features.Get<IExceptionHandlerFeature>()?.Error;
+                    var (status, title) = exception switch
+                    {
+                        ArgumentNullException => (StatusCodes.Status500InternalServerError, "Resource not found"),
+                        _ => (StatusCodes.Status500InternalServerError, "Server Error")
+                    };
+
+                    handler.Response.StatusCode = status;
+
+                    await handler.Response.WriteAsJsonAsync(new ProblemDetails
+                    {
+                        Status = status,
+                        Title = title,
+                        Detail = app.Environment.IsDevelopment() ? exception?.Message : null,
+                        Instance = handler.Request.Path
+                    });
+                });
+            });
+        }
     }
 }

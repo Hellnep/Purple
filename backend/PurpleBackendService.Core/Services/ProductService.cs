@@ -5,7 +5,7 @@ using PurpleBackendService.Domain.Repository;
 using PurpleBackendService.Domain.Service;
 
 
-namespace PurpleBackendService.Core.Service
+namespace PurpleBackendService.Core.Services
 {
     public class ProductService : IProductService
     {
@@ -31,7 +31,7 @@ namespace PurpleBackendService.Core.Service
                 .Success(Mapping.Get<ProductDTO, Product>(result));
         }
 
-        public async Task<OperationResult<ProductDTO>> GetProductAsync(long id)
+        public OperationResult<ProductDTO> GetProduct(long id)
         {
             var result = _repository.Get(id);
 
@@ -39,7 +39,7 @@ namespace PurpleBackendService.Core.Service
                 .Success(Mapping.Get<ProductDTO, Product>(result));
         }
 
-        public async Task<OperationResult<ICollection<ProductDTO>>> GetProductsAsync()
+        public OperationResult<ICollection<ProductDTO>> GetProducts()
         {
             var products = _repository.Get();
             var result = new List<ProductDTO>();
@@ -51,14 +51,16 @@ namespace PurpleBackendService.Core.Service
                 .Success(result);
         }
 
-        public async Task<OperationResult<ICollection<ProductDTO>>> GetAuthorProductsAsync(long authorRefId)
+        public OperationResult<ICollection<ProductDTO>> GetAuthorProducts(long authorRefId)
         {
             var products = _repository.Get();
             var result = new List<ProductDTO>();
 
             foreach (Product product in products)
+            {
                 if (product.AuthorRefId == authorRefId)
                     result.Add(Mapping.Get<ProductDTO, Product>(product));
+            }
 
             return OperationResult<ICollection<ProductDTO>>
                 .Success(result);
