@@ -14,11 +14,11 @@ namespace PurpleBackendService.Domain.DTO
 
         public DateOnly? Created { get; set; }
 
-        public DateTime? Updated { get; set; }    
+        public DateTime? Updated { get; set; }
 
         [MaxLength(200)]
         public string? Content { get; set; }
 
         public ICollection<ImageDTO>? Images { get; set; }
-    } 
+    }
 }

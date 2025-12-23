@@ -110,8 +110,8 @@ namespace PurpleBackendService.Web.Controllers
 
         [HttpPatch]
         [Route("~/api/customers/{customerId}/[controller]")]
-        public async Task<IActionResult> Patch(long customerId, 
-            [FromQuery] long productId, 
+        public async Task<IActionResult> Patch(long customerId,
+            [FromQuery] long productId,
             [FromForm] string title,
             [FromForm] string content
         )

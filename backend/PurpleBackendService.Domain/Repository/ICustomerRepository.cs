@@ -11,7 +11,7 @@ namespace PurpleBackendService.Domain.Repository
         public ICollection<Customer> Get();
 
         public Task<int> Update();
-        
+
         public bool EmailExists(string email);
     }
 }

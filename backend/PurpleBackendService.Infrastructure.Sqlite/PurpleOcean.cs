@@ -3,11 +3,11 @@
 using PurpleBackendService.Domain.Entity;
 
 namespace PurpleBackendService.Infrastructure.Sqlite
-{ 
+{
     public class PurpleOcean : DbContext
     {
         public DbSet<Customer> Customers { get; set; }
-        
+
         public DbSet<Product> Products { get; set; }
 
         public DbSet<Image> Images { get; set; }
