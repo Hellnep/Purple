@@ -1,4 +1,4 @@
-namespace PurpleBackendService.Web.Resource 
+namespace PurpleBackendService.Web.Resource
 {
     public class HalResource
     {
