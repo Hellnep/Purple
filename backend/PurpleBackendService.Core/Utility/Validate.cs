@@ -11,11 +11,18 @@ namespace PurpleBackendService.Core.Utility
         /// <param name="model">Entered data model</param>
         /// <param name="results">Generated list of validation errors</param>
         /// <returns>Returns a list of data verification results</returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static bool TryValidate<T>(T model, out List<ValidationResult> results)
         {
+            if (model is null)
+            {
+                throw new ArgumentNullException($"Passed {typeof(T)} as a null object");
+            }
+
             var context = new ValidationContext(model,
                 serviceProvider: null,
-                items: null);
+                items: null
+            );
 
             results = new List<ValidationResult>();
 
