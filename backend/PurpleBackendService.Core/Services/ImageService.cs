@@ -21,7 +21,7 @@ namespace PurpleBackendService.Core.Services
         {
             _repository = repository;
             _environment = environment;
-            _imageStoragePath = Path.Combine(_environment.ContentRootPath, "uploads");
+            _imageStoragePath = Path.Combine(_environment.ContentRootPath, "images");
 
             // Checking if the folder exists
             // Проверяем, существует ли папка
@@ -61,7 +61,7 @@ namespace PurpleBackendService.Core.Services
 
             existingImage.Title = updatedImage.Title;
             existingImage.Path = updatedImage.Path;
-            existingImage.Url = updatedImage.Url;
+            existingImage.RelativePath = updatedImage.RelativePath;
             existingImage.Width = updatedImage.Width;
             existingImage.Height = updatedImage.Height;
             existingImage.Path = updatedImage.Path;
@@ -104,7 +104,7 @@ namespace PurpleBackendService.Core.Services
                     {
                         Title = file.FileName,
                         Path = fileName,
-                        Url = $"/api/images/{fileName}",
+                        RelativePath = $"/api/images/{fileName}",
                         Length = file.Length,
                         Width = image.Width,
                         Height = image.Height,

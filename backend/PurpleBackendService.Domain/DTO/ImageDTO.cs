@@ -6,7 +6,7 @@ namespace PurpleBackendService.Domain.DTO
 
         public string? Title { get; set; }
 
-        public string? Url { get; set; }
+        public string? RelativePath { get; set; }
 
         public DateOnly? Created { get; set; }
 

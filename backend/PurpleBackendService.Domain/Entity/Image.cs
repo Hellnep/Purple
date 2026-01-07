@@ -17,7 +17,7 @@ namespace PurpleBackendService.Domain.Entity
         [Required]
         public string Path { get; set; } = string.Empty;
 
-        public string Url { get; set; } = string.Empty;
+        public string RelativePath { get; set; } = string.Empty;
 
         public long Length { get; set; }
 
