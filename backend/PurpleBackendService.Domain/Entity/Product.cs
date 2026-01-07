@@ -11,7 +11,7 @@ namespace PurpleBackendService.Domain.Entity
         public long Id { get; set; }
 
         [Column("Created_at")]
-        public DateOnly Created { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+        public DateTime Created { get; set; } = DateTime.Now;
 
         [Column("Updated_at")]
         public DateTime Updated { get; set; } = DateTime.Now;

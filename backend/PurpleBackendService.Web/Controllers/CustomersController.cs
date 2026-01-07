@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 
 using PurpleBackendService.Web.Configure;
+using PurpleBackendService.Web.Resource;
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Service;
 using PurpleBackendService.Core.Utility;
-using PurpleBackendService.Web.Resource;
 
 namespace PurpleBackendService.Web.Controllers
 {
@@ -19,18 +19,34 @@ namespace PurpleBackendService.Web.Controllers
             _customerService = service;
         }
 
-        [HttpGet(Name = nameof(Get))]
-        public ActionResult Get()
+        [HttpGet(Name = nameof(GetCustomers))]
+        public ActionResult GetCustomers()
         {
             var result = _customerService
                 .GetCustomers();
 
             if (result.IsSuccess)
             {
-                var resource = new Resource<ICollection<CustomerDTO>>(result.Result!);
-                resource.AddLink("self", Url.Link(nameof(Get), null)!);
+                var customers = result.Result as List<CustomerDTO>;
+                List<Resource<CustomerDTO>> resources = [];
 
-                return Ok(resource);
+                foreach (CustomerDTO customer in customers!)
+                {
+                    Resource<CustomerDTO> resource = new(customer);
+
+                    resource.AddLink("get", Url.Link(nameof(GetCustomer), new { customerId = customer.Id})!);
+                    resource.AddLink("patch",
+                        Url.Link(nameof(PatchCustomer), new
+                        {
+                            customerId = customer.Id
+                        })!,
+                        HttpMethod.Patch.Method
+                    );
+
+                    resources.Add(resource);
+                }
+
+                return Ok(resources);
             }
             else
             {
@@ -49,7 +65,10 @@ namespace PurpleBackendService.Web.Controllers
                 var resource = new Resource<CustomerDTO>(result.Result!);
 
                 resource.AddLink("self", Url.Link(nameof(GetCustomer), new { customerId })!);
-                resource.AddLink("change", Url.Link(nameof(Patch), new { customerId })!, HttpMethod.Patch.Method);
+                resource.AddLink("patch", Url.Link(nameof(PatchCustomer),
+                    new { customerId })!,
+                    HttpMethod.Patch.Method
+                );
 
                 return Ok(resource);
             }
@@ -59,8 +78,8 @@ namespace PurpleBackendService.Web.Controllers
             }
         }
 
-        [HttpPost(Name = nameof(Post))]
-        public async Task<ActionResult> Post(
+        [HttpPost(Name = nameof(PostCustomer))]
+        public async Task<ActionResult> PostCustomer(
             [FromForm] string nickname,
             [FromForm] string? email,
             [FromForm] string? phone
@@ -82,9 +101,9 @@ namespace PurpleBackendService.Web.Controllers
                     var dataCustomer = result.Result!;
                     var resource = new Resource<CustomerDTO>(dataCustomer);
 
-                    resource.AddLink("self", Url.Link(nameof(Post), null)!, HttpMethod.Post.Method);
+                    resource.AddLink("self", Url.Link(nameof(PostCustomer), null)!, HttpMethod.Post.Method);
                     resource.AddLink("get", Url.Link(nameof(GetCustomer), new { customerId = dataCustomer.Id })!);
-                    resource.AddLink("change", Url.Link(nameof(Patch), new { customerId = dataCustomer.Id })!, HttpMethod.Patch.Method);
+                    resource.AddLink("patch", Url.Link(nameof(PatchCustomer), new { customerId = dataCustomer.Id })!, HttpMethod.Patch.Method);
 
                     return Ok(resource);
                 }
@@ -97,8 +116,8 @@ namespace PurpleBackendService.Web.Controllers
             return BadRequest();
         }
 
-        [HttpPatch("{customerId}", Name = nameof(Patch))]
-        public async Task<ActionResult> Patch(long customerId,
+        [HttpPatch("{customerId}", Name = nameof(PatchCustomer))]
+        public async Task<ActionResult> PatchCustomer(long customerId,
             [FromForm] string? nickname,
             [FromForm] string? email,
             [FromForm] string? phone
@@ -118,7 +137,9 @@ namespace PurpleBackendService.Web.Controllers
                 if (result.IsSuccess)
                 {
                     var resource = new Resource<CustomerDTO>(result.Result!);
-                    resource.AddLink("self", Url.Link(nameof(GetCustomer), new { customerId })!);
+
+                    resource.AddLink("self", Url.Link(nameof(PatchCustomer), new { customerId })!, HttpMethod.Patch.Method);
+                    resource.AddLink("get", Url.Link(nameof(GetCustomer), new { customerId })!);
 
                     return Ok(resource);
                 }
