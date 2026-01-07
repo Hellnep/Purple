@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using PurpleBackendService.Web.Configure;
+using PurpleBackendService.Web.Resource;
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Service;
 using PurpleBackendService.Core.Utility;
@@ -22,15 +23,18 @@ namespace PurpleBackendService.Web.Controllers
             _imageService = imageService;
         }
 
-        [HttpGet]
-        public ActionResult<List<ProductDTO>> Get()
+        [HttpGet(Name = nameof(GetProducts))]
+        public ActionResult<List<ProductDTO>> GetProducts()
         {
             var result = _productService
                 .GetProducts();
 
             if (result.IsSuccess)
             {
-                return Ok(result.Result);
+                var resource = new Resource<ICollection<ProductDTO>>(result.Result!);
+                resource.AddLink("self", Url.Link(nameof(GetProducts), null)!);
+
+                return Ok(resource);
             }
             else
             {
@@ -38,15 +42,26 @@ namespace PurpleBackendService.Web.Controllers
             }
         }
 
-        [HttpGet("{productId}")]
-        public ActionResult<ProductDTO> Get(long productId)
+        [HttpGet("{productId}", Name = nameof(GetProduct))]
+        public ActionResult<ProductDTO> GetProduct(long productId)
         {
             var result = _productService
                 .GetProduct(productId);
 
             if (result.IsSuccess)
             {
-                return Ok(result.Result);
+                ProductDTO product = result.Result!;
+
+                long customerRefId = product.Author!.Id;
+                var resource = new Resource<ProductDTO>(product);
+
+                resource.AddLink("self", Url.Link(nameof(GetProduct), new { productId })!);
+                resource.AddLink("patch", Url.Link(nameof(PatchProduct),
+                    new { customerRefId, productId})!,
+                    HttpMethod.Patch.Method
+                );
+
+                return Ok(resource);
             }
             else
             {
@@ -54,8 +69,7 @@ namespace PurpleBackendService.Web.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("~/api/customers/{customerId}/[controller]")]
+        [HttpGet("~/api/customers/{customerId}/[controller]", Name = nameof(GetFromAuthor))]
         public ActionResult<List<ProductDTO>> GetFromAuthor(long customerId)
         {
             var result = _productService
@@ -63,7 +77,25 @@ namespace PurpleBackendService.Web.Controllers
 
             if (result.IsSuccess)
             {
-                return Ok(result.Result);
+                var products = result.Result as List<ProductDTO>;
+                List<Resource<ProductDTO>> resources = [];
+
+                foreach (ProductDTO product in products!)
+                {
+                    Resource<ProductDTO> resource = new(product);
+
+                    resource.AddLink("get", Url.Link(nameof(GetProducts), new { productId = product.Id })!);
+                    resource.AddLink("patch",
+                        Url.Link(nameof(PatchProduct), new
+                            {
+                                customerId = product.Author!.Id,
+                                productId = product.Id
+                            })!,
+                        HttpMethod.Patch.Method
+                    );
+                }
+
+                return Ok(resources);
             }
             else
             {
@@ -71,9 +103,8 @@ namespace PurpleBackendService.Web.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("~/api/customers/{custometId}/[controller]")]
-        public async Task<IActionResult> Post(long custometId,
+        [HttpPost("~/api/customers/{customerId}/[controller]", Name = nameof(PostProduct))]
+        public async Task<IActionResult> PostProduct(long customerId,
             [FromForm] string title,
             [FromForm] string content,
             [FromForm] IFormFileCollection files
@@ -88,7 +119,7 @@ namespace PurpleBackendService.Web.Controllers
             else
             {
                 var result = await _productService
-                    .CreateProductAsync(custometId, product);
+                    .CreateProductAsync(customerId, product);
 
                 if (result.IsSuccess)
                 {
@@ -97,7 +128,16 @@ namespace PurpleBackendService.Web.Controllers
 
                     result.Result.Images = images.Result;
 
-                    return Ok(result.Result);
+                    var resource = new Resource<ProductDTO>(result.Result!);
+                    resource.AddLink("get", Url.Link(nameof(GetProduct),
+                        new { productId = result.Result!.Id })!
+                    );
+
+                    resource.AddLink("patch", Url.Link(nameof(PatchProduct),
+                        new { customerId, productId = result.Result!.Id})!
+                    );
+
+                    return Ok(resource);
                 }
                 else
                 {
@@ -108,10 +148,8 @@ namespace PurpleBackendService.Web.Controllers
             return BadRequest();
         }
 
-        [HttpPatch]
-        [Route("~/api/customers/{customerId}/[controller]")]
-        public async Task<IActionResult> Patch(long customerId,
-            [FromQuery] long productId,
+        [HttpPatch("~/api/customers/{customerId}/[controller]/{productId}", Name = nameof(PatchProduct))]
+        public async Task<IActionResult> PatchProduct(long customerId, long productId,
             [FromForm] string title,
             [FromForm] string content
         )

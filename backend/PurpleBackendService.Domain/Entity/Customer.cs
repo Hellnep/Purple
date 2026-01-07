@@ -16,7 +16,7 @@ namespace PurpleBackendService.Domain.Entity
         public string Nickname { get; set; } = string.Empty;
 
         [Column("RegistrationDate")]
-        public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+        public DateTime JoinedAt { get; set; } = DateTime.Now;
 
         [EmailAddress]
         [Column("EmailAddress", TypeName = "varchar(60)")]

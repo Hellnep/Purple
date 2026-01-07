@@ -7,6 +7,7 @@ using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Entity;
 using PurpleBackendService.Domain.Repository;
 using PurpleBackendService.Domain.Service;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace PurpleBackendService.Core.Services
 {
@@ -103,7 +104,7 @@ namespace PurpleBackendService.Core.Services
                     {
                         Title = file.FileName,
                         Path = fileName,
-                        Url = $"/uploads/{fileName}",
+                        Url = $"/api/images/{fileName}",
                         Length = file.Length,
                         Width = image.Width,
                         Height = image.Height,
@@ -111,7 +112,7 @@ namespace PurpleBackendService.Core.Services
                     };
 
                     return await _repository.Add(imageEntity);
-                } 
+                }
             }
         }
     }

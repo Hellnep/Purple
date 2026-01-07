@@ -26,7 +26,7 @@ namespace PurpleBackendService.Core.Utility
         /// </exception>
         public static T1 Get<T1, T2>(T2 inputType) where T1 : new()
         {
-            T1 entity = new();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+            T1 entity = new();
 
             // Метод, который получает свойства и тут же их сохраняет в кеш,
             // для последующей работы с ними.
@@ -55,8 +55,8 @@ namespace PurpleBackendService.Core.Utility
                     }
                     else if (!entityType.IsPrimitive &&
                         entityType != typeof(string) &&
-                        entityType != typeof(DateOnly) && 
-                        entityType != typeof(DateOnly?))
+                        entityType != typeof(DateTime) &&
+                        entityType != typeof(DateTime?))
                     {
                         // Если это не коллекции, но и не примитивные данные,
                         // вызывается метод конструкции этих классов с последующей передачей данных.
@@ -85,8 +85,8 @@ namespace PurpleBackendService.Core.Utility
         /// <param name="value">Input values</param>
         /// <param name="entity">The mapping class for</param>
         private static void GenerateCollection<T> (
-            PropertyInfo entityProperty, 
-            PropertyInfo dtoProperty, 
+            PropertyInfo entityProperty,
+            PropertyInfo dtoProperty,
             object value,
             T entity
         )
@@ -120,7 +120,7 @@ namespace PurpleBackendService.Core.Utility
                     targetCollection is IList list)
                 {
                     Array array = Array.CreateInstance(entityProperty.PropertyType
-                        .GetElementType()!, 
+                        .GetElementType()!,
                         list.Count
                     );
 
@@ -150,7 +150,7 @@ namespace PurpleBackendService.Core.Utility
                     .MakeGenericType(elementTypeLocal);
 
                 return Activator.CreateInstance(listTypeLocal)!;
-            } 
+            }
             else if (collectionType.IsGenericType)
             {
                 if (collectionType.GetGenericTypeDefinition() == typeof(IEnumerable<>) ||
@@ -194,8 +194,8 @@ namespace PurpleBackendService.Core.Utility
         /// <param name="value">Input values</param>
         /// <param name="entity">The mapping class for</param>
         private static void GenerateClass<T> (
-            PropertyInfo entityProperty, 
-            PropertyInfo dtoProperty, 
+            PropertyInfo entityProperty,
+            PropertyInfo dtoProperty,
             object value,
             T entity
         )

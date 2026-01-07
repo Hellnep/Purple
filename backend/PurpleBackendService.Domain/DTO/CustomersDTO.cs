@@ -9,7 +9,7 @@ namespace PurpleBackendService.Domain.DTO
         [MinLength(4), MaxLength(40)]
         public string? Nickname { get; set; }
 
-        public DateOnly? Date { get; set; }
+        public DateTime? JoinedAt { get; set; }
 
         [EmailAddress]
         public string? Email { get; set; }
