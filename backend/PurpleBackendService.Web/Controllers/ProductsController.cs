@@ -31,10 +31,25 @@ namespace PurpleBackendService.Web.Controllers
 
             if (result.IsSuccess)
             {
-                var resource = new Resource<ICollection<ProductDTO>>(result.Result!);
-                resource.AddLink("self", Url.Link(nameof(GetProducts), null)!);
+                var products = result.Result as List<ProductDTO>;
+                List<Resource<ProductDTO>> resources = [];
 
-                return Ok(resource);
+                foreach (ProductDTO product in products!)
+                {
+                    Resource<ProductDTO> resource = new(product);
+
+                    resource.AddLink("get", Url.Link(nameof(GetProducts), new { productId = product.Id })!);
+                    resource.AddLink("patch",
+                        Url.Link(nameof(PatchProduct), new
+                            {
+                                customerId = product.Author!.Id,
+                                productId = product.Id
+                            })!,
+                        HttpMethod.Patch.Method
+                    );
+                }
+
+                return Ok(resources);
             }
             else
             {
