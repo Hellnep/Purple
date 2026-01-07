@@ -4,10 +4,8 @@ using Microsoft.Extensions.Hosting;
 
 using PurpleBackendService.Core.Utility;
 using PurpleBackendService.Domain.DTO;
-using PurpleBackendService.Domain.Entity;
 using PurpleBackendService.Domain.Repository;
 using PurpleBackendService.Domain.Service;
-using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace PurpleBackendService.Core.Services
 {
@@ -86,16 +84,61 @@ namespace PurpleBackendService.Core.Services
                 .Success(Mapping.Get<ImageDTO, Domain.Entity.Image>(image));
         }
 
-        // Processing the image using ImageSharp
-        // Обрабатываем изображение с помощью ImageSharp
+        /// <summary>
+        /// Provides a file with a bit format for output as an image
+        /// </summary>
+        /// <param name="imageId">Identification the image</param>
+        /// <returns>Returns an array of image bits</returns>
+        public OperationResult<(byte[] content, string contentType)> GetImageFile(long imageId)
+        {
+            var image = _repository.Get(imageId);
+
+            if (image is null)
+            {
+                return OperationResult<(byte[], string)>.Failure("Image not found");
+            }
+
+            var filePath = Path.Combine(_imageStoragePath, image.Path);
+
+            if (!File.Exists(filePath))
+            {
+                return OperationResult<(byte[], string)>.Failure("Image file not found");
+            }
+
+            try
+            {
+                var content = File.ReadAllBytes(filePath);
+                var contentType = GetContentType(image.Path);
+
+                return OperationResult<(byte[], string)>.Success((content, contentType));
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<(byte[], string)>.Failure($"Error reading image file: {ex.Message}");
+            }
+        }
+
+        public OperationResult<(byte[] content, string contentType)> GetImageFile(string fileName)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Saving an image in a local directory and in a database
+        /// </summary>
+        /// <param name="file">The image to save</param>
+        /// <param name="productId">Identification the product</param>
+        /// <returns>Return saved image in database</returns>
         private async Task<Domain.Entity.Image> SaveImageAsync(IFormFile file, long productId)
         {
+            // Processing the image using ImageSharp
+            // Обрабатываем изображение с помощью ImageSharp
             var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
             var filePath = Path.Combine(_imageStoragePath, fileName);
 
             using (var stream = file.OpenReadStream())
             {
-                using (var image = await SixLabors.ImageSharp.Image.LoadAsync(stream))
+                using (var image = await Image.LoadAsync(stream))
                 {
                     await image.SaveAsync(filePath);
 
@@ -114,6 +157,23 @@ namespace PurpleBackendService.Core.Services
                     return await _repository.Add(imageEntity);
                 }
             }
+        }
+
+        /// <summary>
+        /// Defines the image file extension
+        /// </summary>
+        /// <param name="fileName">The file name</param>
+        /// <returns>Returns the content type for the responce</returns>
+        private string GetContentType(string fileName)
+        {
+            var extension = Path.GetExtension(fileName).ToLowerInvariant();
+            return extension switch
+            {
+                ".jpg" or ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                ".gif" => "image/gif",
+                _ => "application/octet-stream"
+            };
         }
     }
 }

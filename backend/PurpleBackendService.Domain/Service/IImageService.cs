@@ -9,6 +9,10 @@ namespace PurpleBackendService.Domain.Service
 
         public OperationResult<ImageDTO> GetImage(long id);
 
+        public OperationResult<(byte[] content, string contentType)> GetImageFile(long id);
+
+        public OperationResult<(byte[] content, string contentType)> GetImageFile(string fileName);
+
         public Task<OperationResult<ImageDTO>> ChangeImageAsync(long id, IFormFile file);
     }
 }
