@@ -6,6 +6,7 @@ using PurpleBackendService.Core.Utility;
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Repository;
 using PurpleBackendService.Domain.Service;
+using System.Threading.Tasks;
 
 namespace PurpleBackendService.Core.Services
 {
@@ -47,8 +48,8 @@ namespace PurpleBackendService.Core.Services
 
         public async Task<OperationResult<ImageDTO>> ChangeImageAsync(long imageId, IFormFile file)
         {
-            var existingImage = _repository.Get(imageId);
-            var oldFilePath = Path.Combine(_imageStoragePath, existingImage.Path);
+            var existingImage = await _repository.Get(imageId);
+            var oldFilePath = Path.Combine(_imageStoragePath, existingImage!.Path);
 
             if (File.Exists(oldFilePath))
             {
@@ -71,9 +72,9 @@ namespace PurpleBackendService.Core.Services
                 .Success(Mapping.Get<ImageDTO, Domain.Entity.Image>(existingImage));
         }
 
-        public OperationResult<ImageDTO> GetImage(long imageId)
+        public async Task<OperationResult<ImageDTO>> GetImage(long imageId)
         {
-            var image = _repository.Get(imageId);
+            var image = await _repository.Get(imageId);
 
             if (image is null)
             {
@@ -89,9 +90,9 @@ namespace PurpleBackendService.Core.Services
         /// </summary>
         /// <param name="imageId">Identification the image</param>
         /// <returns>Returns an array of image bits</returns>
-        public OperationResult<(byte[] content, string contentType)> GetImageFile(long imageId)
+        public async Task<OperationResult<(byte[] content, string contentType)>> GetImageFile(long imageId)
         {
-            var image = _repository.Get(imageId);
+            var image = await _repository.Get(imageId);
 
             if (image is null)
             {
@@ -118,7 +119,8 @@ namespace PurpleBackendService.Core.Services
             }
         }
 
-        public OperationResult<(byte[] content, string contentType)> GetImageFile(string fileName)
+        // TODO: В репозитории реализовать поиск по имени файла.
+        public Task<OperationResult<(byte[] content, string contentType)>> GetImageFile(string fileName)
         {
             throw new NotImplementedException();
         }
@@ -164,7 +166,7 @@ namespace PurpleBackendService.Core.Services
         /// </summary>
         /// <param name="fileName">The file name</param>
         /// <returns>Returns the content type for the responce</returns>
-        private string GetContentType(string fileName)
+        private static string GetContentType(string fileName)
         {
             var extension = Path.GetExtension(fileName).ToLowerInvariant();
             return extension switch

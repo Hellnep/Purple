@@ -1,3 +1,5 @@
+using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 
 using PurpleBackendService.Domain.Entity;
@@ -12,13 +14,8 @@ namespace PurpleBackendService.Core.Repository
         {
         }
 
-        public async Task<Image> Add(Image image)
+        public async Task<Image?> Add(Image image)
         {
-            if (image.ProductRefId is null)
-            {
-                throw new ArgumentNullException("The product Id was not transmitted");
-            }
-
             var productRefId = image.ProductRefId;
             var product = _repository.Products
                 .Include(product => product.Images)
@@ -32,25 +29,25 @@ namespace PurpleBackendService.Core.Repository
             product.Images ??= [];
             product.Images.Add(image);
 
-            await _repository.SaveChangesAsync();
+            await Update();
             return image;
         }
 
-        public Image Get(long imageId)
+        public async Task<Image?> Get(long imageId)
         {
-            var image = _repository.Images
+            return await _repository.Images
                 .Include(image => image.Product)
-                .FirstOrDefault(image => image.ProductRefId == imageId);
-
-            if (image is null)
-            {
-                throw new ArgumentNullException("The returned DbContext object has a null value");
-            }
-
-            return image;
+                .FirstOrDefaultAsync(image => image.Id == imageId);
         }
 
-        public async Task<int> Update() =>
-            await _repository.SaveChangesAsync();
+        public async Task<Image?> Get(string path)
+        {
+            return await _repository.Images
+                .Include(image => image.Product)
+                .FirstOrDefaultAsync(image => image.Path == path);
+        }
+
+        public Task<int> Update() =>
+            _repository.SaveChangesAsync();
     }
 }
