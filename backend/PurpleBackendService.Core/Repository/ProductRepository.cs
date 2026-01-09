@@ -12,56 +12,54 @@ namespace PurpleBackendService.Core.Repository
         {
         }
 
-        public async Task<Product> Add(Product product)
+        public Task<Product> Add(Product product)
         {
-            if (product.AuthorRefId is null)
-            {
-                throw new ArgumentNullException("Author for a new product should not be null");
-            }
-
-            long authorRefId = (long)product.AuthorRefId;
-            var customer = await _repository.Customers
+            long authorRefId = (long)product.AuthorRefId!;
+            var customer = _repository.Customers
                 .Include(customer => customer.Products)
-                .FirstOrDefaultAsync(customer => customer.Id == authorRefId);
+                .FirstOrDefault(customer => customer.Id == authorRefId);
 
             if (customer is null)
             {
                 throw new ArgumentNullException($"Customer with Id={authorRefId} not found");
             }
 
-            customer.Products ??= new List<Product>();
+            customer.Products ??= [];
             customer.Products.Add(product);
 
-            await _repository.SaveChangesAsync();
-            return product;
+            return _repository
+                .SaveChangesAsync()
+                .ContinueWith(task =>
+                {
+                    if (task.IsCompletedSuccessfully)
+                    {
+                        return product;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Failed to save changes");
+                    }
+                });
         }
 
-        public Product Get(long id)
-        {
-            var product = _repository.Products
+        public  Task<Product?> Exists(long productId) =>
+            Task.FromResult(_repository.Products.Find(productId));
+
+        public Task<Product?> Get(long id) =>
+            _repository.Products
                 .Include(product => product.Author)
                 .Include(product => product.Images)
-                .FirstOrDefault(product => product.Id == id);
+                .FirstOrDefaultAsync(product => product.Id == id);
 
-            if (product is null)
-            {
-                throw new ArgumentNullException("The returned DbContext object has a null value");
-            }
-
-            return product;
-        }
-
-        public ICollection<Product> Get()
-        {
-            var products = _repository.Products
+        public Task<ICollection<Product>> Get() =>
+            Task.FromResult(_repository.Products
                 .Include(product => product.Author)
                 .Include(product => product.Images)
-                .ToList();
+                .ToList() as ICollection<Product>
+            );
 
-            return products;
-        }
 
-        public async Task<int> Update() =>
-            await _repository.SaveChangesAsync();
+        public Task<int> Update() =>
+            _repository.SaveChangesAsync();
     }
 }

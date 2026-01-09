@@ -13,45 +13,41 @@ namespace PurpleBackendService.Core.Repository
         {
         }
 
-        public async Task<Customer> Add(Customer input)
+        public Task<Customer> Add(Customer customer)
         {
-            _repository.Customers.Add(input);
-            await _repository.SaveChangesAsync();
-            
-            var customer = _repository.Customers
-                .First(customer => customer.Nickname == input.Nickname);
-
-            return customer;
+            _repository.Customers.Add(customer);
+            return _repository
+                .SaveChangesAsync()
+                .ContinueWith(task =>
+                {
+                    if (task.IsCompletedSuccessfully)
+                    {
+                        return customer;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Failed to save changes");
+                    }
+                });
         }
 
-        public Customer Get(long id)
-        {
-            var customer = _repository.Customers
-                .Include(customer => customer.Products)
-                .FirstOrDefault(customer => customer.Id == id);
-
-            if (customer is null)
-            {
-                throw new ArgumentNullException("The returned DbContext object has a null value");
-            }
-
-            return customer;
-        }
-
-        public bool EmailExists(string email) =>
+        public Task<Customer?> Get(long id) =>
             _repository.Customers
-                .Any(customer => string.Equals(customer.Email, email));
-
-        public async Task<int> Update() =>
-            await _repository.SaveChangesAsync();
-
-        public ICollection<Customer> Get()
-        {
-            var customers = _repository.Customers
                 .Include(customer => customer.Products)
-                .ToList();
+                .FirstOrDefaultAsync(customer => customer.Id == id);
 
-            return customers;
-        }
+
+        public Task<bool> EmailExists(string email) =>
+            _repository.Customers
+                .AnyAsync(customer => string.Equals(customer.Email, email));
+
+        public Task<int> Update() =>
+            _repository.SaveChangesAsync();
+
+        public Task<ICollection<Customer>> Get() =>
+            Task.FromResult(_repository.Customers
+                .Include(customer => customer.Products)
+                .ToList() as ICollection<Customer>
+            );
     }
 }

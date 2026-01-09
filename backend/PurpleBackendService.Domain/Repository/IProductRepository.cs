@@ -6,10 +6,12 @@ namespace PurpleBackendService.Domain.Repository
     {
         public Task<Product> Add(Product input);
 
-        public Product Get(long id);
+        public Task<Product?> Get(long productId);
 
-        public ICollection<Product> Get();
+        public Task<ICollection<Product>> Get();
 
         public Task<int> Update();
+
+        public Task<Product?> Exists(long productId);
     }
 }

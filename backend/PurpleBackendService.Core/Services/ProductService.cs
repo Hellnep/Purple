@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using PurpleBackendService.Core.Utility;
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Entity;
@@ -31,17 +32,17 @@ namespace PurpleBackendService.Core.Services
                 .Success(Mapping.Get<ProductDTO, Product>(result));
         }
 
-        public OperationResult<ProductDTO> GetProduct(long id)
+        public async Task<OperationResult<ProductDTO>> GetProduct(long id)
         {
-            var result = _repository.Get(id);
+            var result = await _repository.Get(id);
 
             return OperationResult<ProductDTO>
                 .Success(Mapping.Get<ProductDTO, Product>(result));
         }
 
-        public OperationResult<ICollection<ProductDTO>> GetProducts()
+        public async Task<OperationResult<ICollection<ProductDTO>>> GetProducts()
         {
-            var products = _repository.Get();
+            var products = await _repository.Get();
             var result = new List<ProductDTO>();
 
             foreach (Product product in products)
@@ -51,9 +52,9 @@ namespace PurpleBackendService.Core.Services
                 .Success(result);
         }
 
-        public OperationResult<ICollection<ProductDTO>> GetAuthorProducts(long authorRefId)
+        public async Task<OperationResult<ICollection<ProductDTO>>> GetAuthorProducts(long authorRefId)
         {
-            var products = _repository.Get();
+            var products = await _repository.Get();
             var result = new List<ProductDTO>();
 
             foreach (Product product in products)
@@ -71,7 +72,9 @@ namespace PurpleBackendService.Core.Services
             try
             {
                 var newData = Mapping.Get<Product, ProductDTO>(inputProduct);
-                var product = _repository.Get()
+                var products = await _repository.Get();
+
+                var product = products
                     .Where(product => product.AuthorRefId == customerId)
                     .FirstOrDefault(product => product.Id == productId);
 

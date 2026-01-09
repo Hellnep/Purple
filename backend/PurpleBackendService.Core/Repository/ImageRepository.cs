@@ -1,5 +1,3 @@
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 
 using PurpleBackendService.Domain.Entity;
@@ -14,7 +12,7 @@ namespace PurpleBackendService.Core.Repository
         {
         }
 
-        public async Task<Image?> Add(Image image)
+        public Task<Image> Add(Image image)
         {
             var productRefId = image.ProductRefId;
             var product = _repository.Products
@@ -29,23 +27,30 @@ namespace PurpleBackendService.Core.Repository
             product.Images ??= [];
             product.Images.Add(image);
 
-            await Update();
-            return image;
+            return _repository
+                .SaveChangesAsync()
+                .ContinueWith(task =>
+                {
+                    if (task.IsCompletedSuccessfully)
+                    {
+                        return image;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Failed to save changes");
+                    }
+                });
         }
 
-        public async Task<Image?> Get(long imageId)
-        {
-            return await _repository.Images
+        public Task<Image?> Get(long imageId) =>
+            _repository.Images
                 .Include(image => image.Product)
                 .FirstOrDefaultAsync(image => image.Id == imageId);
-        }
 
-        public async Task<Image?> Get(string path)
-        {
-            return await _repository.Images
+        public Task<Image?> Get(string path) =>
+            _repository.Images
                 .Include(image => image.Product)
                 .FirstOrDefaultAsync(image => image.Path == path);
-        }
 
         public Task<int> Update() =>
             _repository.SaveChangesAsync();

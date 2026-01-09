@@ -5,6 +5,7 @@ using PurpleBackendService.Web.Resource;
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Service;
 using PurpleBackendService.Core.Utility;
+using System.Threading.Tasks;
 
 namespace PurpleBackendService.Web.Controllers
 {
@@ -24,9 +25,9 @@ namespace PurpleBackendService.Web.Controllers
         }
 
         [HttpGet(Name = nameof(GetProducts))]
-        public ActionResult<List<ProductDTO>> GetProducts()
+        public async Task<ActionResult<List<ProductDTO>>> GetProducts()
         {
-            var result = _productService
+            var result = await _productService
                 .GetProducts();
 
             if (result.IsSuccess)
@@ -58,9 +59,9 @@ namespace PurpleBackendService.Web.Controllers
         }
 
         [HttpGet("{productId}", Name = nameof(GetProduct))]
-        public ActionResult<ProductDTO> GetProduct(long productId)
+        public async Task<ActionResult<ProductDTO>> GetProduct(long productId)
         {
-            var result = _productService
+            var result = await _productService
                 .GetProduct(productId);
 
             if (result.IsSuccess)
@@ -85,9 +86,9 @@ namespace PurpleBackendService.Web.Controllers
         }
 
         [HttpGet("~/api/customers/{customerId}/[controller]", Name = nameof(GetFromAuthor))]
-        public ActionResult<List<ProductDTO>> GetFromAuthor(long customerId)
+        public async Task<ActionResult<List<ProductDTO>>> GetFromAuthor(long customerId)
         {
-            var result = _productService
+            var result = await _productService
                 .GetAuthorProducts(customerId);
 
             if (result.IsSuccess)
