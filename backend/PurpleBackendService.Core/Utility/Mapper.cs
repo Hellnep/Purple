@@ -229,7 +229,7 @@ namespace PurpleBackendService.Core.Utility
         /// </param>
         /// <returns>Returns properties corresponding to the types</returns>
         private static (PropertyInfo[], PropertyInfo[]) GetProperties(
-            Type outputType, 
+            Type outputType,
             Type inputType
         )
         {

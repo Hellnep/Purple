@@ -28,7 +28,7 @@ namespace PurpleBackendService.Domain.Entity
 
         [MaxLength(200)]
         [Column("Content")]
-        public string? Content { get; set; } = null!;
+        public string? Content { get; set; }
 
         public ICollection<Image>? Images { get; set; }
     }

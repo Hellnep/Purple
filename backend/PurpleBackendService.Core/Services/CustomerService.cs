@@ -23,7 +23,7 @@ namespace PurpleBackendService.Core.Services
             if (customer.Email is null)
                 return OperationResult<CustomerDTO>.Failure("You need to enter an email address");
 
-            if (_repository.EmailExists(customer.Email))
+            if (await _repository.EmailExists(customer.Email))
                 return OperationResult<CustomerDTO>.Failure("A user with such an email address already exists");
 
             var result = await _repository.Add(customer);
@@ -32,17 +32,17 @@ namespace PurpleBackendService.Core.Services
                 .Success(Mapping.Get<CustomerDTO, Customer>(result));
         }
 
-        public OperationResult<CustomerDTO> GetCustomer(long id)
+        public async Task<OperationResult<CustomerDTO>> GetCustomer(long id)
         {
-            var result = _repository.Get(id);
+            var result = await _repository.Get(id);
 
             return OperationResult<CustomerDTO>
                 .Success(Mapping.Get<CustomerDTO, Customer>(result));
         }
 
-        public OperationResult<ICollection<CustomerDTO>> GetCustomers()
+        public async Task<OperationResult<ICollection<CustomerDTO>>> GetCustomers()
         {
-            var customers = _repository.Get();
+            var customers = await _repository.Get();
             var result = new List<CustomerDTO>();
 
             foreach (Customer customer in customers)
@@ -57,7 +57,7 @@ namespace PurpleBackendService.Core.Services
             try
             {
                 var newData = Mapping.Get<Customer, CustomerDTO>(input);
-                var customer = _repository.Get(id);
+                var customer = await _repository.Get(id);
 
                 if (newData.Nickname is not null)
                     customer.Nickname = newData.Nickname;

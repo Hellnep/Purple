@@ -5,6 +5,7 @@ using PurpleBackendService.Web.Resource;
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Service;
 using PurpleBackendService.Core.Utility;
+using System.Threading.Tasks;
 
 namespace PurpleBackendService.Web.Controllers
 {
@@ -20,9 +21,9 @@ namespace PurpleBackendService.Web.Controllers
         }
 
         [HttpGet(Name = nameof(GetCustomers))]
-        public ActionResult GetCustomers()
+        public async Task<ActionResult> GetCustomers()
         {
-            var result = _customerService
+            var result = await _customerService
                 .GetCustomers();
 
             if (result.IsSuccess)
@@ -55,9 +56,9 @@ namespace PurpleBackendService.Web.Controllers
         }
 
         [HttpGet("{customerId}", Name = nameof(GetCustomer))]
-        public ActionResult GetCustomer(long customerId)
+        public async Task<ActionResult> GetCustomer(long customerId)
         {
-            var result = _customerService
+            var result = await _customerService
                 .GetCustomer(customerId);
 
             if (result.IsSuccess)
