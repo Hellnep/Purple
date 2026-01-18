@@ -28,12 +28,12 @@ namespace PurpleBackendService.Web.Controllers
 
             if (result.IsSuccess)
             {
-                var customers = result.Result as List<CustomerDTO>;
-                List<Resource<CustomerDTO>> resources = [];
+                var customers = result.Result as List<UserDTO>;
+                List<Resource<UserDTO>> resources = [];
 
-                foreach (CustomerDTO customer in customers!)
+                foreach (UserDTO customer in customers!)
                 {
-                    Resource<CustomerDTO> resource = new(customer);
+                    Resource<UserDTO> resource = new(customer);
 
                     resource.AddLink("get", Url.Link(nameof(GetCustomer), new { customerId = customer.Id})!);
                     resource.AddLink("patch",
@@ -63,7 +63,7 @@ namespace PurpleBackendService.Web.Controllers
 
             if (result.IsSuccess)
             {
-                var resource = new Resource<CustomerDTO>(result.Result!);
+                var resource = new Resource<UserDTO>(result.Result!);
 
                 resource.AddLink("self", Url.Link(nameof(GetCustomer), new { customerId })!);
                 resource.AddLink("patch", Url.Link(nameof(PatchCustomer),
@@ -100,7 +100,7 @@ namespace PurpleBackendService.Web.Controllers
                 if (result.IsSuccess)
                 {
                     var dataCustomer = result.Result!;
-                    var resource = new Resource<CustomerDTO>(dataCustomer);
+                    var resource = new Resource<UserDTO>(dataCustomer);
 
                     resource.AddLink("self", Url.Link(nameof(PostCustomer), null)!, HttpMethod.Post.Method);
                     resource.AddLink("get", Url.Link(nameof(GetCustomer), new { customerId = dataCustomer.Id })!);
@@ -137,7 +137,7 @@ namespace PurpleBackendService.Web.Controllers
 
                 if (result.IsSuccess)
                 {
-                    var resource = new Resource<CustomerDTO>(result.Result!);
+                    var resource = new Resource<UserDTO>(result.Result!);
 
                     resource.AddLink("self", Url.Link(nameof(PatchCustomer), new { customerId })!, HttpMethod.Patch.Method);
                     resource.AddLink("get", Url.Link(nameof(GetCustomer), new { customerId })!);
@@ -153,7 +153,7 @@ namespace PurpleBackendService.Web.Controllers
             return BadRequest();
         }
 
-        private static CustomerDTO Create(string? nickname, string? email, string? phone) =>
+        private static UserDTO Create(string? nickname, string? email, string? phone) =>
             new()
             {
                 Nickname = nickname,

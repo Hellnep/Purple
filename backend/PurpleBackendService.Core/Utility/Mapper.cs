@@ -53,10 +53,14 @@ namespace PurpleBackendService.Core.Utility
                         // коллекций и передачи данных для них
                         GenerateCollection(entityProperty, dtoProperty, dtoValue, entity);
                     }
+                    // Checking for collection types
+                    // Проверка на примитивные типы данных для их конвертации
                     else if (!entityType.IsPrimitive &&
                         entityType != typeof(string) &&
                         entityType != typeof(DateTime) &&
-                        entityType != typeof(DateTime?))
+                        entityType != typeof(DateTime?) &&
+                        entityType != typeof(DateOnly) &&
+                        entityType != typeof(DateOnly?))
                     {
                         // Если это не коллекции, но и не примитивные данные,
                         // вызывается метод конструкции этих классов с последующей передачей данных.

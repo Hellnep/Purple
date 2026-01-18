@@ -15,59 +15,59 @@ namespace PurpleBackendService.Core.Services
             _repository = repository;
         }
 
-        public async Task<OperationResult<CustomerDTO>> CreateCustomerAsync(CustomerDTO input)
+        public async Task<OperationResult<UserDTO>> CreateCustomerAsync(UserDTO input)
         {
-            Customer customer = Mapping
-                .Get<Customer, CustomerDTO>(input);
+            User customer = Mapping
+                .Get<User, UserDTO>(input);
 
             if (customer.Email is null)
-                return OperationResult<CustomerDTO>.Failure("You need to enter an email address");
+                return OperationResult<UserDTO>.Failure("You need to enter an email address");
 
             if (await _repository.EmailExists(customer.Email))
-                return OperationResult<CustomerDTO>.Failure("A user with such an email address already exists");
+                return OperationResult<UserDTO>.Failure("A user with such an email address already exists");
 
             var result = await _repository.Add(customer);
 
-            return OperationResult<CustomerDTO>
-                .Success(Mapping.Get<CustomerDTO, Customer>(result));
+            return OperationResult<UserDTO>
+                .Success(Mapping.Get<UserDTO, User>(result));
         }
 
-        public async Task<OperationResult<CustomerDTO>> GetCustomerAsync(long customerId)
+        public async Task<OperationResult<UserDTO>> GetCustomerAsync(long customerId)
         {
             var customer = await _repository.Get(customerId);
 
             if (customer is null)
             {
-                return OperationResult<CustomerDTO>
+                return OperationResult<UserDTO>
                     .Failure($"Customer with ID={customerId} not found");
             }
 
-            return OperationResult<CustomerDTO>
-                .Success(Mapping.Get<CustomerDTO, Customer>(customer));
+            return OperationResult<UserDTO>
+                .Success(Mapping.Get<UserDTO, User>(customer));
         }
 
-        public async Task<OperationResult<ICollection<CustomerDTO>>> GetCustomersAsync()
+        public async Task<OperationResult<ICollection<UserDTO>>> GetCustomersAsync()
         {
             var customers = await _repository.Get();
-            var result = new List<CustomerDTO>();
+            var result = new List<UserDTO>();
 
-            foreach (Customer customer in customers)
-                result.Add(Mapping.Get<CustomerDTO, Customer>(customer));
+            foreach (User customer in customers)
+                result.Add(Mapping.Get<UserDTO, User>(customer));
 
-            return OperationResult<ICollection<CustomerDTO>>
+            return OperationResult<ICollection<UserDTO>>
                 .Success(result);
         }
 
-        public async Task<OperationResult<CustomerDTO>> ChangeCustomerAsync(long customerId, CustomerDTO input)
+        public async Task<OperationResult<UserDTO>> ChangeCustomerAsync(long customerId, UserDTO input)
         {
             try
             {
-                var newData = Mapping.Get<Customer, CustomerDTO>(input);
+                var newData = Mapping.Get<User, UserDTO>(input);
                 var customer = await _repository.Get(customerId);
 
                 if (customer is null)
                 {
-                    return OperationResult<CustomerDTO>.Failure("Customer not found");
+                    return OperationResult<UserDTO>.Failure("Customer not found");
                 }
 
                 if (newData.Nickname is not null)
@@ -87,12 +87,12 @@ namespace PurpleBackendService.Core.Services
 
                 await _repository.Update();
 
-                return OperationResult<CustomerDTO>
-                    .Success(Mapping.Get<CustomerDTO, Customer>(customer));
+                return OperationResult<UserDTO>
+                    .Success(Mapping.Get<UserDTO, User>(customer));
             }
             catch (ArgumentNullException exception)
             {
-                return OperationResult<CustomerDTO>.Failure(exception.Message);
+                return OperationResult<UserDTO>.Failure(exception.Message);
             }
         }
     }

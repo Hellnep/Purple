@@ -10,6 +10,6 @@ namespace PurpleBackendService.Domain.DTO
 
         public DateOnly? Created { get; set; }
 
-        public DateOnly? Updated { get; set; }
+        public DateTime Updated { get; set; }
     }
 }

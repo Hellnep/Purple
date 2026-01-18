@@ -10,7 +10,7 @@ namespace PurpleBackendService.Domain.DTO
         [MinLength(4), MaxLength(40)]
         public string? Title { get; set; }
 
-        public CustomerDTO? Author { get; set; }
+        public UserDTO? Author { get; set; }
 
         public DateOnly? Created { get; set; }
 

@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PurpleBackendService.Domain.Entity
 {
-    [Table("Customers")]
-    public class Customer
+    [Table("Users")]
+    public class User
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

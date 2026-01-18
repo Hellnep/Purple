@@ -4,11 +4,11 @@ namespace PurpleBackendService.Domain.Repository
 {
     public interface ICustomerRepository
     {
-        public Task<Customer> Add(Customer input);
+        public Task<User> Add(User input);
 
-        public Task<Customer?> Get(long id);
+        public Task<User?> Get(long id);
 
-        public Task<ICollection<Customer>> Get();
+        public Task<ICollection<User>> Get();
 
         public Task<int> Update();
 

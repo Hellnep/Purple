@@ -19,7 +19,7 @@ namespace PurpleBackendService.Domain.Entity
         [ForeignKey("Author")]
         public long? AuthorRefId { get; set; }
 
-        public Customer? Author { get; set; }
+        public User? Author { get; set; }
 
         [Required]
         [MinLength(3), StringLength(40)]

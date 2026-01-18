@@ -5,7 +5,6 @@ using PurpleBackendService.Web.Resource;
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Service;
 using PurpleBackendService.Core.Utility;
-using System.Threading.Tasks;
 
 namespace PurpleBackendService.Web.Controllers
 {
@@ -25,32 +24,14 @@ namespace PurpleBackendService.Web.Controllers
         }
 
         [HttpGet(Name = nameof(GetProducts))]
-        public async Task<ActionResult<List<ProductDTO>>> GetProducts()
+        public async Task<IActionResult> GetProducts()
         {
             var result = await _productService
                 .GetProductsAsync();
 
             if (result.IsSuccess)
             {
-                var products = result.Result as List<ProductDTO>;
-                List<Resource<ProductDTO>> resources = [];
-
-                foreach (ProductDTO product in products!)
-                {
-                    Resource<ProductDTO> resource = new(product);
-
-                    resource.AddLink("get", Url.Link(nameof(GetProducts), new { productId = product.Id })!);
-                    resource.AddLink("patch",
-                        Url.Link(nameof(PatchProduct), new
-                            {
-                                customerId = product.Author!.Id,
-                                productId = product.Id
-                            })!,
-                        HttpMethod.Patch.Method
-                    );
-                }
-
-                return Ok(resources);
+                return Ok(result.Result as List<ProductDTO>);
             }
             else
             {

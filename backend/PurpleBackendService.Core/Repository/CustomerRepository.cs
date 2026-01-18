@@ -12,7 +12,7 @@ namespace PurpleBackendService.Core.Repository
         {
         }
 
-        public Task<Customer> Add(Customer customer)
+        public Task<User> Add(User customer)
         {
             _repository.Customers.Add(customer);
             return _repository
@@ -30,7 +30,7 @@ namespace PurpleBackendService.Core.Repository
                 });
         }
 
-        public Task<Customer?> Get(long customerId) =>
+        public Task<User?> Get(long customerId) =>
             _repository.Customers
                 .Include(customer => customer.Products)
                 .FirstOrDefaultAsync(customer => customer.Id == customerId);
@@ -43,10 +43,10 @@ namespace PurpleBackendService.Core.Repository
         public Task<int> Update() =>
             _repository.SaveChangesAsync();
 
-        public Task<ICollection<Customer>> Get() =>
+        public Task<ICollection<User>> Get() =>
             Task.FromResult(_repository.Customers
                 .Include(customer => customer.Products)
-                .ToList() as ICollection<Customer>
+                .ToList() as ICollection<User>
             );
     }
 }

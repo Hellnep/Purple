@@ -6,7 +6,7 @@ namespace PurpleBackendService.Infrastructure.Sqlite
 {
     public class PurpleOcean : DbContext
     {
-        public DbSet<Customer> Customers { get; set; }
+        public DbSet<User> Customers { get; set; }
 
         public DbSet<Product> Products { get; set; }
 
@@ -20,11 +20,15 @@ namespace PurpleBackendService.Infrastructure.Sqlite
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Customer>()
+            // Linking the product model to the user model
+            // Привязка модели продуктов к модели пользователей
+            modelBuilder.Entity<User>()
                 .HasMany(customer => customer.Products)
                 .WithOne(product => product.Author)
                 .HasForeignKey(product => product.AuthorRefId);
 
+            // Linking the image model to the product model
+            // Привязка модели изображений к модели продуктов
             modelBuilder.Entity<Product>()
                 .HasMany(product => product.Images)
                 .WithOne(image => image.Product)
