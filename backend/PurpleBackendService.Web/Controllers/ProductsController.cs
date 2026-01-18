@@ -28,7 +28,7 @@ namespace PurpleBackendService.Web.Controllers
         public async Task<ActionResult<List<ProductDTO>>> GetProducts()
         {
             var result = await _productService
-                .GetProducts();
+                .GetProductsAsync();
 
             if (result.IsSuccess)
             {
@@ -62,7 +62,7 @@ namespace PurpleBackendService.Web.Controllers
         public async Task<ActionResult<ProductDTO>> GetProduct(long productId)
         {
             var result = await _productService
-                .GetProduct(productId);
+                .GetProductAsync(productId);
 
             if (result.IsSuccess)
             {
@@ -89,7 +89,7 @@ namespace PurpleBackendService.Web.Controllers
         public async Task<ActionResult<List<ProductDTO>>> GetFromAuthor(long customerId)
         {
             var result = await _productService
-                .GetAuthorProducts(customerId);
+                .GetAuthorProductsAsync(customerId);
 
             if (result.IsSuccess)
             {

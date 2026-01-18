@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using PurpleBackendService.Core.Utility;
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Entity;
@@ -32,15 +31,21 @@ namespace PurpleBackendService.Core.Services
                 .Success(Mapping.Get<ProductDTO, Product>(result));
         }
 
-        public async Task<OperationResult<ProductDTO>> GetProduct(long id)
+        public async Task<OperationResult<ProductDTO>> GetProductAsync(long productId)
         {
-            var result = await _repository.Get(id);
+            var result = await _repository.Get(productId);
+
+            if (result is null)
+            {
+                return OperationResult<ProductDTO>
+                    .Failure($"Product with ID={productId} not found");
+            }
 
             return OperationResult<ProductDTO>
                 .Success(Mapping.Get<ProductDTO, Product>(result));
         }
 
-        public async Task<OperationResult<ICollection<ProductDTO>>> GetProducts()
+        public async Task<OperationResult<ICollection<ProductDTO>>> GetProductsAsync()
         {
             var products = await _repository.Get();
             var result = new List<ProductDTO>();
@@ -52,7 +57,7 @@ namespace PurpleBackendService.Core.Services
                 .Success(result);
         }
 
-        public async Task<OperationResult<ICollection<ProductDTO>>> GetAuthorProducts(long authorRefId)
+        public async Task<OperationResult<ICollection<ProductDTO>>> GetAuthorProductsAsync(long authorRefId)
         {
             var products = await _repository.Get();
             var result = new List<ProductDTO>();

@@ -32,15 +32,21 @@ namespace PurpleBackendService.Core.Services
                 .Success(Mapping.Get<CustomerDTO, Customer>(result));
         }
 
-        public async Task<OperationResult<CustomerDTO>> GetCustomer(long id)
+        public async Task<OperationResult<CustomerDTO>> GetCustomerAsync(long customerId)
         {
-            var result = await _repository.Get(id);
+            var customer = await _repository.Get(customerId);
+
+            if (customer is null)
+            {
+                return OperationResult<CustomerDTO>
+                    .Failure($"Customer with ID={customerId} not found");
+            }
 
             return OperationResult<CustomerDTO>
-                .Success(Mapping.Get<CustomerDTO, Customer>(result));
+                .Success(Mapping.Get<CustomerDTO, Customer>(customer));
         }
 
-        public async Task<OperationResult<ICollection<CustomerDTO>>> GetCustomers()
+        public async Task<OperationResult<ICollection<CustomerDTO>>> GetCustomersAsync()
         {
             var customers = await _repository.Get();
             var result = new List<CustomerDTO>();
@@ -52,21 +58,32 @@ namespace PurpleBackendService.Core.Services
                 .Success(result);
         }
 
-        public async Task<OperationResult<CustomerDTO>> ChangeCustomerAsync(long id, CustomerDTO input)
+        public async Task<OperationResult<CustomerDTO>> ChangeCustomerAsync(long customerId, CustomerDTO input)
         {
             try
             {
                 var newData = Mapping.Get<Customer, CustomerDTO>(input);
-                var customer = await _repository.Get(id);
+                var customer = await _repository.Get(customerId);
+
+                if (customer is null)
+                {
+                    return OperationResult<CustomerDTO>.Failure("Customer not found");
+                }
 
                 if (newData.Nickname is not null)
+                {
                     customer.Nickname = newData.Nickname;
+                }
 
                 if (newData.Email is not null)
+                {
                     customer.Email = newData.Email;
+                }
 
                 if (newData.Phone is not null)
+                {
                     customer.Phone = newData.Phone;
+                }
 
                 await _repository.Update();
 

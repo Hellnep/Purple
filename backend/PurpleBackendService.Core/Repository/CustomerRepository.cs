@@ -30,10 +30,10 @@ namespace PurpleBackendService.Core.Repository
                 });
         }
 
-        public Task<Customer?> Get(long id) =>
+        public Task<Customer?> Get(long customerId) =>
             _repository.Customers
                 .Include(customer => customer.Products)
-                .FirstOrDefaultAsync(customer => customer.Id == id);
+                .FirstOrDefaultAsync(customer => customer.Id == customerId);
 
 
         public Task<bool> EmailExists(string email) =>

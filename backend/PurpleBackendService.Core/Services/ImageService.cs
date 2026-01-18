@@ -6,7 +6,6 @@ using PurpleBackendService.Core.Utility;
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Repository;
 using PurpleBackendService.Domain.Service;
-using System.Threading.Tasks;
 
 namespace PurpleBackendService.Core.Services
 {
@@ -72,7 +71,7 @@ namespace PurpleBackendService.Core.Services
                 .Success(Mapping.Get<ImageDTO, Domain.Entity.Image>(existingImage));
         }
 
-        public async Task<OperationResult<ImageDTO>> GetImage(long imageId)
+        public async Task<OperationResult<ImageDTO>> GetImageAsync(long imageId)
         {
             var image = await _repository.Get(imageId);
 
@@ -90,7 +89,7 @@ namespace PurpleBackendService.Core.Services
         /// </summary>
         /// <param name="imageId">Identification the image</param>
         /// <returns>Returns an array of image bits</returns>
-        public async Task<OperationResult<(byte[] content, string contentType)>> GetImageFile(long imageId)
+        public async Task<OperationResult<(byte[] content, string contentType)>> GetImageFileAsync(long imageId)
         {
             var image = await _repository.Get(imageId);
 
@@ -120,7 +119,7 @@ namespace PurpleBackendService.Core.Services
         }
 
         // TODO: В репозитории реализовать поиск по имени файла.
-        public Task<OperationResult<(byte[] content, string contentType)>> GetImageFile(string fileName)
+        public Task<OperationResult<(byte[] content, string contentType)>> GetImageFileAsync(string fileName)
         {
             throw new NotImplementedException();
         }

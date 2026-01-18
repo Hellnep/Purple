@@ -24,7 +24,7 @@ namespace PurpleBackendService.Web.Controllers
         public async Task<ActionResult> GetCustomers()
         {
             var result = await _customerService
-                .GetCustomers();
+                .GetCustomersAsync();
 
             if (result.IsSuccess)
             {
@@ -59,7 +59,7 @@ namespace PurpleBackendService.Web.Controllers
         public async Task<ActionResult> GetCustomer(long customerId)
         {
             var result = await _customerService
-                .GetCustomer(customerId);
+                .GetCustomerAsync(customerId);
 
             if (result.IsSuccess)
             {
