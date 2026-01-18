@@ -145,8 +145,8 @@ namespace PurpleBackendService.Web.Controllers
             return BadRequest();
         }
 
-        [HttpPatch("~/api/customers/{customerId}/[controller]/{productId}", Name = nameof(PatchProduct))]
-        public async Task<IActionResult> PatchProduct(long customerId, long productId,
+        [HttpPatch("{productId}", Name = nameof(PatchProduct))]
+        public async Task<IActionResult> PatchProduct(long productId,
             [FromForm] string title,
             [FromForm] string content
         )
@@ -160,7 +160,7 @@ namespace PurpleBackendService.Web.Controllers
             else
             {
                 var result = await _productService
-                    .ChangeProductAsync(customerId, productId, product);
+                    .ChangeProductAsync(productId, product);
 
                 if (result.IsSuccess)
                 {

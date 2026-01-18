@@ -21,10 +21,14 @@ namespace PurpleBackendService.Core.Services
                 .Get<User, UserDTO>(input);
 
             if (customer.Email is null)
+            {
                 return OperationResult<UserDTO>.Failure("You need to enter an email address");
+            }
 
             if (await _repository.EmailExists(customer.Email))
+            {
                 return OperationResult<UserDTO>.Failure("A user with such an email address already exists");
+            }
 
             var result = await _repository.Add(customer);
 
@@ -52,7 +56,9 @@ namespace PurpleBackendService.Core.Services
             var result = new List<UserDTO>();
 
             foreach (User customer in customers)
+            {
                 result.Add(Mapping.Get<UserDTO, User>(customer));
+            }
 
             return OperationResult<ICollection<UserDTO>>
                 .Success(result);

@@ -12,7 +12,7 @@ namespace PurpleBackendService.Domain.Entity
 
         [Required]
         [MinLength(4), StringLength(40)]
-        [Column("FirstName")]
+        [Column("Nickname")]
         public string Nickname { get; set; } = string.Empty;
 
         [Column("RegistrationDate")]

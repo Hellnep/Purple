@@ -27,6 +27,8 @@ namespace PurpleBackendService.Core.Repository
             customer.Products ??= [];
             customer.Products.Add(product);
 
+            // This is where the changes are saved the result is returned
+            // Здесь происходит сохранение изменений, с последующим возвратом результата
             return _repository
                 .SaveChangesAsync()
                 .ContinueWith(task =>

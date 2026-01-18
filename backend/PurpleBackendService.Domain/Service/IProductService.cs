@@ -12,7 +12,7 @@ namespace PurpleBackendService.Domain.Service
 
         public Task<OperationResult<ProductDTO>> GetProductAsync(long id);
 
-        public Task<OperationResult<ProductDTO>> ChangeProductAsync(long customerId, long productId, ProductDTO input);
+        public Task<OperationResult<ProductDTO>> ChangeProductAsync(long productId, ProductDTO input);
     }
 }
 
