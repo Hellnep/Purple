@@ -29,6 +29,12 @@ namespace PurpleBackendService.Core.Services
             }
         }
 
+        ///<summary>
+        /// Adding images to the database
+        /// </summary>
+        /// <param name="productId">Identification the product</param>
+        /// <param name="files">Image files</param>
+        /// <returns>Returns a collection of image metadata</returns>
         public async Task<OperationResult<ICollection<ImageDTO>>> AddImagesAsync(long productId, IFormFileCollection files)
         {
             var imageDTOs = new List<ImageDTO>();
@@ -45,6 +51,12 @@ namespace PurpleBackendService.Core.Services
             return OperationResult<ICollection<ImageDTO>>.Success(imageDTOs);
         }
 
+        ///<summary>
+        /// Changing the image
+        /// </summary>
+        /// <param name="imageId">Identification the image</param>
+        /// <param name="file">Image file</param>
+        /// <returns>Returns an image metadata</returns>
         public async Task<OperationResult<ImageDTO>> ChangeImageAsync(long imageId, IFormFile file)
         {
             var existingImage = await _repository.Get(imageId);
@@ -71,6 +83,11 @@ namespace PurpleBackendService.Core.Services
                 .Success(Mapping.Get<ImageDTO, Domain.Entity.Image>(existingImage));
         }
 
+        ///<summary>
+        /// Provides metadata for an image from database
+        /// </summary>
+        /// <param name="imageId">Identification the image</param>
+        /// <returns>Returns an image metadata</returns>
         public async Task<OperationResult<ImageDTO>> GetImageAsync(long imageId)
         {
             var image = await _repository.Get(imageId);
@@ -118,10 +135,44 @@ namespace PurpleBackendService.Core.Services
             }
         }
 
-        // TODO: В репозитории реализовать поиск по имени файла.
-        public Task<OperationResult<(byte[] content, string contentType)>> GetImageFileAsync(string fileName)
+        ///<summary>
+        /// Provides a file with a bit format for output as an image
+        /// </summary>
+        /// <param name="fileName">The file name</param>
+        /// <returns>Returns an array of image bits</returns>
+        public async Task<OperationResult<(byte[] content, string contentType)>> GetImageFileAsync(string fileName)
         {
-            throw new NotImplementedException();
+            // Getting the image metadata in database
+            // Получение метаданных изображения из базы данных
+            var image = await _repository.Get(fileName);
+
+            if (image is null)
+            {
+                return OperationResult<(byte[], string)>.Failure("Image not found by file name");
+            }
+
+            // Getting the file path
+            // Получение пути к файлу
+            var filePath = Path.Combine(_imageStoragePath, image.Path);
+
+            if (!File.Exists(filePath))
+            {
+                return OperationResult<(byte[], string)>.Failure("Image file not found in storage");
+            }
+
+            // Reading the image from file
+            // Читаем изображение из файла
+            try
+            {
+                var content = File.ReadAllBytes(filePath);
+                var contentType = GetContentType(image.Path);
+
+                return OperationResult<(byte[], string)>.Success((content, contentType));
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<(byte[], string)>.Failure($"Error reading image file: {ex.Message}");
+            }
         }
 
         /// <summary>

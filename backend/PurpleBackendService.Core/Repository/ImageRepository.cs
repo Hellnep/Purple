@@ -12,6 +12,11 @@ namespace PurpleBackendService.Core.Repository
         {
         }
 
+        ///<summary>
+        /// Add image data to database
+        /// </summary>
+        /// <param name="image">Image data</param>
+        /// <returns>Image entity</returns>
         public Task<Image> Add(Image image)
         {
             var productRefId = image.ProductRefId;
@@ -42,16 +47,29 @@ namespace PurpleBackendService.Core.Repository
                 });
         }
 
+        ///<summary>
+        /// Get an image by ID
+        /// </summary>
+        /// <param name="imageId">Image identification</param>
+        /// <returns>Image entity</returns>
         public Task<Image?> Get(long imageId) =>
             _repository.Images
                 .Include(image => image.Product)
                 .FirstOrDefaultAsync(image => image.Id == imageId);
 
+        ///<summary>
+        /// Get an image by path
+        /// </summary>
+        /// <param name="path">Image path</param>
+        /// <returns>Image entity</returns>
         public Task<Image?> Get(string path) =>
             _repository.Images
                 .Include(image => image.Product)
                 .FirstOrDefaultAsync(image => image.Path == path);
 
+        ///<summary>
+        /// Update datas in database
+        /// </summary>
         public Task<int> Update() =>
             _repository.SaveChangesAsync();
     }
