@@ -2,13 +2,11 @@ using PurpleBackendService.Infrastructure.Sqlite;
 
 namespace PurpleBackendService.Core.Repository
 {
-    public abstract class Repository
+    ///<summary>
+    /// Base class for all repositories
+    /// </summary>
+    public abstract class Repository(PurpleOcean repository)
     {
-        protected PurpleOcean _repository;
-
-        protected Repository(PurpleOcean repository)
-        {
-            _repository = repository;
-        }
+        protected PurpleOcean _repository = repository;
     }
 }

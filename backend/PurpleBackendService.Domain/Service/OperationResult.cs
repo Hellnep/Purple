@@ -21,6 +21,11 @@ namespace PurpleBackendService.Domain.Service
         /// </summary>
         public T? Result { get; private set; }
 
+        ///<summary>
+        /// Creates a successful operation result
+        /// </summary>
+        /// <param name="data">Data to be returned</param>
+        /// <returns>The result of successful operation</returns>
         public static OperationResult<T> Success(T data) =>
             new()
             {
@@ -28,6 +33,11 @@ namespace PurpleBackendService.Domain.Service
                 Result = data
             };
 
+        ///<summary>
+        /// Creates an operation result with errors
+        /// </summary>
+        /// <param name="errors">List of errors or crash messages</param>
+        /// <returns>The result of failed operation</returns>
         public static OperationResult<T> Failure(params string[] errors) =>
             new()
             {

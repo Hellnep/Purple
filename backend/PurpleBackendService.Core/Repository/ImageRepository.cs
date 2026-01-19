@@ -6,12 +6,9 @@ using PurpleBackendService.Infrastructure.Sqlite;
 
 namespace PurpleBackendService.Core.Repository
 {
-    public class ImageRepository : Repository, IImageRepository
+    public class ImageRepository(PurpleOcean repository)
+        : Repository(repository), IImageRepository
     {
-        public ImageRepository(PurpleOcean repository) : base(repository)
-        {
-        }
-
         ///<summary>
         /// Add image data to database
         /// </summary>

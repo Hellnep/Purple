@@ -6,7 +6,7 @@ namespace PurpleBackendService.Infrastructure.Sqlite
 {
     public class PurpleOcean : DbContext
     {
-        public DbSet<User> Customers { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public DbSet<Product> Products { get; set; }
 
