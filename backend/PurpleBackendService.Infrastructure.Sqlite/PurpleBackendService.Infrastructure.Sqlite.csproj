@@ -2,6 +2,10 @@
   <!-- ReReference on packages -->
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+
+    <PackageReference Include="Roslynator.Analyzers" />
+    <PackageReference Include="Roslynator.Formatting.Analyzers" />
+    <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" />
   </ItemGroup>
   
   <!-- Reference on projects -->
