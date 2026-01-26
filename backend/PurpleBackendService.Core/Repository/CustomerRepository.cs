@@ -34,10 +34,9 @@ namespace PurpleBackendService.Core.Repository
                 });
         }
 
-        public Task<User?> Get(long customerId) =>
-            _repository.Users
-                .Include(customer => customer.Products)
-                .FirstOrDefaultAsync(customer => customer.Id == customerId);
+        public Task<User?> Get(long customerId) => _repository.Users
+            .Include(customer => customer.Products)
+            .FirstOrDefaultAsync(customer => customer.Id == customerId);
 
         ///<summary>
         ///Check if email exists in database
@@ -46,9 +45,8 @@ namespace PurpleBackendService.Core.Repository
         ///<returns>
         ///The result of checking the existence an email
         ///</returns>
-        public Task<bool> EmailExists(string email) =>
-            _repository.Users
-                .AnyAsync(customer => string.Equals(customer.Email, email));
+        public Task<bool> EmailExists(string email) => _repository.Users
+            .AnyAsync(customer => string.Equals(customer.Email, email));
 
         ///<summary>
         ///Update datas in database

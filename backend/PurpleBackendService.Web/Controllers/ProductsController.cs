@@ -16,7 +16,6 @@ namespace PurpleBackendService.Web.Controllers
 
         private readonly IImageService _imageService;
 
-
         public ProductsController(IProductService service, IImageService imageService)
         {
             _productService = service;
