@@ -2,14 +2,14 @@ using PurpleBackendService.Domain.DTO;
 
 namespace PurpleBackendService.Domain.Service
 {
-    public interface ICustomerService
+    public interface IUserService
     {
-        public Task<OperationResult<UserDTO>> CreateCustomerAsync(UserDTO input);
+        public Task<OperationResult<UserDTO>> CreateUserAsync(UserDTO input);
 
-        public Task<OperationResult<ICollection<UserDTO>>> GetCustomersAsync();
+        public Task<OperationResult<ICollection<UserDTO>>> GetUsersAsync();
 
-        public Task<OperationResult<UserDTO>> GetCustomerAsync(long id);
+        public Task<OperationResult<UserDTO>> GetUserAsync(long id);
 
-        public Task<OperationResult<UserDTO>> ChangeCustomerAsync(long id, UserDTO input);
+        public Task<OperationResult<UserDTO>> ChangeUserAsync(long id, UserDTO input);
     }
 }

@@ -12,7 +12,7 @@ namespace PurpleBackendService.Domain.DTO
 
         public UserDTO? Author { get; set; }
 
-        public DateOnly? Created { get; set; }
+        public DateTime? Created { get; set; }
 
         public DateTime? Updated { get; set; }
 

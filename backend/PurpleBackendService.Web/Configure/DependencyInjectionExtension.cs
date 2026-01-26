@@ -59,10 +59,10 @@ namespace PurpleBackendService.Web.Configure
             services.AddTransient<IImageService, ImageService>();
 
             services.AddTransient<IProductRepository, ProductRepository>();
-            services.AddTransient<ICustomerRepository, CustomerRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
 
             services.AddTransient<IProductService, ProductService>();
-            services.AddTransient<ICustomerService, CustomerService>();
+            services.AddTransient<IUserService, UserService>();
         }
 
         public static void AddMapControllers(this WebApplication app)

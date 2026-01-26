@@ -5,17 +5,16 @@ using PurpleBackendService.Web.Resource;
 using PurpleBackendService.Domain.DTO;
 using PurpleBackendService.Domain.Service;
 using PurpleBackendService.Core.Utility;
-using System.Threading.Tasks;
 
 namespace PurpleBackendService.Web.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CustomersController : ControllerBase
+    public class UserController : ControllerBase
     {
-        private readonly ICustomerService _customerService;
+        private readonly IUserService _customerService;
 
-        public CustomersController(ICustomerService service)
+        public UserController(IUserService service)
         {
             _customerService = service;
         }
@@ -24,7 +23,7 @@ namespace PurpleBackendService.Web.Controllers
         public async Task<ActionResult> GetCustomers()
         {
             var result = await _customerService
-                .GetCustomersAsync();
+                .GetUsersAsync();
 
             if (result.IsSuccess)
             {
@@ -59,7 +58,7 @@ namespace PurpleBackendService.Web.Controllers
         public async Task<ActionResult> GetCustomer(long customerId)
         {
             var result = await _customerService
-                .GetCustomerAsync(customerId);
+                .GetUserAsync(customerId);
 
             if (result.IsSuccess)
             {
@@ -95,7 +94,7 @@ namespace PurpleBackendService.Web.Controllers
             else
             {
                 var result = await _customerService
-                    .CreateCustomerAsync(customer);
+                    .CreateUserAsync(customer);
 
                 if (result.IsSuccess)
                 {
@@ -133,7 +132,7 @@ namespace PurpleBackendService.Web.Controllers
             else
             {
                 var result = await _customerService
-                    .ChangeCustomerAsync(customerId, customer);
+                    .ChangeUserAsync(customerId, customer);
 
                 if (result.IsSuccess)
                 {

@@ -2,7 +2,7 @@ using PurpleBackendService.Domain.Entity;
 
 namespace PurpleBackendService.Domain.Repository
 {
-    public interface ICustomerRepository
+    public interface IUserRepository
     {
         public Task<User> Add(User input);
 

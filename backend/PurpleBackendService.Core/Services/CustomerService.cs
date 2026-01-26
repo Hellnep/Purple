@@ -6,56 +6,56 @@ using PurpleBackendService.Core.Utility;
 
 namespace PurpleBackendService.Core.Services
 {
-    public class CustomerService : ICustomerService
+    public class UserService : IUserService
     {
-        private readonly ICustomerRepository _repository;
+        private readonly IUserRepository _repository;
 
-        public CustomerService(ICustomerRepository repository)
+        public UserService(IUserRepository repository)
         {
             _repository = repository;
         }
 
-        public async Task<OperationResult<UserDTO>> CreateCustomerAsync(UserDTO input)
+        public async Task<OperationResult<UserDTO>> CreateUserAsync(UserDTO input)
         {
-            var customer = Mapping
+            var user = Mapping
                 .Get<User, UserDTO>(input);
 
-            if (customer.Email is null)
+            if (user.Email is null)
             {
                 return OperationResult<UserDTO>.Failure("You need to enter an email address");
             }
 
-            if (await _repository.EmailExists(customer.Email))
+            if (await _repository.EmailExists(user.Email))
             {
                 return OperationResult<UserDTO>.Failure("A user with such an email address already exists");
             }
 
-            var result = await _repository.Add(customer);
+            var result = await _repository.Add(user);
 
             return OperationResult<UserDTO>
                 .Success(Mapping.Get<UserDTO, User>(result));
         }
 
-        public async Task<OperationResult<UserDTO>> GetCustomerAsync(long customerId)
+        public async Task<OperationResult<UserDTO>> GetUserAsync(long userId)
         {
-            var customer = await _repository.Get(customerId);
+            var user = await _repository.Get(userId);
 
-            if (customer is null)
+            if (user is null)
             {
                 return OperationResult<UserDTO>
-                    .Failure($"Customer with ID={customerId} not found");
+                    .Failure($"Customer with ID={userId} not found");
             }
 
             return OperationResult<UserDTO>
-                .Success(Mapping.Get<UserDTO, User>(customer));
+                .Success(Mapping.Get<UserDTO, User>(user));
         }
 
-        public async Task<OperationResult<ICollection<UserDTO>>> GetCustomersAsync()
+        public async Task<OperationResult<ICollection<UserDTO>>> GetUsersAsync()
         {
-            var customers = await _repository.Get();
+            var users = await _repository.Get();
             var result = new List<UserDTO>();
 
-            foreach (var customer in customers)
+            foreach (var customer in users)
             {
                 result.Add(Mapping.Get<UserDTO, User>(customer));
             }
@@ -64,37 +64,37 @@ namespace PurpleBackendService.Core.Services
                 .Success(result);
         }
 
-        public async Task<OperationResult<UserDTO>> ChangeCustomerAsync(long customerId, UserDTO input)
+        public async Task<OperationResult<UserDTO>> ChangeUserAsync(long userId, UserDTO input)
         {
             try
             {
                 var newData = Mapping.Get<User, UserDTO>(input);
-                var customer = await _repository.Get(customerId);
+                var user = await _repository.Get(userId);
 
-                if (customer is null)
+                if (user is null)
                 {
-                    return OperationResult<UserDTO>.Failure("Customer not found");
+                    return OperationResult<UserDTO>.Failure("User not found");
                 }
 
                 if (newData.Nickname is not null)
                 {
-                    customer.Nickname = newData.Nickname;
+                    user.Nickname = newData.Nickname;
                 }
 
                 if (newData.Email is not null)
                 {
-                    customer.Email = newData.Email;
+                    user.Email = newData.Email;
                 }
 
                 if (newData.Phone is not null)
                 {
-                    customer.Phone = newData.Phone;
+                    user.Phone = newData.Phone;
                 }
 
                 await _repository.Update();
 
                 return OperationResult<UserDTO>
-                    .Success(Mapping.Get<UserDTO, User>(customer));
+                    .Success(Mapping.Get<UserDTO, User>(user));
             }
             catch (ArgumentNullException exception)
             {
