@@ -31,7 +31,7 @@ namespace PurpleBackendService.Web.Controllers
                 var customers = result.Result as List<UserDTO>;
                 List<Resource<UserDTO>> resources = [];
 
-                foreach (UserDTO customer in customers!)
+                foreach (var customer in customers!)
                 {
                     Resource<UserDTO> resource = new(customer);
 
@@ -153,12 +153,11 @@ namespace PurpleBackendService.Web.Controllers
             return BadRequest();
         }
 
-        private static UserDTO Create(string? nickname, string? email, string? phone) =>
-            new()
-            {
-                Nickname = nickname,
-                Email = email,
-                Phone = phone
-            };
+        private static UserDTO Create(string? nickname, string? email, string? phone) => new()
+        {
+            Nickname = nickname,
+            Email = email,
+            Phone = phone
+        };
     }
 }

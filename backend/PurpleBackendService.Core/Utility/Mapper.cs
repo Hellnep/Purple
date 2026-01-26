@@ -12,7 +12,7 @@ namespace PurpleBackendService.Core.Utility
         private static readonly Dictionary<(Type, Type), (PropertyInfo[], PropertyInfo[])> _cache = new();
 
         /// <summary>
-        /// Perform type matching and return 
+        /// Perform type matching and return
         /// the required data type
         /// </summary>
         /// <typeparam name="T1">The type of data to be returned</typeparam>
@@ -32,24 +32,27 @@ namespace PurpleBackendService.Core.Utility
             // для последующей работы с ними.
             var (entityProperties, dtoProperties) = GetProperties(typeof(T1), typeof(T2));
 
-            foreach (PropertyInfo dtoProperty in dtoProperties)
+            foreach (var dtoProperty in dtoProperties)
             {
-                PropertyInfo? entityProperty = Array.Find(entityProperties, p =>
+                var entityProperty = Array.Find(entityProperties, p =>
                     p.Name.Equals(dtoProperty.Name, StringComparison.OrdinalIgnoreCase) &&
                     p.CanWrite);
 
                 if (entityProperty is not null)
                 {
-                    object? dtoValue = dtoProperty.GetValue(inputType);
+                    var dtoValue = dtoProperty.GetValue(inputType);
                     var entityType = entityProperty.PropertyType;
 
-                    if (dtoValue is null) continue;
+                    if (dtoValue is null)
+                    {
+                        continue;
+                    }
 
                     if (IsCollectionType(dtoProperty.PropertyType) &&
                         IsCollectionType(entityProperty.PropertyType))
                     {
                         // If these are collections, call the collection generatiuon method.
-                        // Если это коллекции, вызвается метод конструкции 
+                        // Если это коллекции, вызвается метод конструкции
                         // коллекций и передачи данных для них
                         GenerateCollection(entityProperty, dtoProperty, dtoValue, entity);
                     }
@@ -95,7 +98,7 @@ namespace PurpleBackendService.Core.Utility
             T entity
         )
         {
-            IEnumerable? sourceCollection = (IEnumerable?)value;
+            var sourceCollection = (IEnumerable?)value;
 
             if (sourceCollection is not null)
             {
@@ -103,10 +106,10 @@ namespace PurpleBackendService.Core.Utility
 
                 // Getting information about collection types
                 // Получаем информацию о типах коллекий
-                Type sourceElementType = dtoProperty.PropertyType
+                var sourceElementType = dtoProperty.PropertyType
                     .GetGenericArguments()[0];
 
-                Type targetElementType = entityProperty.PropertyType
+                var targetElementType = entityProperty.PropertyType
                     .GetGenericArguments()[0];
 
                 foreach (var item in sourceCollection)
@@ -123,7 +126,7 @@ namespace PurpleBackendService.Core.Utility
                 if (entityProperty.PropertyType.IsArray &&
                     targetCollection is IList list)
                 {
-                    Array array = Array.CreateInstance(entityProperty.PropertyType
+                    var array = Array.CreateInstance(entityProperty.PropertyType
                         .GetElementType()!,
                         list.Count
                     );
@@ -147,10 +150,10 @@ namespace PurpleBackendService.Core.Utility
         {
             if (collectionType.IsArray)
             {
-                Type? elementTypeLocal = collectionType
+                var elementTypeLocal = collectionType
                     .GetElementType()!;
 
-                Type listTypeLocal = typeof(List<>)
+                var listTypeLocal = typeof(List<>)
                     .MakeGenericType(elementTypeLocal);
 
                 return Activator.CreateInstance(listTypeLocal)!;
@@ -164,10 +167,10 @@ namespace PurpleBackendService.Core.Utility
                 }
             }
 
-            Type elementType = collectionType
+            var elementType = collectionType
                 .GetGenericArguments()[0];
 
-            Type listType = typeof(List<>)
+            var listType = typeof(List<>)
                 .MakeGenericType(elementType);
 
             return Activator.CreateInstance(listType)!;
@@ -216,8 +219,7 @@ namespace PurpleBackendService.Core.Utility
         /// <param name="targetType">Target data type</param>
         /// <param name="sourceType">Source data type</param>
         /// <returns></returns>
-        private static MethodInfo GenerateMethod(Type targetType, Type sourceType) =>
-            typeof(Mapping)
+        private static MethodInfo GenerateMethod(Type targetType, Type sourceType) => typeof(Mapping)
                 .GetMethod(nameof(Get), BindingFlags.Public | BindingFlags.Static)!
                 .MakeGenericMethod(targetType, sourceType);
 

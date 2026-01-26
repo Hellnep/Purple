@@ -25,7 +25,7 @@ namespace PurpleBackendService.Core.Services
         /// </returns>
         public async Task<OperationResult<ProductDTO>> CreateProductAsync(long id, ProductDTO input)
         {
-            Product product = Mapping
+            var product = Mapping
                 .Get<Product, ProductDTO>(input);
 
             if (string.IsNullOrEmpty(product.Title))
@@ -72,7 +72,7 @@ namespace PurpleBackendService.Core.Services
             var products = await _repository.Get();
             var result = new List<ProductDTO>();
 
-            foreach (Product product in products)
+            foreach (var product in products)
             {
                 result.Add(Mapping.Get<ProductDTO, Product>(product));
             }
@@ -93,7 +93,7 @@ namespace PurpleBackendService.Core.Services
             var products = await _repository.Get();
             var result = new List<ProductDTO>();
 
-            foreach (Product product in products)
+            foreach (var product in products)
             {
                 if (product.AuthorRefId == authorRefId)
                 {

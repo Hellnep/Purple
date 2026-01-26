@@ -1,3 +1,4 @@
+#pragma warning disable IDE0007 // Использование неявного типа
 using PurpleBackendService.Web.Configure;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);

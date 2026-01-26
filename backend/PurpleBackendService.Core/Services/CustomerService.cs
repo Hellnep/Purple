@@ -17,7 +17,7 @@ namespace PurpleBackendService.Core.Services
 
         public async Task<OperationResult<UserDTO>> CreateCustomerAsync(UserDTO input)
         {
-            User customer = Mapping
+            var customer = Mapping
                 .Get<User, UserDTO>(input);
 
             if (customer.Email is null)
@@ -55,7 +55,7 @@ namespace PurpleBackendService.Core.Services
             var customers = await _repository.Get();
             var result = new List<UserDTO>();
 
-            foreach (User customer in customers)
+            foreach (var customer in customers)
             {
                 result.Add(Mapping.Get<UserDTO, User>(customer));
             }

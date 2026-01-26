@@ -16,7 +16,7 @@ namespace PurpleBackendService.Core.Repository
         /// <returns>Product entity</returns>
         public Task<Product> Add(Product product)
         {
-            long authorRefId = (long)product.AuthorRefId!;
+            var authorRefId = (long)product.AuthorRefId!;
             var customer = _repository.Users
                 .Include(customer => customer.Products)
                 .FirstOrDefault(customer => customer.Id == authorRefId) ??
@@ -47,27 +47,26 @@ namespace PurpleBackendService.Core.Repository
         /// </summary>
         /// <param name="productId">Product identificator</param>
         /// <returns>Product entity</returns>
-        public  Task<Product?> Exists(long productId) =>
-            Task.FromResult(_repository.Products.Find(productId));
+        public  Task<Product?> Exists(long productId) => Task.FromResult(
+            _repository.Products.Find(productId)
+            );
 
         ///<summary>
         /// Get product by id
         /// </summary>
         /// <param name="id">Product identificator</param>
         /// <returns>Product entity</returns>
-        public Task<Product?> Get(long id) =>
-            _repository.Products
-                .Include(product => product.Author)
-                .Include(product => product.Images)
-                .FirstOrDefaultAsync(product => product.Id == id);
+        public Task<Product?> Get(long id) => _repository.Products
+            .Include(product => product.Author)
+            .Include(product => product.Images)
+            .FirstOrDefaultAsync(product => product.Id == id);
 
         ///<summary>
         /// Get all products from database
         /// </summary>
         /// <returns>List of products</returns>
-        public Task<ICollection<Product>> Get() =>
-            Task.FromResult(_repository.Products
-                .Include(product => product.Author)
+        public Task<ICollection<Product>> Get() => Task.FromResult(
+            _repository.Products.Include(product => product.Author)
                 .Include(product => product.Images)
                 .ToList() as ICollection<Product>
             );
@@ -75,7 +74,6 @@ namespace PurpleBackendService.Core.Repository
         ///<summary>
         /// Update datas in database
         /// </summary>
-        public Task<int> Update() =>
-            _repository.SaveChangesAsync();
+        public Task<int> Update() => _repository.SaveChangesAsync();
     }
 }

@@ -26,24 +26,22 @@ namespace PurpleBackendService.Domain.Service
         /// </summary>
         /// <param name="data">Data to be returned</param>
         /// <returns>The result of successful operation</returns>
-        public static OperationResult<T> Success(T data) =>
-            new()
-            {
-                IsSuccess = true,
-                Result = data
-            };
+        public static OperationResult<T> Success(T data) => new()
+        {
+            IsSuccess = true,
+            Result = data
+        };
 
         ///<summary>
         /// Creates an operation result with errors
         /// </summary>
         /// <param name="errors">List of errors or crash messages</param>
         /// <returns>The result of failed operation</returns>
-        public static OperationResult<T> Failure(params string[] errors) =>
-            new()
-            {
-                IsSuccess = false,
-                Errors = errors.ToList()
-            };
+        public static OperationResult<T> Failure(params string[] errors) => new()
+        {
+            IsSuccess = false,
+            Errors = errors.ToList()
+        };
     }
 }
 

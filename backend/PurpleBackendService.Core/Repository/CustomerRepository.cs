@@ -51,15 +51,13 @@ namespace PurpleBackendService.Core.Repository
         ///<summary>
         ///Update datas in database
         ///</summary>
-        public Task<int> Update() =>
-            _repository.SaveChangesAsync();
+        public Task<int> Update() => _repository.SaveChangesAsync();
 
         ///<summary>
         ///Get all customers from database
         ///</summary>
         ///<returns>List of customers</returns>
-        public Task<ICollection<User>> Get() =>
-            Task.FromResult(_repository.Users
+        public Task<ICollection<User>> Get() => Task.FromResult(_repository.Users
                 .Include(customer => customer.Products)
                 .ToList() as ICollection<User>
             );

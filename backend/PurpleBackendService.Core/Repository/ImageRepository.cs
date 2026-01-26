@@ -49,25 +49,22 @@ namespace PurpleBackendService.Core.Repository
         /// </summary>
         /// <param name="imageId">Image identification</param>
         /// <returns>Image entity</returns>
-        public Task<Image?> Get(long imageId) =>
-            _repository.Images
-                .Include(image => image.Product)
-                .FirstOrDefaultAsync(image => image.Id == imageId);
+        public Task<Image?> Get(long imageId) => _repository.Images
+            .Include(image => image.Product)
+            .FirstOrDefaultAsync(image => image.Id == imageId);
 
         ///<summary>
         /// Get an image by path
         /// </summary>
         /// <param name="path">Image path</param>
         /// <returns>Image entity</returns>
-        public Task<Image?> Get(string path) =>
-            _repository.Images
-                .Include(image => image.Product)
-                .FirstOrDefaultAsync(image => image.Path == path);
+        public Task<Image?> Get(string path) => _repository.Images
+            .Include(image => image.Product)
+            .FirstOrDefaultAsync(image => image.Path == path);
 
         ///<summary>
         /// Update datas in database
         /// </summary>
-        public Task<int> Update() =>
-            _repository.SaveChangesAsync();
+        public Task<int> Update() => _repository.SaveChangesAsync();
     }
 }

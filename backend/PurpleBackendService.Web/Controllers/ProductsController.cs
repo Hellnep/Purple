@@ -46,9 +46,9 @@ namespace PurpleBackendService.Web.Controllers
 
             if (result.IsSuccess)
             {
-                ProductDTO product = result.Result!;
+                var product = result.Result!;
 
-                long customerRefId = product.Author!.Id;
+                var customerRefId = product.Author!.Id;
                 var resource = new Resource<ProductDTO>(product);
 
                 resource.AddLink("self", Url.Link(nameof(GetProduct), new { productId })!);
@@ -76,7 +76,7 @@ namespace PurpleBackendService.Web.Controllers
                 var products = result.Result as List<ProductDTO>;
                 List<Resource<ProductDTO>> resources = [];
 
-                foreach (ProductDTO product in products!)
+                foreach (var product in products!)
                 {
                     Resource<ProductDTO> resource = new(product);
 
@@ -174,11 +174,10 @@ namespace PurpleBackendService.Web.Controllers
             return BadRequest();
         }
 
-        private static ProductDTO Create(string? title, string? content) =>
-            new()
-            {
-                Title = title,
-                Content = content
-            };
+        private static ProductDTO Create(string? title, string? content) => new()
+        {
+            Title = title,
+            Content = content
+        };
     }
 }
