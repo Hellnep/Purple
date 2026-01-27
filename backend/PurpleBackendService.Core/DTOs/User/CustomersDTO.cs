@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace PurpleBackendService.Domain.DTO
+namespace PurpleBackendService.Core.DTOs.User
 {
     public class UserDTO
     {

@@ -1,6 +1,6 @@
-using PurpleBackendService.Domain.DTO;
+using PurpleBackendService.Core.DTOs.User;
 
-namespace PurpleBackendService.Domain.Service
+namespace PurpleBackendService.Core.Interfaces.Services
 {
     public interface IUserService
     {

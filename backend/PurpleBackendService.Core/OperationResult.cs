@@ -1,4 +1,4 @@
-namespace PurpleBackendService.Domain.Service
+namespace PurpleBackendService.Core
 {
     /// <summary>
     /// The class acting as the result of the operation

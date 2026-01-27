@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PurpleBackendService.Core.Utility
+namespace PurpleBackendService.Infrastucture.Utility
 {
     public static class Validate
     {

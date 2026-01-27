@@ -2,10 +2,10 @@ using SixLabors.ImageSharp;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 
-using PurpleBackendService.Core.Utility;
-using PurpleBackendService.Domain.DTO;
-using PurpleBackendService.Domain.Repository;
-using PurpleBackendService.Domain.Service;
+using PurpleBackendService.Infrastucture.Utility;
+using PurpleBackendService.Core.Interfaces.Services;
+using PurpleBackendService.Core.DTOs.Image;
+using PurpleBackendService.Domain.Interfaces.Repositories;
 
 namespace PurpleBackendService.Core.Services
 {

@@ -2,9 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 
 using PurpleBackendService.Web.Configure;
 using PurpleBackendService.Web.Resource;
-using PurpleBackendService.Domain.DTO;
-using PurpleBackendService.Domain.Service;
-using PurpleBackendService.Core.Utility;
+using PurpleBackendService.Infrastucture.Utility;
+using PurpleBackendService.Core.Interfaces.Services;
+using PurpleBackendService.Core.DTOs.Product;
+using PurpleBackendService.Core.DTOs.Image;
 
 namespace PurpleBackendService.Web.Controllers
 {
@@ -34,15 +35,16 @@ namespace PurpleBackendService.Web.Controllers
             if (result.IsSuccess)
             {
                 var products = result.Result as List<ProductDTO>;
-                List<Resource<ProductDTO>> resources = [];
+                var resources = new Resource<List<Resource<ProductDTO>>>([]);
 
                 foreach (var product in products!)
                 {
                     Resource<ProductDTO> resource = new(product);
+
                     var images = product.Images as List<ImageDTO>
                         ?? new List<ImageDTO>();
 
-                    resource.AddLink($"patch",
+                    resource.AddLink("patch",
                         Url.Link(nameof(PatchProduct), new
                             {
                                 userId = product.Author!.Id,
@@ -64,8 +66,12 @@ namespace PurpleBackendService.Web.Controllers
                         }
                     }
 
-                    resources.Add(resource);
+                    resources.Data.Add(resource);
                 }
+
+                resources.AddLink("self",
+                    Url.Link(nameof(GetProducts), null)!
+                );
 
                 return Ok(resources);
             }
@@ -96,8 +102,12 @@ namespace PurpleBackendService.Web.Controllers
                 var images = product.Images as List<ImageDTO>
                     ?? new List<ImageDTO>();
 
-                resource.AddLink("patch", Url.Link(nameof(PatchProduct),
-                    new { userRefId, productId})!,
+                resource.AddLink("self",
+                    Url.Link(nameof(GetProduct), new { productId })!
+                );
+
+                resource.AddLink("patch",
+                    Url.Link(nameof(PatchProduct), new { userRefId, productId})!,
                     HttpMethod.Patch.Method
                 );
 
@@ -108,7 +118,7 @@ namespace PurpleBackendService.Web.Controllers
                         resource.AddLink($"get-{image.Title}",
                             Url.Link("GetImageByPath", new
                             {
-                                imagePath = image.RelativePath!.Split('/')[3]
+                                imagePath = image.Path
                             })!
                         );
                     }
@@ -136,7 +146,7 @@ namespace PurpleBackendService.Web.Controllers
             if (result.IsSuccess)
             {
                 var products = result.Result as List<ProductDTO>;
-                List<Resource<ProductDTO>> resources = [];
+                var resources = new Resource<List<Resource<ProductDTO>>>([]);
 
                 foreach (var product in products!)
                 {
@@ -167,8 +177,12 @@ namespace PurpleBackendService.Web.Controllers
                         }
                     }
 
-                    resources.Add(resource);
+                    resources.Data.Add(resource);
                 }
+
+                resources.AddLink("self",
+                    Url.Link(nameof(GetFromAuthor), new { userId })!
+                );
 
                 return Ok(resources);
             }
@@ -215,15 +229,17 @@ namespace PurpleBackendService.Web.Controllers
 
                     var resource = new Resource<ProductDTO>(result.Result!);
 
+                    resource.AddLink("self",
+                        Url.Link(nameof(GetProduct), new { userId = userId, })!,
+                        HttpMethod.Post.Method
+                    );
+
                     if (images.Result is not null && images.Result.Count > 0)
                     {
                         foreach (var image in images.Result)
                         {
                             resource.AddLink($"get-{image.Title}",
-                                Url.Link("GetImageByPath", new
-                                {
-                                    imagePath = image.RelativePath!.Split('/')[3]
-                                })!
+                                Url.Link("GetImageByPath", new { imagePath = image.Path })!
                             );
                         }
                     }
@@ -267,8 +283,10 @@ namespace PurpleBackendService.Web.Controllers
                 if (result.IsSuccess)
                 {
                     var resource = new Resource<ProductDTO>(result.Result!);
-                    resource.AddLink("get", Url.Link(nameof(GetProduct),
-                        new { productId })!
+
+                    resource.AddLink("self",
+                        Url.Link(nameof(PatchProduct), new { productId })!,
+                        HttpMethod.Patch.Method
                     );
 
                     var images = result.Result!.Images as List<ImageDTO>

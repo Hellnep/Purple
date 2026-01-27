@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Reflection;
 
-namespace PurpleBackendService.Core.Utility
+namespace PurpleBackendService.Infrastucture.Utility
 {
     /// <summary>
     /// A custom class for mapping data objects

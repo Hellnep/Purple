@@ -1,10 +1,11 @@
-using PurpleBackendService.Core.Utility;
-using PurpleBackendService.Domain.DTO;
+using PurpleBackendService.Infrastucture.Utility;
+using PurpleBackendService.Core.Interfaces.Services;
+using PurpleBackendService.Core;
+using PurpleBackendService.Core.DTOs.Product;
 using PurpleBackendService.Domain.Entity;
-using PurpleBackendService.Domain.Repository;
-using PurpleBackendService.Domain.Service;
+using PurpleBackendService.Domain.Interfaces.Repositories;
 
-namespace PurpleBackendService.Core.Services
+namespace PurpleBackendService.Infrastucture.Services
 {
     public class ProductService : IProductService
     {

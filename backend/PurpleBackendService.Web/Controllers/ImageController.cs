@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using PurpleBackendService.Domain.Service;
+using PurpleBackendService.Core.Interfaces.Services;
 
 namespace PurpleBackendService.Web.Controllers
 {

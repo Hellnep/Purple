@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 
 using PurpleBackendService.Domain.Entity;
-using PurpleBackendService.Domain.Repository;
+using PurpleBackendService.Domain.Interfaces.Repositories;
 using PurpleBackendService.Infrastructure.Sqlite;
 
-namespace PurpleBackendService.Core.Repository
+namespace PurpleBackendService.Infrastucture.Repository
 {
     public class UserRepository(PurpleOcean repository)
         : Repository(repository), IUserRepository
@@ -19,6 +19,7 @@ namespace PurpleBackendService.Core.Repository
         public Task<User> Add(User user)
         {
             _repository.Users.Add(user);
+
             return _repository
                 .SaveChangesAsync()
                 .ContinueWith(task =>

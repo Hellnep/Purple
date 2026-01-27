@@ -1,8 +1,8 @@
-﻿using PurpleBackendService.Domain.DTO;
+﻿using PurpleBackendService.Core.DTOs.User;
+using PurpleBackendService.Core.Interfaces.Services;
 using PurpleBackendService.Domain.Entity;
-using PurpleBackendService.Domain.Repository;
-using PurpleBackendService.Domain.Service;
-using PurpleBackendService.Core.Utility;
+using PurpleBackendService.Domain.Interfaces.Repositories;
+using PurpleBackendService.Infrastucture.Utility;
 
 namespace PurpleBackendService.Core.Services
 {

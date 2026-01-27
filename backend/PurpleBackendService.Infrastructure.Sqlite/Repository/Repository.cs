@@ -1,6 +1,6 @@
 using PurpleBackendService.Infrastructure.Sqlite;
 
-namespace PurpleBackendService.Core.Repository
+namespace PurpleBackendService.Infrastucture.Repository
 {
     ///<summary>
     /// Base class for all repositories

@@ -1,6 +1,6 @@
-using PurpleBackendService.Domain.DTO;
+using PurpleBackendService.Core.DTOs.Product;
 
-namespace PurpleBackendService.Domain.Service
+namespace PurpleBackendService.Core.Interfaces.Services
 {
     public interface IProductService
     {

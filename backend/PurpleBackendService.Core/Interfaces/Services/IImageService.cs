@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Http;
-using PurpleBackendService.Domain.DTO;
 
-namespace PurpleBackendService.Domain.Service
+using PurpleBackendService.Core.DTOs.Image;
+
+namespace PurpleBackendService.Core.Interfaces.Services
 {
     public interface IImageService
     {

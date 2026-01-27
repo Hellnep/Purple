@@ -1,6 +1,6 @@
 using PurpleBackendService.Domain.Entity;
 
-namespace PurpleBackendService.Domain.Repository
+namespace PurpleBackendService.Domain.Interfaces.Repositories
 {
     public interface IProductRepository
     {

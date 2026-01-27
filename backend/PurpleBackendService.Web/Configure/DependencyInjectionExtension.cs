@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 
-using PurpleBackendService.Core.Repository;
-using PurpleBackendService.Core.Services;
-using PurpleBackendService.Domain.Repository;
-using PurpleBackendService.Domain.Service;
+using PurpleBackendService.Infrastucture.Repository;
+using PurpleBackendService.Infrastucture.Services;
 using PurpleBackendService.Infrastructure.Sqlite;
+using PurpleBackendService.Core.Interfaces.Services;
+using PurpleBackendService.Core.Services;
+using PurpleBackendService.Domain.Interfaces.Repositories;
 
 namespace PurpleBackendService.Web.Configure
 {

@@ -1,7 +1,9 @@
-using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
 
-namespace PurpleBackendService.Domain.DTO
+using PurpleBackendService.Core.DTOs.User;
+using PurpleBackendService.Core.DTOs.Image;
+
+namespace PurpleBackendService.Core.DTOs.Product
 {
     public class ProductDTO
     {

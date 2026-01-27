@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 
 using PurpleBackendService.Web.Configure;
 using PurpleBackendService.Web.Resource;
-using PurpleBackendService.Domain.DTO;
-using PurpleBackendService.Domain.Service;
-using PurpleBackendService.Core.Utility;
+using PurpleBackendService.Infrastucture.Utility;
+using PurpleBackendService.Core.Interfaces.Services;
+using PurpleBackendService.Core.DTOs.User;
 
 namespace PurpleBackendService.Web.Controllers
 {
@@ -27,24 +27,24 @@ namespace PurpleBackendService.Web.Controllers
 
             if (result.IsSuccess)
             {
-                var customers = result.Result as List<UserDTO>;
-                List<Resource<UserDTO>> resources = [];
+                var users = result.Result as List<UserDTO>;
+                var resources = new Resource<List<Resource<UserDTO>>>([]);
 
-                foreach (var customer in customers!)
+                foreach (var user in users!)
                 {
-                    Resource<UserDTO> resource = new(customer);
+                    Resource<UserDTO> resource = new(user);
 
-                    resource.AddLink("get", Url.Link(nameof(GetCustomer), new { customerId = customer.Id})!);
                     resource.AddLink("patch",
-                        Url.Link(nameof(PatchCustomer), new
-                        {
-                            customerId = customer.Id
-                        })!,
+                        Url.Link(nameof(PatchCustomer), new { userId = user.Id })!,
                         HttpMethod.Patch.Method
                     );
 
-                    resources.Add(resource);
+                    resources.Data.Add(resource);
                 }
+
+                resources.AddLink("self",
+                    Url.Link(nameof(GetCustomers), null)!
+                );
 
                 return Ok(resources);
             }
@@ -54,19 +54,22 @@ namespace PurpleBackendService.Web.Controllers
             }
         }
 
-        [HttpGet("{customerId}", Name = nameof(GetCustomer))]
-        public async Task<ActionResult> GetCustomer(long customerId)
+        [HttpGet("{userId}", Name = nameof(GetCustomer))]
+        public async Task<ActionResult> GetCustomer(long userId)
         {
             var result = await _customerService
-                .GetUserAsync(customerId);
+                .GetUserAsync(userId);
 
             if (result.IsSuccess)
             {
                 var resource = new Resource<UserDTO>(result.Result!);
 
-                resource.AddLink("self", Url.Link(nameof(GetCustomer), new { customerId })!);
-                resource.AddLink("patch", Url.Link(nameof(PatchCustomer),
-                    new { customerId })!,
+                resource.AddLink("self",
+                    Url.Link(nameof(GetCustomer), new { userId })!
+                );
+
+                resource.AddLink("patch",
+                    Url.Link(nameof(PatchCustomer), new { userId })!,
                     HttpMethod.Patch.Method
                 );
 
@@ -101,9 +104,10 @@ namespace PurpleBackendService.Web.Controllers
                     var dataCustomer = result.Result!;
                     var resource = new Resource<UserDTO>(dataCustomer);
 
-                    resource.AddLink("self", Url.Link(nameof(PostCustomer), null)!, HttpMethod.Post.Method);
-                    resource.AddLink("get", Url.Link(nameof(GetCustomer), new { customerId = dataCustomer.Id })!);
-                    resource.AddLink("patch", Url.Link(nameof(PatchCustomer), new { customerId = dataCustomer.Id })!, HttpMethod.Patch.Method);
+                    resource.AddLink("self",
+                        Url.Link(nameof(PostCustomer), null)!,
+                        HttpMethod.Post.Method
+                    );
 
                     return Ok(resource);
                 }
@@ -116,30 +120,32 @@ namespace PurpleBackendService.Web.Controllers
             return BadRequest();
         }
 
-        [HttpPatch("{customerId}", Name = nameof(PatchCustomer))]
-        public async Task<ActionResult> PatchCustomer(long customerId,
+        [HttpPatch("{userId}", Name = nameof(PatchCustomer))]
+        public async Task<ActionResult> PatchCustomer(long userId,
             [FromForm] string? nickname,
             [FromForm] string? email,
             [FromForm] string? phone
         )
         {
-            var customer = Create(nickname, email, phone);
+            var user = Create(nickname, email, phone);
 
-            if (!Validate.TryValidate(customer, out var results))
+            if (!Validate.TryValidate(user, out var results))
             {
                 this.ValidationProblems(results);
             }
             else
             {
                 var result = await _customerService
-                    .ChangeUserAsync(customerId, customer);
+                    .ChangeUserAsync(userId, user);
 
                 if (result.IsSuccess)
                 {
                     var resource = new Resource<UserDTO>(result.Result!);
 
-                    resource.AddLink("self", Url.Link(nameof(PatchCustomer), new { customerId })!, HttpMethod.Patch.Method);
-                    resource.AddLink("get", Url.Link(nameof(GetCustomer), new { customerId })!);
+                    resource.AddLink("self",
+                        Url.Link(nameof(PatchCustomer), new { userId })!,
+                        HttpMethod.Patch.Method
+                    );
 
                     return Ok(resource);
                 }

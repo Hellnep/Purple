@@ -1,4 +1,4 @@
-namespace PurpleBackendService.Domain.DTO
+namespace PurpleBackendService.Core.DTOs.Image
 {
     public class ImageDTO
     {

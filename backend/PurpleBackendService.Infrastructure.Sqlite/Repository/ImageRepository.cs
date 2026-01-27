@@ -1,10 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-
 using PurpleBackendService.Domain.Entity;
-using PurpleBackendService.Domain.Repository;
+using PurpleBackendService.Domain.Interfaces.Repositories;
 using PurpleBackendService.Infrastructure.Sqlite;
 
-namespace PurpleBackendService.Core.Repository
+namespace PurpleBackendService.Infrastucture.Repository
 {
     public class ImageRepository(PurpleOcean repository)
         : Repository(repository), IImageRepository
