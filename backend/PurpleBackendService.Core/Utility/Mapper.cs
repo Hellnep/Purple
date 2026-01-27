@@ -99,11 +99,10 @@ namespace PurpleBackendService.Core.Utility
         )
         {
             var sourceCollection = (IEnumerable?)value;
+            var targetCollection = CreateCollectionInstance(entityProperty.PropertyType);
 
             if (sourceCollection is not null)
             {
-                var targetCollection = CreateCollectionInstance(entityProperty.PropertyType);
-
                 // Getting information about collection types
                 // Получаем информацию о типах коллекий
                 var sourceElementType = dtoProperty.PropertyType

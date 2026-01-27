@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 
 using PurpleBackendService.Core.Utility;
-using PurpleBackendService.Core.DTOs.Image;
 using PurpleBackendService.Core.Interfaces.Services;
 using PurpleBackendService.Domain.Interfaces.Repositories;
 
@@ -35,20 +34,24 @@ namespace PurpleBackendService.Core.Services
         /// <param name="productId">Identification the product</param>
         /// <param name="files">Image files</param>
         /// <returns>Returns a collection of image metadata</returns>
-        public async Task<OperationResult<ICollection<ImageDTO>>> AddImagesAsync(long productId, IFormFileCollection files)
+        public async Task<OperationResult<ICollection<Domain.Entity.Image>>> AddImagesAsync(
+            long productId,
+            IFormFileCollection files
+        )
         {
-            var imageDTOs = new List<ImageDTO>();
+            var images = new List<Domain.Entity.Image>();
 
             foreach (var file in files)
             {
                 if (file.Length > 0)
                 {
                     var image = await SaveImageAsync(file, productId);
-                    imageDTOs.Add(Mapping.Get<ImageDTO, Domain.Entity.Image>(image));
+                    images.Add(image);
                 }
             }
 
-            return OperationResult<ICollection<ImageDTO>>.Success(imageDTOs);
+            return OperationResult<ICollection<Domain.Entity.Image>>
+                .Success(images);
         }
 
         ///<summary>
@@ -57,7 +60,10 @@ namespace PurpleBackendService.Core.Services
         /// <param name="imageId">Identification the image</param>
         /// <param name="file">Image file</param>
         /// <returns>Returns an image metadata</returns>
-        public async Task<OperationResult<ImageDTO>> ChangeImageAsync(long imageId, IFormFile file)
+        public async Task<OperationResult<Domain.Entity.Image>> ChangeImageAsync(
+            long imageId,
+            IFormFile file
+        )
         {
             var existingImage = await _repository.Get(imageId);
             var oldFilePath = Path.Combine(_imageStoragePath, existingImage!.Path);
@@ -79,8 +85,8 @@ namespace PurpleBackendService.Core.Services
 
             await _repository.Update();
 
-            return OperationResult<ImageDTO>
-                .Success(Mapping.Get<ImageDTO, Domain.Entity.Image>(existingImage));
+            return OperationResult<Domain.Entity.Image>
+                .Success(existingImage);
         }
 
         ///<summary>
@@ -88,17 +94,17 @@ namespace PurpleBackendService.Core.Services
         /// </summary>
         /// <param name="imageId">Identification the image</param>
         /// <returns>Returns an image metadata</returns>
-        public async Task<OperationResult<ImageDTO>> GetImageAsync(long imageId)
+        public async Task<OperationResult<Domain.Entity.Image>> GetImageAsync(long imageId)
         {
             var image = await _repository.Get(imageId);
 
             if (image is null)
             {
-                return OperationResult<ImageDTO>.Failure("Image not found");
+                return OperationResult<Domain.Entity.Image>.Failure("Image not found");
             }
 
-            return OperationResult<ImageDTO>
-                .Success(Mapping.Get<ImageDTO, Domain.Entity.Image>(image));
+            return OperationResult<Domain.Entity.Image>
+                .Success(image);
         }
 
         /// <summary>

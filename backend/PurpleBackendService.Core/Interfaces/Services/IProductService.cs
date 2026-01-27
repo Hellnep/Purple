@@ -1,18 +1,18 @@
-using PurpleBackendService.Core.DTOs.Product;
+using PurpleBackendService.Domain.Entity;
 
 namespace PurpleBackendService.Core.Interfaces.Services
 {
     public interface IProductService
     {
-        public Task<OperationResult<ProductDTO>> CreateProductAsync(long id, ProductDTO input);
+        public Task<OperationResult<Product>> CreateProductAsync(long id, Product input);
 
-        public Task<OperationResult<ICollection<ProductDTO>>> GetProductsAsync();
+        public Task<OperationResult<List<Product>>> GetProductsAsync();
 
-        public Task<OperationResult<ICollection<ProductDTO>>> GetAuthorProductsAsync(long id);
+        public Task<OperationResult<List<Product>>> GetAuthorProductsAsync(long id);
 
-        public Task<OperationResult<ProductDTO>> GetProductAsync(long id);
+        public Task<OperationResult<Product>> GetProductAsync(long id);
 
-        public Task<OperationResult<ProductDTO>> ChangeProductAsync(long productId, ProductDTO input);
+        public Task<OperationResult<Product>> ChangeProductAsync(long productId, Product input);
     }
 }
 

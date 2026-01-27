@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace PurpleBackendService.Core.DTOs.User
 {
@@ -15,6 +16,7 @@ namespace PurpleBackendService.Core.DTOs.User
         public string? Email { get; set; }
 
         [Phone]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string? Phone { get; set;}
     }
 }

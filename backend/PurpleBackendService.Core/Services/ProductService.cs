@@ -1,6 +1,5 @@
 using PurpleBackendService.Core;
 using PurpleBackendService.Core.Utility;
-using PurpleBackendService.Core.DTOs.Product;
 using PurpleBackendService.Core.Interfaces.Services;
 using PurpleBackendService.Domain.Entity;
 using PurpleBackendService.Domain.Interfaces.Repositories;
@@ -20,25 +19,22 @@ namespace PurpleBackendService.Infrastucture.Services
         /// Adds a product to the database
         /// </summary>
         /// <param name="id">User identificator</param>
-        /// <param name="input">Product metadata</param>
+        /// <param name="product">Product metadata</param>
         /// <returns>
         /// Returns added product
         /// </returns>
-        public async Task<OperationResult<ProductDTO>> CreateProductAsync(long id, ProductDTO input)
+        public async Task<OperationResult<Product>> CreateProductAsync(long id, Product product)
         {
-            var product = Mapping
-                .Get<Product, ProductDTO>(input);
-
             if (string.IsNullOrEmpty(product.Title))
             {
-                return OperationResult<ProductDTO>.Failure("You need to enter a name for product");
+                return OperationResult<Product>.Failure("You need to enter a name for product");
             }
 
             product.AuthorRefId = id;
             var result = await _repository.Add(product);
 
-            return OperationResult<ProductDTO>
-                .Success(Mapping.Get<ProductDTO, Product>(result));
+            return OperationResult<Product>
+                .Success(result);
         }
 
         ///<summary>
@@ -48,18 +44,18 @@ namespace PurpleBackendService.Infrastucture.Services
         /// <returns>
         /// Returns product by identificator
         /// </returns>
-        public async Task<OperationResult<ProductDTO>> GetProductAsync(long productId)
+        public async Task<OperationResult<Product>> GetProductAsync(long productId)
         {
             var result = await _repository.Get(productId);
 
             if (result is null)
             {
-                return OperationResult<ProductDTO>
+                return OperationResult<Product>
                     .Failure($"Product with ID={productId} not found");
             }
 
-            return OperationResult<ProductDTO>
-                .Success(Mapping.Get<ProductDTO, Product>(result));
+            return OperationResult<Product>
+                .Success(result);
         }
 
         ///<summary>
@@ -68,18 +64,12 @@ namespace PurpleBackendService.Infrastucture.Services
         /// <returns>
         /// Returns all products
         /// </returns>
-        public async Task<OperationResult<ICollection<ProductDTO>>> GetProductsAsync()
+        public async Task<OperationResult<List<Product>>> GetProductsAsync()
         {
-            var products = await _repository.Get();
-            var result = new List<ProductDTO>();
+            var products = await _repository.Get() as List<Product>;
 
-            foreach (var product in products)
-            {
-                result.Add(Mapping.Get<ProductDTO, Product>(product));
-            }
-
-            return OperationResult<ICollection<ProductDTO>>
-                .Success(result);
+            return OperationResult<List<Product>>
+                .Success(products!);
         }
 
         ///<summary>
@@ -89,20 +79,20 @@ namespace PurpleBackendService.Infrastucture.Services
         /// <returns>
         /// Returns products of author
         /// </returns>
-        public async Task<OperationResult<ICollection<ProductDTO>>> GetAuthorProductsAsync(long authorRefId)
+        public async Task<OperationResult<List<Product>>> GetAuthorProductsAsync(long authorRefId)
         {
             var products = await _repository.Get();
-            var result = new List<ProductDTO>();
+            var result = new List<Product>();
 
             foreach (var product in products)
             {
                 if (product.AuthorRefId == authorRefId)
                 {
-                    result.Add(Mapping.Get<ProductDTO, Product>(product));
+                    result.Add(product);
                 }
             }
 
-            return OperationResult<ICollection<ProductDTO>>
+            return OperationResult<List<Product>>
                 .Success(result);
         }
 
@@ -110,21 +100,20 @@ namespace PurpleBackendService.Infrastucture.Services
         /// Change metadata of product in database
         /// </summary>
         /// <param name="productId">Product identificator</param>
-        /// <param name="inputProduct">New metadata of product</param>
+        /// <param name="newData">New metadata of product</param>
         /// <returns>
         /// Returns changes metadata of product
         /// </returns>
-        public async Task<OperationResult<ProductDTO>> ChangeProductAsync(
+        public async Task<OperationResult<Product>> ChangeProductAsync(
             long productId,
-            ProductDTO inputProduct
+            Product newData
         )
         {
-            var newData = Mapping.Get<Product, ProductDTO>(inputProduct);
             var product = await _repository.Get(productId);
 
             if (product is null)
             {
-                return OperationResult<ProductDTO>
+                return OperationResult<Product>
                     .Failure($"Product with Id={productId} do not exists");
             }
 
@@ -140,8 +129,8 @@ namespace PurpleBackendService.Infrastucture.Services
 
             await _repository.Update();
 
-            return OperationResult<ProductDTO>
-                .Success(Mapping.Get<ProductDTO, Product>(product));
+            return OperationResult<Product>
+                .Success(product);
         }
     }
 }

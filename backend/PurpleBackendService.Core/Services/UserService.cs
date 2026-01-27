@@ -1,5 +1,4 @@
 ﻿using PurpleBackendService.Core.Utility;
-using PurpleBackendService.Core.DTOs.User;
 using PurpleBackendService.Core.Interfaces.Services;
 using PurpleBackendService.Domain.Entity;
 using PurpleBackendService.Domain.Interfaces.Repositories;
@@ -15,65 +14,55 @@ namespace PurpleBackendService.Core.Services
             _repository = repository;
         }
 
-        public async Task<OperationResult<UserDTO>> CreateUserAsync(UserDTO input)
+        public async Task<OperationResult<User>> CreateUserAsync(User user)
         {
-            var user = Mapping
-                .Get<User, UserDTO>(input);
-
             if (user.Email is null)
             {
-                return OperationResult<UserDTO>.Failure("You need to enter an email address");
+                return OperationResult<User>.Failure("You need to enter an email address");
             }
 
             if (await _repository.EmailExists(user.Email))
             {
-                return OperationResult<UserDTO>.Failure("A user with such an email address already exists");
+                return OperationResult<User>.Failure("A user with such an email address already exists");
             }
 
             var result = await _repository.Add(user);
 
-            return OperationResult<UserDTO>
-                .Success(Mapping.Get<UserDTO, User>(result));
+            return OperationResult<User>
+                .Success(user);
         }
 
-        public async Task<OperationResult<UserDTO>> GetUserAsync(long userId)
+        public async Task<OperationResult<User>> GetUserAsync(long userId)
         {
             var user = await _repository.Get(userId);
 
             if (user is null)
             {
-                return OperationResult<UserDTO>
+                return OperationResult<User>
                     .Failure($"Customer with ID={userId} not found");
             }
 
-            return OperationResult<UserDTO>
-                .Success(Mapping.Get<UserDTO, User>(user));
+            return OperationResult<User>
+                .Success(user);
         }
 
-        public async Task<OperationResult<ICollection<UserDTO>>> GetUsersAsync()
+        public async Task<OperationResult<List<User>>> GetUsersAsync()
         {
             var users = await _repository.Get();
-            var result = new List<UserDTO>();
 
-            foreach (var customer in users)
-            {
-                result.Add(Mapping.Get<UserDTO, User>(customer));
-            }
-
-            return OperationResult<ICollection<UserDTO>>
-                .Success(result);
+            return OperationResult<List<User>>
+                .Success(users as List<User> ?? []);
         }
 
-        public async Task<OperationResult<UserDTO>> ChangeUserAsync(long userId, UserDTO input)
+        public async Task<OperationResult<User>> ChangeUserAsync(long userId, User newData)
         {
             try
             {
-                var newData = Mapping.Get<User, UserDTO>(input);
                 var user = await _repository.Get(userId);
 
                 if (user is null)
                 {
-                    return OperationResult<UserDTO>.Failure("User not found");
+                    return OperationResult<User>.Failure("User not found");
                 }
 
                 if (newData.Nickname is not null)
@@ -93,12 +82,12 @@ namespace PurpleBackendService.Core.Services
 
                 await _repository.Update();
 
-                return OperationResult<UserDTO>
-                    .Success(Mapping.Get<UserDTO, User>(user));
+                return OperationResult<User>
+                    .Success(user);
             }
             catch (ArgumentNullException exception)
             {
-                return OperationResult<UserDTO>.Failure(exception.Message);
+                return OperationResult<User>.Failure(exception.Message);
             }
         }
     }

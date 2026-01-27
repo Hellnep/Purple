@@ -2,9 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 
 using PurpleBackendService.Web.Configure;
 using PurpleBackendService.Web.Resource;
-using PurpleBackendService.Infrastucture.Utility;
 using PurpleBackendService.Core.Interfaces.Services;
 using PurpleBackendService.Core.DTOs.User;
+using PurpleBackendService.Core.Utility;
+using PurpleBackendService.Domain.Entity;
 
 namespace PurpleBackendService.Web.Controllers
 {
@@ -27,19 +28,25 @@ namespace PurpleBackendService.Web.Controllers
 
             if (result.IsSuccess)
             {
-                var users = result.Result as List<UserDTO>;
-                var resources = new Resource<List<Resource<UserDTO>>>([]);
+                var users = new List<UserDTO>();
+
+                foreach (var user in result.Result!)
+                {
+                    users.Add(Mapping.Get<UserDTO, User>(user));
+                }
+
+                var resources = new ResourceCollection<ResourceObject<UserDTO>>([]);
 
                 foreach (var user in users!)
                 {
-                    Resource<UserDTO> resource = new(user);
+                    ResourceObject<UserDTO> resource = new(user);
 
                     resource.AddLink("patch",
                         Url.Link(nameof(PatchCustomer), new { userId = user.Id })!,
                         HttpMethod.Patch.Method
                     );
 
-                    resources.Data.Add(resource);
+                    resources.Items.Add(resource);
                 }
 
                 resources.AddLink("self",
@@ -62,7 +69,8 @@ namespace PurpleBackendService.Web.Controllers
 
             if (result.IsSuccess)
             {
-                var resource = new Resource<UserDTO>(result.Result!);
+                var user = Mapping.Get<UserDTO, User>(result.Result!);
+                var resource = new ResourceObject<UserDTO>(user);
 
                 resource.AddLink("self",
                     Url.Link(nameof(GetCustomer), new { userId })!
@@ -88,21 +96,21 @@ namespace PurpleBackendService.Web.Controllers
             [FromForm] string? phone
         )
         {
-            var customer = Create(nickname, email, phone);
+            var createdUser = Create(nickname, email, phone);
 
-            if (!Validate.TryValidate(customer, out var results))
+            if (!Validate.TryValidate(createdUser, out var results))
             {
                 this.ValidationProblems(results);
             }
             else
             {
                 var result = await _customerService
-                    .CreateUserAsync(customer);
+                    .CreateUserAsync(Mapping.Get<User, UserDTO>(createdUser));
 
                 if (result.IsSuccess)
                 {
-                    var dataCustomer = result.Result!;
-                    var resource = new Resource<UserDTO>(dataCustomer);
+                    var user = Mapping.Get<UserDTO, User>(result.Result!);
+                    var resource = new ResourceObject<UserDTO>(user);
 
                     resource.AddLink("self",
                         Url.Link(nameof(PostCustomer), null)!,
@@ -127,20 +135,23 @@ namespace PurpleBackendService.Web.Controllers
             [FromForm] string? phone
         )
         {
-            var user = Create(nickname, email, phone);
+            var createdUser = Create(nickname, email, phone);
 
-            if (!Validate.TryValidate(user, out var results))
+            if (!Validate.TryValidate(createdUser, out var results))
             {
                 this.ValidationProblems(results);
             }
             else
             {
                 var result = await _customerService
-                    .ChangeUserAsync(userId, user);
+                    .ChangeUserAsync(userId,
+                        Mapping.Get<User, UserDTO>(createdUser)
+                    );
 
                 if (result.IsSuccess)
                 {
-                    var resource = new Resource<UserDTO>(result.Result!);
+                    var user = Mapping.Get<UserDTO, User>(result.Result!);
+                    var resource = new ResourceObject<UserDTO>(user);
 
                     resource.AddLink("self",
                         Url.Link(nameof(PatchCustomer), new { userId })!,

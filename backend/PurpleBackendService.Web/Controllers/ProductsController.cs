@@ -2,10 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 
 using PurpleBackendService.Web.Configure;
 using PurpleBackendService.Web.Resource;
-using PurpleBackendService.Infrastucture.Utility;
-using PurpleBackendService.Core.Interfaces.Services;
-using PurpleBackendService.Core.DTOs.Product;
+using PurpleBackendService.Core.Utility;
 using PurpleBackendService.Core.DTOs.Image;
+using PurpleBackendService.Core.DTOs.Product;
+using PurpleBackendService.Core.Interfaces.Services;
+using PurpleBackendService.Domain.Entity;
 
 namespace PurpleBackendService.Web.Controllers
 {
@@ -34,21 +35,21 @@ namespace PurpleBackendService.Web.Controllers
 
             if (result.IsSuccess)
             {
-                var products = result.Result as List<ProductDTO>;
-                var resources = new Resource<List<Resource<ProductDTO>>>([]);
+                var products = result.Result;
+                var resources = new ResourceCollection<ResourceObject<ProductDTO>>([]);
 
                 foreach (var product in products!)
                 {
-                    Resource<ProductDTO> resource = new(product);
+                    var productDTO = Mapping.Get<ProductDTO, Product>(product);
+                    var images = product.Images as List<ImageDTO> ?? [];
 
-                    var images = product.Images as List<ImageDTO>
-                        ?? new List<ImageDTO>();
+                    ResourceObject<ProductDTO> resource = new(productDTO);
 
                     resource.AddLink("patch",
                         Url.Link(nameof(PatchProduct), new
                             {
-                                userId = product.Author!.Id,
-                                productId = product.Id
+                                userId = productDTO.Author!.Id,
+                                productId = productDTO.Id
                             })!,
                         HttpMethod.Patch.Method
                     );
@@ -66,7 +67,7 @@ namespace PurpleBackendService.Web.Controllers
                         }
                     }
 
-                    resources.Data.Add(resource);
+                    resources.Items.Add(resource);
                 }
 
                 resources.AddLink("self",
@@ -94,10 +95,10 @@ namespace PurpleBackendService.Web.Controllers
 
             if (result.IsSuccess)
             {
-                var product = result.Result!;
+                var product = Mapping.Get<ProductDTO, Product>(result.Result!);
 
                 var userRefId = product.Author!.Id;
-                var resource = new Resource<ProductDTO>(product);
+                var resource = new ResourceObject<ProductDTO>(product);
 
                 var images = product.Images as List<ImageDTO>
                     ?? new List<ImageDTO>();
@@ -145,12 +146,12 @@ namespace PurpleBackendService.Web.Controllers
 
             if (result.IsSuccess)
             {
-                var products = result.Result as List<ProductDTO>;
-                var resources = new Resource<List<Resource<ProductDTO>>>([]);
+                var products =  Mapping.Get<List<ProductDTO>, ICollection<Product>>(result.Result!);
+                var resources = new ResourceCollection<ResourceObject<ProductDTO>>([]);
 
                 foreach (var product in products!)
                 {
-                    Resource<ProductDTO> resource = new(product);
+                    ResourceObject<ProductDTO> resource = new(product);
 
                     resource.AddLink("patch",
                         Url.Link(nameof(PatchProduct), new
@@ -177,7 +178,7 @@ namespace PurpleBackendService.Web.Controllers
                         }
                     }
 
-                    resources.Data.Add(resource);
+                    resources.Items.Add(resource);
                 }
 
                 resources.AddLink("self",
@@ -209,25 +210,29 @@ namespace PurpleBackendService.Web.Controllers
             [FromForm] IFormFileCollection files
         )
         {
-            var product = Create(title, content);
+            var createdProduct = Create(title, content);
 
-            if (!Validate.TryValidate(product, out var results))
+            if (!Validate.TryValidate(createdProduct, out var results))
             {
                 this.ValidationProblems(results);
             }
             else
             {
                 var result = await _productService
-                    .CreateProductAsync(userId, product);
+                    .CreateProductAsync(userId,
+                        Mapping.Get<Product, ProductDTO>(createdProduct)
+                    );
 
                 if (result.IsSuccess)
                 {
+                    var product = Mapping.Get<ProductDTO, Product>(result.Result!);
+
                     var images = await _imageService
                         .AddImagesAsync(result.Result!.Id, files);
 
                     result.Result.Images = images.Result;
 
-                    var resource = new Resource<ProductDTO>(result.Result!);
+                    var resource = new ResourceObject<ProductDTO>(product);
 
                     resource.AddLink("self",
                         Url.Link(nameof(GetProduct), new { userId = userId, })!,
@@ -269,20 +274,24 @@ namespace PurpleBackendService.Web.Controllers
             [FromForm] string content
         )
         {
-            var product = Create(title, content);
+            var changedProduct = Create(title, content);
 
-            if (!Validate.TryValidate(product, out var results))
+            if (!Validate.TryValidate(changedProduct, out var results))
             {
                 this.ValidationProblems(results);
             }
             else
             {
                 var result = await _productService
-                    .ChangeProductAsync(productId, product);
+                    .ChangeProductAsync(productId,
+                        Mapping.Get<Product, ProductDTO>(changedProduct)
+                    );
 
                 if (result.IsSuccess)
                 {
-                    var resource = new Resource<ProductDTO>(result.Result!);
+                    var product = Mapping.Get<ProductDTO, Product>(result.Result!);
+
+                    var resource = new ResourceObject<ProductDTO>(product);
 
                     resource.AddLink("self",
                         Url.Link(nameof(PatchProduct), new { productId })!,
