@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 
-using PurpleBackendService.Core.DTOs.User;
-using PurpleBackendService.Core.DTOs.Image;
+using PurpleBackendService.Web.Models.DTOs.User;
+using PurpleBackendService.Web.Models.DTOs.Image;
 
-namespace PurpleBackendService.Core.DTOs.Product
+namespace PurpleBackendService.Web.Models.DTOs.Product
 {
     public class ProductDTO
     {

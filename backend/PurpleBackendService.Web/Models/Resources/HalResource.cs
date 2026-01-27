@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
-using PurpleBackendService.Core.Common;
+
 using PurpleBackendService.Web.Interfaces.Resources;
+using PurpleBackendService.Web.Models.DTOs.Common;
 
 namespace PurpleBackendService.Web.Models.Resources
 {

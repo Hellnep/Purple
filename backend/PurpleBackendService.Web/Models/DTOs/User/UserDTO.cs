@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace PurpleBackendService.Core.DTOs.User
+namespace PurpleBackendService.Web.Models.DTOs.User
 {
     public class UserDTO
     {

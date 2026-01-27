@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 
 using PurpleBackendService.Web.Configure;
 using PurpleBackendService.Web.Resource;
+using PurpleBackendService.Web.Models.DTOs.Image;
+using PurpleBackendService.Web.Models.DTOs.Product;
 using PurpleBackendService.Core.Utility;
-using PurpleBackendService.Core.DTOs.Image;
-using PurpleBackendService.Core.DTOs.Product;
 using PurpleBackendService.Core.Interfaces.Services;
 using PurpleBackendService.Domain.Entity;
 

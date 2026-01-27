@@ -1,5 +1,4 @@
-using PurpleBackendService.Core.Common;
-using PurpleBackendService.Web.Models.Resources;
+using PurpleBackendService.Web.Models.DTOs.Common;
 
 namespace PurpleBackendService.Web.Interfaces.Resources
 {
