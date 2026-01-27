@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Reflection;
 
-namespace PurpleBackendService.Infrastucture.Utility
+namespace PurpleBackendService.Core.Utility
 {
     /// <summary>
     /// A custom class for mapping data objects
@@ -181,7 +181,10 @@ namespace PurpleBackendService.Infrastucture.Utility
         /// Checking the data type on collections
         /// </summary>
         /// <param name="type">Type of data</param>
-        /// <returns></returns>
+        /// <returns>
+        /// True - if the data type is a collection
+        /// False - if the data type is not a collection
+        /// </returns>
         private static bool IsCollectionType(Type type)
         {
             if (type == typeof(string))

@@ -1,4 +1,4 @@
-using PurpleBackendService.Infrastructure.Sqlite;
+using PurpleBackendService.Infrastucture.Sqlite;
 
 namespace PurpleBackendService.Infrastucture.Repository
 {

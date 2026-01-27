@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 using PurpleBackendService.Domain.Entity;
 using PurpleBackendService.Domain.Interfaces.Repositories;
-using PurpleBackendService.Infrastructure.Sqlite;
+using PurpleBackendService.Infrastucture.Sqlite;
 
 namespace PurpleBackendService.Infrastucture.Repository
 {

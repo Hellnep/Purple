@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 
+using PurpleBackendService.Core.Services;
+using PurpleBackendService.Core.Interfaces.Services;
 using PurpleBackendService.Infrastucture.Repository;
 using PurpleBackendService.Infrastucture.Services;
-using PurpleBackendService.Infrastructure.Sqlite;
-using PurpleBackendService.Core.Interfaces.Services;
-using PurpleBackendService.Core.Services;
+using PurpleBackendService.Infrastucture.Sqlite;
 using PurpleBackendService.Domain.Interfaces.Repositories;
 
 namespace PurpleBackendService.Web.Configure
@@ -18,7 +18,6 @@ namespace PurpleBackendService.Web.Configure
         /// Extention method for services collection
         /// </summary>
         /// <param name="services">Input services</param>
-        /// <returns></returns>
         public static void Initialize(this IServiceCollection services)
         {
             services.AddOpenApi();

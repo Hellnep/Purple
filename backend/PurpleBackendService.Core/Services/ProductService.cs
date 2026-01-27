@@ -1,7 +1,7 @@
-using PurpleBackendService.Infrastucture.Utility;
-using PurpleBackendService.Core.Interfaces.Services;
 using PurpleBackendService.Core;
+using PurpleBackendService.Core.Utility;
 using PurpleBackendService.Core.DTOs.Product;
+using PurpleBackendService.Core.Interfaces.Services;
 using PurpleBackendService.Domain.Entity;
 using PurpleBackendService.Domain.Interfaces.Repositories;
 

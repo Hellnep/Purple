@@ -2,7 +2,7 @@
 
 using PurpleBackendService.Domain.Entity;
 
-namespace PurpleBackendService.Infrastructure.Sqlite
+namespace PurpleBackendService.Infrastucture.Sqlite
 {
     public class PurpleOcean : DbContext
     {
