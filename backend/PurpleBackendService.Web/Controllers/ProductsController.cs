@@ -146,12 +146,12 @@ namespace PurpleBackendService.Web.Controllers
 
             if (result.IsSuccess)
             {
-                var products =  Mapping.Get<List<ProductDTO>, ICollection<Product>>(result.Result!);
                 var resources = new ResourceCollection<ResourceObject<ProductDTO>>([]);
 
-                foreach (var product in products!)
+                foreach (var product in result.Result!)
                 {
-                    ResourceObject<ProductDTO> resource = new(product);
+                    var productDTO = Mapping.Get<ProductDTO, Product>(product);
+                    ResourceObject<ProductDTO> resource = new(productDTO);
 
                     resource.AddLink("patch",
                         Url.Link(nameof(PatchProduct), new
